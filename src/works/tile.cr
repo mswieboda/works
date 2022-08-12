@@ -21,11 +21,8 @@ module Works
     end
 
     def draw(x, y)
-      color = LibAllegro.map_rgba_f(0, 0.13, 0, 0.13)
-
-      if (row % 2 != 0 && col % 2 != 0) || col % 2 == 0
-        color = LibAllegro.map_rgba_f(0, 0, 0.13, 0.13)
-      end
+      same = [row, col].all?(&.odd?) || [row, col].all?(&.even?)
+      color = same ? LibAllegro.map_rgba_f(0, 0.13, 0, 0.13) : LibAllegro.map_rgba_f(0, 0, 0.13, 0.13)
 
       draw(x, y, color)
     end
