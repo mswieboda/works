@@ -9,9 +9,10 @@ module Works
     def initialize
       super
 
+      @name = :main_menu
+      @start = false
       @screen_width = 0
       @screen_height = 0
-      @start = false
       @fontBig = LibAllegro.create_builtin_font
       @fontNormal = LibAllegro.create_builtin_font
     end
@@ -19,6 +20,7 @@ module Works
     def initialize(screen_width, screen_height)
       super()
 
+      @name = :main_menu
       @start = false
       @fontBig = LibAllegro.create_builtin_font
       @fontNormal = LibAllegro.create_builtin_font

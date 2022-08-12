@@ -1,8 +1,10 @@
 module Works
   abstract class Scene
+    property name
     property? exit
 
     def initialize
+      @name = :scene
       @exit = false
     end
 

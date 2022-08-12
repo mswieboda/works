@@ -2,6 +2,7 @@ require "./scene"
 require "./keys"
 require "./mouse"
 require "./main_menu"
+require "./game_scene"
 
 module Works
   class SceneManager < Scene
@@ -11,7 +12,7 @@ module Works
     property scene : Scene
 
     property mainMenu
-    # property gameScene
+    property gameScene
 
     def initialize(screen_width, screen_height)
       super()
@@ -22,7 +23,7 @@ module Works
       @mouse = Mouse.new
 
       @mainMenu = MainMenu.new(screen_width, screen_height)
-      # @gameScene = GameScene.new
+      @gameScene = GameScene.new
 
       @scene = mainMenu
     end
@@ -53,11 +54,21 @@ module Works
     end
 
     def check_scenes
-      @exit = true if mainMenu.exit?
+      case scene.name
+      when :main_menu
+        @exit = true if mainMenu.exit?
+        switch(gameScene) if mainMenu.start?
+      when :game_scene
+        switch(mainMenu) if gameScene.exit?
+      end
+    end
 
-      # if (scene == &gameScene)
-      #   if (gameScene.isExit)
-      #     switchScene(&mainMenu);
+    def switch(nextScene : Scene)
+      scene.reset
+
+      @scene = nextScene
+
+      scene.init
     end
 
     def update(keys : Keys, mouse : Mouse)
