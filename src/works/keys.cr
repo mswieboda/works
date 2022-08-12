@@ -25,7 +25,7 @@ module Works
     end
 
     def pressed?(keycode : Int)
-      keys[keycode]
+      keys[keycode] > 0
     end
 
     def any_pressed?(keycodes : Array(Int))
