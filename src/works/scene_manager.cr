@@ -15,7 +15,7 @@ module Works
     property gameScene
 
     def initialize(screen_width, screen_height)
-      super()
+      super(screen_width, screen_height)
 
       @redraw = false
 
@@ -23,7 +23,7 @@ module Works
       @mouse = Mouse.new
 
       @mainMenu = MainMenu.new(screen_width, screen_height)
-      @gameScene = GameScene.new
+      @gameScene = GameScene.new(screen_width, screen_height)
 
       @scene = mainMenu
     end

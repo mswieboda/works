@@ -11,22 +11,17 @@ module Works
 
       @name = :main_menu
       @start = false
-      @screen_width = 0
-      @screen_height = 0
       @fontBig = LibAllegro.create_builtin_font
       @fontNormal = LibAllegro.create_builtin_font
     end
 
     def initialize(screen_width, screen_height)
-      super()
+      super(screen_width, screen_height)
 
       @name = :main_menu
       @start = false
       @fontBig = LibAllegro.create_builtin_font
       @fontNormal = LibAllegro.create_builtin_font
-
-      @screen_width = screen_width
-      @screen_height = screen_height
     end
 
     def init
