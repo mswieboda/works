@@ -1,3 +1,5 @@
+require "./scene_manager"
+
 module Works
   module Allegro
     # Allegro constants not in bindings
@@ -58,41 +60,31 @@ module Works
       LibAllegro.register_event_source(queue, LibAllegro.get_display_event_source(display))
       LibAllegro.register_event_source(queue, LibAllegro.get_timer_event_source(timer))
 
-      redraw = false
       event = LibAllegro::Event.new
+      sceneManager = SceneManager.new(Width, Height)
 
       LibAllegro.start_timer(timer)
 
       loop do
         LibAllegro.wait_for_event(queue, pointerof(event))
 
-        # sceneManager.update(event)
+        sceneManager.update(event)
 
-        # if (sceneManager.isExit)
-        #   break
-
-        case event.type
-        when LibAllegro::EventDisplayClose
-          break
-        when LibAllegro::EventKeyDown
-          break if event.keyboard.keycode == LibAllegro::KeyEscape
-        when LibAllegro::EventTimer
-          redraw = true
-        end
+        break if sceneManager.exit?
 
         # Redraw, but only if the event queue is empty
-        if redraw && LibAllegro.is_event_queue_empty(queue)
-          redraw = false
+        if sceneManager.redraw? && LibAllegro.is_event_queue_empty(queue)
+          sceneManager.redraw = false
 
           LibAllegro.clear_to_color(LibAllegro.map_rgb_f(0, 0, 0))
 
-          # sceneManager.draw()
+          sceneManager.draw()
 
           LibAllegro.flip_display
         end
       end
 
-      # sceneManager.destroy()
+      sceneManager.destroy()
     end
   end
 end
