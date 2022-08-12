@@ -18,13 +18,12 @@ module Works
       @hover = false
     end
 
-    def update(mouse : Mouse)
+    def clear_hover
       @hover = false
+    end
 
-      if mouse.x >= col * Size && mouse.x <= col * Size + Size &&
-         mouse.y >= row * Size && mouse.y <= row * Size + Size
-        @hover = true
-      end
+    def hover
+      @hover = true
     end
 
     def draw(x, y)

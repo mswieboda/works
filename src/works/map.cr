@@ -24,11 +24,16 @@ module Works
     end
 
     def update(mouse : Mouse)
+      coal_tiles.select(&.hover?).each(&.clear_hover)
+
       map_mouse = Mouse.new(mouse.x - x, mouse.y - y)
 
-      ground_tiles.each(&.update(map_mouse))
-      coal_tiles.each(&.update(map_mouse))
-      tiles.each(&.update(map_mouse))
+      row = (map_mouse.y / Coal::Size).to_i
+      col = (map_mouse.x / Coal::Size).to_i
+
+      if coal = coal_tiles.find { |c| c.row == row && c.col == col }
+        coal.hover
+      end
     end
 
     def draw
@@ -38,8 +43,8 @@ module Works
     end
 
     def destroy
-      coal_tiles.each(&.destroy)
       ground_tiles.each(&.destroy)
+      coal_tiles.each(&.destroy)
       tiles.each(&.destroy)
     end
   end

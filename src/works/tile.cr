@@ -17,9 +17,6 @@ module Works
       @col = col
     end
 
-    def update(mouse : Mouse)
-    end
-
     def draw(x, y)
       same = [row, col].all?(&.odd?) || [row, col].all?(&.even?)
       color = same ? LibAllegro.map_rgba_f(0, 0.13, 0, 0.13) : LibAllegro.map_rgba_f(0, 0, 0.13, 0.13)
