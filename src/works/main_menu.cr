@@ -12,16 +12,16 @@ module Works
       @screen_width = 0
       @screen_height = 0
       @start = false
-      # @fontBig = al_load_font("./assets/PressStart2P.ttf", 64, 0)
-      # @fontNormal = al_load_font("./assets/PressStart2P.ttf", 24, 0)
+      @fontBig = LibAllegro.create_builtin_font
+      @fontNormal = LibAllegro.create_builtin_font
     end
 
     def initialize(screen_width, screen_height)
       super()
 
       @start = false
-      # @fontBig = LibAllegro.load_font("./assets/PressStart2P.ttf", 64, 0)
-      # @fontNormal = LibAllegro.load_font("./assets/PressStart2P.ttf", 24, 0)
+      @fontBig = LibAllegro.create_builtin_font
+      @fontNormal = LibAllegro.create_builtin_font
 
       @screen_width = screen_width
       @screen_height = screen_height
@@ -40,6 +40,8 @@ module Works
     end
 
     def draw
+      LibAllegro.draw_text(@fontBig, LibAllegro.map_rgb(0, 255, 0), screen_width / 2, screen_height / 3, LibAllegro::AlignCentre, "[YOUR GAME NAME HERE]")
+      LibAllegro.draw_text(@fontNormal, LibAllegro.map_rgb(0, 255, 0), screen_width / 2, screen_height / 2, LibAllegro::AlignCentre, "press [SPACE] to start!")
     end
 
     def reset

@@ -21,7 +21,7 @@ module Works
       @keys = Keys.new
       @mouse = Mouse.new
 
-      @mainMenu = MainMenu.new
+      @mainMenu = MainMenu.new(screen_width, screen_height)
       # @gameScene = GameScene.new
 
       @scene = mainMenu
@@ -65,7 +65,7 @@ module Works
     end
 
     def draw
-      # scene.draw
+      scene.draw
     end
 
     def reset

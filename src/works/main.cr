@@ -5,7 +5,6 @@ module Works
     # Allegro constants not in bindings
     MagLinear = 0x0080
     MinLinear = 0x0040
-    Suggest = 2
   end
 
   FPS = 60
@@ -41,8 +40,8 @@ module Works
       check_init(queue, "queue")
 
       # display options for anti-aliasing
-      LibAllegro.set_new_display_option(LibAllegro::SampleBuffers, 1, Allegro::Suggest)
-      LibAllegro.set_new_display_option(LibAllegro::Samples, 8, Allegro::Suggest)
+      LibAllegro.set_new_display_option(LibAllegro::SampleBuffers, 1, LibAllegro::Suggest)
+      LibAllegro.set_new_display_option(LibAllegro::Samples, 8, LibAllegro::Suggest)
       LibAllegro.set_new_bitmap_flags(Allegro::MinLinear | Allegro::MagLinear)
 
       display = LibAllegro.create_display(Width, Height)
