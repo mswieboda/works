@@ -33,7 +33,7 @@ module Works
 
       animations.add(idle, :idle)
       animations.add(idle_walk_left, :idle_walk_left)
-      # animations.play(:idle)
+      animations.play(:idle)
     end
 
     def update(keys : Keys)
@@ -42,15 +42,15 @@ module Works
       dx = 0
       dy = 0
 
-      dy -= speed if keys.any_pressed?([LibAllegro::KeyUp, LibAllegro::KeyW])
-      dy += speed if keys.any_pressed?([LibAllegro::KeyDown, LibAllegro::KeyS])
+      dy -= speed if keys.pressed?([LibAllegro::KeyUp, LibAllegro::KeyW])
+      dy += speed if keys.pressed?([LibAllegro::KeyDown, LibAllegro::KeyS])
 
-      if keys.any_pressed?([LibAllegro::KeyLeft, LibAllegro::KeyA])
+      if keys.pressed?([LibAllegro::KeyLeft, LibAllegro::KeyA])
         dx -= speed
         animations.play(:idle_walk_left)
       end
 
-      dx += speed if keys.any_pressed?([LibAllegro::KeyRight, LibAllegro::KeyD])
+      dx += speed if keys.pressed?([LibAllegro::KeyRight, LibAllegro::KeyD])
 
       if dx == 0 && dy == 0
         animations.play(:idle)

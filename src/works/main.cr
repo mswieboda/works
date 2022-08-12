@@ -17,6 +17,7 @@ module Works
       return if test
 
       puts "> Main::run couldn't init #{description}"
+
       exit 1
     end
 
@@ -73,7 +74,7 @@ module Works
 
           LibAllegro.clear_to_color(LibAllegro.map_rgb_f(0, 0, 0))
 
-          sceneManager.draw()
+          sceneManager.draw
 
           LibAllegro.flip_display
 
@@ -81,7 +82,7 @@ module Works
         end
       end
 
-      sceneManager.destroy()
+      sceneManager.destroy
     end
   end
 end

@@ -31,8 +31,6 @@ module Works
       animations.to_a.each do |_symbol, animation|
         animation.destroy
       end
-
-      # animation.destroy # might not need this?
     end
 
     def play(name : Symbol)

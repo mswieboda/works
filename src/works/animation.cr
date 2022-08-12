@@ -45,7 +45,7 @@ module Works
     end
 
     def update
-      max_frames = sprites.size() * fps_factor - 1
+      max_frames = sprites.size * fps_factor - 1
 
       @frame += 1 if frame < max_frames
       @frame = 0 if loops? && frame >= max_frames
