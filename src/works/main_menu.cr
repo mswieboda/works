@@ -30,7 +30,7 @@ module Works
     def init
     end
 
-    def update(keys, mouse)
+    def update(keys : Keys, mouse : Mouse)
       if keys.just_pressed?(LibAllegro::KeyEscape)
         @exit = true
         return

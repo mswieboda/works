@@ -8,7 +8,7 @@ module Works
 
     abstract def init
 
-    abstract def update(keys : Keys, mouse)
+    abstract def update(keys : Keys, mouse : Mouse)
 
     abstract def draw
 
