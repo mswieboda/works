@@ -28,7 +28,7 @@ module Works
     end
 
     def destroy
-      animations.each do |animation|
+      animations.to_a.each do |_symbol, animation|
         animation.destroy
       end
 

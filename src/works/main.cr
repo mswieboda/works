@@ -16,15 +16,11 @@ module Works
     def check_init(test, description)
       return if test
 
-      puts "couldn't init #{description}"
+      puts "> Main::run couldn't init #{description}"
       exit 1
     end
 
     def run
-      redraw = true
-      zoom = 1.0
-      filename = "assets/player.png"
-
       check_init(CrystalAllegro.init, "crystal allegro")
       check_init(LibAllegro.install_keyboard, "keyboard")
       check_init(LibAllegro.install_mouse, "mouse")

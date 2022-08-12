@@ -86,7 +86,7 @@ module Works
     end
 
     def destroy
-      # scene.destroy
+      scene.destroy
     end
   end
 end
