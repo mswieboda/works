@@ -14,7 +14,7 @@ module Works
     property y
     property speed
     property animations
-    getter coal_hover : Coal | Nil
+    getter coal_hover : Tile::Coal | Nil
     getter mining_timer
     getter inventory
 
@@ -93,8 +93,8 @@ module Works
 
       mx, my = mouse.to_map_coords(map.x, map.y)
 
-      row = (my / Coal.size).to_u16
-      col = (mx / Coal.size).to_u16
+      row = (my / Tile::Coal.size).to_u16
+      col = (mx / Tile::Coal.size).to_u16
 
       coal = map.coal.find { |c| c.row == row && c.col == col }
 
@@ -124,7 +124,7 @@ module Works
       end
     end
 
-    def distance(tile : Tile)
+    def distance(tile : Tile::Base)
       player_x = x
       player_y = y
       tile_x = tile.x + tile.width / 2

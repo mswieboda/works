@@ -33,9 +33,9 @@ module Works
 
     def init_map
       # ground
-      (Screen::Width / Ground.size).to_u16.times do |col|
-        (Screen::Height / Ground.size).to_u16.times do |row|
-          map.ground << Ground.new(row, col)
+      (Screen::Width / Tile::Ground.size).to_u16.times do |col|
+        (Screen::Height / Tile::Ground.size).to_u16.times do |row|
+          map.ground << Tile::Ground.new(row, col)
         end
       end
 
@@ -51,7 +51,7 @@ module Works
 
         (init_rows...rows).to_a.each do |row|
           (init_cols...cols).to_a.each do |col|
-            map.coal << Coal.new(row, col, rand(3_000_u16))
+            map.coal << Tile::Coal.new(row, col, rand(3_000_u16))
           end
         end
       end

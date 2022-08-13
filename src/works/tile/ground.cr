@@ -1,7 +1,7 @@
-require "./tile"
+require "./base"
 
-module Works
-  class Ground < Tile
+module Works::Tile
+  class Ground < Base
     Color = LibAllegro.map_rgb(212, 139, 68)
 
     def draw(x, y)

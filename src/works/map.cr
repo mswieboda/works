@@ -1,6 +1,5 @@
-require "./ground"
-require "./coal"
-require "./tile"
+require "./tile/ground"
+require "./tile/coal"
 require "./mouse"
 
 module Works
@@ -11,15 +10,15 @@ module Works
     getter height
     getter ground
     getter coal
-    getter coal_hover : Coal | Nil
+    getter coal_hover : Tile::Coal | Nil
 
     def initialize
       @x = 0
       @y = 0
       @width = 0
       @height = 0
-      @ground = [] of Ground
-      @coal = [] of Coal
+      @ground = [] of Tile::Ground
+      @coal = [] of Tile::Coal
     end
 
     def draw

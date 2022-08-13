@@ -1,7 +1,7 @@
-require "./mouse"
+require "../mouse"
 
-module Works
-  class Tile
+module Works::Tile
+  class Base
     Size = 32_u8
     OddColor = LibAllegro.map_rgba_f(0, 0.13, 0, 0.13)
     EvenColor = LibAllegro.map_rgba_f(0, 0, 0.13, 0.13)

@@ -1,7 +1,7 @@
-require "./tile"
+require "./base"
 
-module Works
-  class Coal < Tile
+module Works::Tile
+  class Coal < Base
     Color = LibAllegro.map_rgba_f(0.13, 0.13, 0.13, 0.69)
     HoverColor = LibAllegro.map_rgb_f(1, 1, 1)
 
