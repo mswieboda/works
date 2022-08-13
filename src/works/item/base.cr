@@ -4,7 +4,7 @@ module Works::Item
     Name = "Item"
     ShortCode = "IB"
     MaxAmount = 100
-    IconTextColor = LibAllegro.map_rgba_f(0.5, 0.5, 0.5, 0.5)
+    IconTextColor = LibAllegro.premul_rgba_f(1, 1, 1, 0.5)
 
     getter amount
     protected setter amount

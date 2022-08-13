@@ -9,9 +9,9 @@ module Works
     ]
 
     module HUD
-      BackgroundColor = LibAllegro.map_rgba_f(0, 0, 0, 0.13)
-      SlotBackgroundColor = LibAllegro.map_rgba_f(0.33, 0.33, 0.33, 0.33)
-      SlotBorderColor = LibAllegro.map_rgba_f(0, 0, 0, 0.03)
+      BackgroundColor = LibAllegro.premul_rgba_f(0, 0, 0, 0.13)
+      SlotBackgroundColor = LibAllegro.premul_rgba_f(1, 1, 1, 0.13)
+      SlotBorderColor = LibAllegro.premul_rgba_f(0, 0, 0, 0.03)
       SlotSize = 32
       SlotMargin = 4
       SlotCols = (MaxSlots / 5).to_i

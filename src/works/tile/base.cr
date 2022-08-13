@@ -2,7 +2,7 @@ module Works::Tile
   class Base
     Name = "Tile"
     Size = 32_u8
-    Color = LibAllegro.map_rgba_f(0.13, 0.13, 0.13, 0.13)
+    Color = LibAllegro.premul_rgba_f(0, 0, 0, 0.13)
 
     property row : UInt16
     property col : UInt16

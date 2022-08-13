@@ -6,8 +6,8 @@ module Works
     Width = 100
     TextHeight = 10
     BarHeight = 3
-    DarkShadow = LibAllegro.map_rgba_f(0, 0, 0, 0.69)
-    Green = LibAllegro.map_rgba_f(0, 1, 0, 0.69)
+    DarkShadow = LibAllegro.premul_rgba_f(0, 0, 0, 0.3)
+    Green = LibAllegro.premul_rgba_f(0, 1, 0, 0.3)
 
     def initialize
       @time_start = Time.local

@@ -4,15 +4,17 @@ require "../../item/base"
 module Works::Tile::Ore
   abstract class Base < Tile::Base
     Name = "Ore"
-    Color = LibAllegro.map_rgba_f(0.69, 0, 0.69, 0.69)
+    Color = LibAllegro.premul_rgba_f(1, 0, 1, 0.69)
     HoverColor = LibAllegro.map_rgb_f(1, 1, 1)
 
     getter amount : UInt16
+    getter initial_amount : UInt16
 
     def initialize(row = 0_u16, col = 0_u16, amount = 0_u16)
       super(row, col)
 
       @amount = amount
+      @initial_amount = amount
     end
 
     def self.name
@@ -41,10 +43,6 @@ module Works::Tile::Ore
 
     def hover_color
       self.class.hover_color
-    end
-
-    def draw(x, y)
-      draw(x, y, color)
     end
 
     def draw_hover(dx, dy)
