@@ -2,6 +2,7 @@ require "../mouse"
 
 module Works::Tile
   class Base
+    Name = "Tile"
     Size = 32_u8
     OddColor = LibAllegro.map_rgba_f(0, 0.13, 0, 0.13)
     EvenColor = LibAllegro.map_rgba_f(0, 0, 0.13, 0.13)
@@ -12,6 +13,14 @@ module Works::Tile
     def initialize(row = 0_u16, col = 0_u16)
       @row = row
       @col = col
+    end
+
+    def self.name
+      Name
+    end
+
+    def name
+      self.class.name
     end
 
     def self.size
@@ -54,8 +63,8 @@ module Works::Tile
     def destroy
     end
 
-    def print
-      puts "> Tile (#{row}, #{col})"
+    def print_str
+      "> #{name} (#{row}, #{col})"
     end
   end
 end

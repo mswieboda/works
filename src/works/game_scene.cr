@@ -1,6 +1,7 @@
 require "./scene"
 require "./map"
 require "./player"
+require "./tile/ore/coal"
 
 module Works
   class GameScene < Scene
@@ -51,7 +52,7 @@ module Works
 
         (init_rows...rows).to_a.each do |row|
           (init_cols...cols).to_a.each do |col|
-            map.coal << Tile::Coal.new(row, col, rand(3_000_u16))
+            map.ore << Tile::Ore::Coal.new(row, col, rand(3_000_u16))
           end
         end
       end
@@ -78,8 +79,8 @@ module Works
       map.draw
       player.draw(map.x, map.y)
 
-      if coal_hover = player.coal_hover
-        HUDText.new("coal: #{coal_hover.amount}").draw_from_bottom(0, Screen::Height)
+      if ore_hover = player.ore_hover
+        HUDText.new("#{ore_hover.name}: #{ore_hover.amount}").draw_from_bottom(0, Screen::Height)
       end
     end
 

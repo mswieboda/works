@@ -14,7 +14,7 @@ module Works
     property y
     property speed
     property animations
-    getter coal_hover : Tile::Coal | Nil
+    getter ore_hover : Tile::Ore::Base | Nil
     getter mining_timer
     getter inventory
 
@@ -23,7 +23,7 @@ module Works
       @x = 0
       @speed = 0
       @animations = Animations.new
-      @coal_hover = nil
+      @ore_hover = nil
       @mining_timer = Timer.new(MiningInterval)
       @inventory = Inventory.new
     end
@@ -89,19 +89,19 @@ module Works
     end
 
     def update_mining(mouse : Mouse, map : Map)
-      @coal_hover = nil
+      @ore_hover = nil
 
       mx, my = mouse.to_map_coords(map.x, map.y)
 
-      row = (my / Tile::Coal.size).to_u16
-      col = (mx / Tile::Coal.size).to_u16
+      row = (my / Tile::Ore::Coal.size).to_u16
+      col = (mx / Tile::Ore::Coal.size).to_u16
 
-      coal = map.coal.find { |c| c.row == row && c.col == col }
+      ore = map.ore.find { |c| c.row == row && c.col == col }
 
-      return unless coal
-      return unless distance(coal) < MiningDistance
+      return unless ore
+      return unless distance(ore) < MiningDistance
 
-      @coal_hover = coal
+      @ore_hover = ore
 
       return unless mouse.right_pressed?
 
@@ -109,10 +109,10 @@ module Works
 
       return unless mining_timer.done?
 
-      amount = inventory.amount_can_add(Item::Coal, coal.mine_amount(MiningAmount))
+      amount = inventory.amount_can_add(Item::Coal, ore.mine_amount(MiningAmount))
 
       if amount > 0
-        inventory.add(Item::Coal, coal.mine(amount))
+        inventory.add(Item::Coal, ore.mine(amount))
       end
 
       mining_timer.restart
@@ -137,8 +137,8 @@ module Works
     end
 
     def draw(x, y)
-      if coal_hover = @coal_hover
-        coal_hover.draw_hover(x, y)
+      if ore_hover = @ore_hover
+        ore_hover.draw_hover(x, y)
       end
 
       animations.draw(x + @x, y + @y)

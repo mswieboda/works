@@ -1,5 +1,5 @@
 require "./tile/ground"
-require "./tile/coal"
+require "./tile/ore/base"
 require "./mouse"
 
 module Works
@@ -9,8 +9,7 @@ module Works
     getter width
     getter height
     getter ground
-    getter coal
-    getter coal_hover : Tile::Coal | Nil
+    getter ore
 
     def initialize
       @x = 0
@@ -18,17 +17,17 @@ module Works
       @width = 0
       @height = 0
       @ground = [] of Tile::Ground
-      @coal = [] of Tile::Coal
+      @ore = [] of Tile::Ore::Base
     end
 
     def draw
       ground.each(&.draw(x, y))
-      coal.each(&.draw(x, y))
+      ore.each(&.draw(x, y))
     end
 
     def destroy
       ground.each(&.destroy)
-      coal.each(&.destroy)
+      ore.each(&.destroy)
     end
   end
 end
