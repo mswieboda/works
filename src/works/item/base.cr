@@ -6,6 +6,7 @@ module Works::Item
     getter key
     getter name
     getter amount
+    protected setter amount
 
     def initialize(key = :base, name = "")
       @key = key
@@ -19,6 +20,12 @@ module Works::Item
 
     def self.max_amount
       MaxAmount
+    end
+
+    def clone
+      item = self.class.new(key, name)
+      item.amount = @amount
+      item
     end
 
     def max_amount

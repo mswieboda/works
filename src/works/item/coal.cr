@@ -3,8 +3,8 @@ module Works::Item
     MaxAmount = 50
     IconColor = LibAllegro.map_rgba_f(0, 0, 0, 0.777)
 
-    def initialize
-      super(:coal, "Coal")
+    def initialize(key = :coal, name = "Coal")
+      super(key, name)
     end
 
     def self.max_amount
@@ -13,6 +13,12 @@ module Works::Item
 
     def self.key
       :coal
+    end
+
+    def clone
+      item = self.class.new
+      item.amount = @amount
+      item
     end
 
     def draw_icon(x, y, size)

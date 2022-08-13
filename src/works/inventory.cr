@@ -26,21 +26,21 @@ module Works
 
     def amount_can_add(item_klass, amount : Int)
       leftovers = amount
-      temp_items = items.dup
+      temp_items = items.clone
 
       while leftovers > 0
         if item = temp_items.reject(&.full?).find { |i| i.key == item_klass.key }
           leftovers = item.add(leftovers)
         else
-          if temp_items.size >= max_slots
-            return amount - leftovers
-          end
+          break if temp_items.size >= max_slots
 
           item = item_klass.new
           leftovers = item.add(leftovers)
           temp_items << item
         end
       end
+
+      temp_items.clear
 
       amount - leftovers
     end
