@@ -1,12 +1,16 @@
 require "./item/base"
+require "./item/struct/stone_furnace"
 require "./hud_text"
 
 module Works
   class Inventory
     MaxSlots = 60
     SortOrder = [
-      Item::Ore::Coal.key, Item::Ore::Copper.key, Item::Ore::Iron.key, Item::Ore::Stone.key
-    ]
+      # ore
+      Item::Ore::Coal, Item::Ore::Copper, Item::Ore::Iron, Item::Ore::Stone,
+      # struct
+      Item::Struct::StoneFurnace
+    ].map(&.key)
 
     module HUD
       BackgroundColor = LibAllegro.premul_rgba_f(0, 0, 0, 0.13)
@@ -25,6 +29,10 @@ module Works
       @shown = false
       @max_slots = MaxSlots
       @items = [] of Item::Base
+    end
+
+    def init
+      add(Item::Struct::StoneFurnace, 1)
     end
 
     def amount_can_add(item_klass, amount : Int)

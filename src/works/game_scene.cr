@@ -86,7 +86,7 @@ module Works
       @player.y = 100
       @player.speed = 5
 
-      player.init_animations(sheet)
+      player.init(sheet)
     end
 
     def update(keys : Keys, mouse : Mouse)

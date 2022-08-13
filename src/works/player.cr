@@ -33,6 +33,11 @@ module Works
       @inventory = Inventory.new
     end
 
+    def init(sheet : LibAllegro::Bitmap)
+      init_animations(sheet)
+      inventory.init
+    end
+
     def init_animations(sheet : LibAllegro::Bitmap)
       idle = Animation.new((Screen::FPS / 3).to_i)
       size = 64
