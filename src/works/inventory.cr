@@ -4,6 +4,9 @@ require "./hud_text"
 module Works
   class Inventory
     MaxSlots = 60
+    SortOrder = [
+      Item::Ore::Coal.key, Item::Ore::Copper.key, Item::Ore::Iron.key, Item::Ore::Stone.key
+    ]
 
     module HUD
       BackgroundColor = LibAllegro.map_rgba_f(0, 0, 0, 0.13)
@@ -59,9 +62,20 @@ module Works
 
           item = item_klass.new
           leftovers = item.add(leftovers)
-          @items << item
+
+          add_item_and_sort!(item)
         end
       end
+    end
+
+    private def add_item_and_sort!(item : Item::Base)
+      @items << item
+      sort_items
+    end
+
+    def sort_items
+      # TODO: also sort by `amount` if keys are the same
+      @items.sort! { |a, b| (SortOrder.index(a.key) || 0) <=> (SortOrder.index(b.key) || 0) }
     end
 
     def show
