@@ -120,7 +120,7 @@ module Works
 
     def update_inventory(keys : Keys, mouse : Mouse)
       if keys.just_pressed?(LibAllegro::KeyI)
-        inventory.print
+        inventory.show_toggle
       end
     end
 
@@ -142,6 +142,8 @@ module Works
       end
 
       animations.draw(x + @x, y + @y)
+
+      inventory.draw(x, y)
     end
 
     def destroy

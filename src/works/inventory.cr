@@ -1,13 +1,16 @@
 require "./item/base"
+require "./hud_text"
 
 module Works
   class Inventory
     MaxSlots = 10
 
+    getter? shown
     getter items
     getter max_slots
 
     def initialize
+      @shown = false
       @max_slots = MaxSlots
       @items = [] of Item::Base
     end
@@ -55,17 +58,44 @@ module Works
       end
     end
 
-    def print
-      puts "> Player Inventory:"
+    def show
+      @shown = true
+    end
 
-      items.each do |item|
-        print "> "
-        item.print
-        puts
+    def hide
+      @shown = false
+    end
+
+    def show_toggle
+      if shown?
+        hide
+      else
+        print
+        show
       end
     end
 
-    def draw
+    def print_str
+      str = "> Player Inventory:\n"
+
+      items.each do |item|
+        str += "> #{item.print_str}\n"
+      end
+
+      str.chomp
+    end
+
+    def print
+      puts print_str
+    end
+
+    def draw(x, y)
+      return unless shown?
+
+      print_str.split("\n").each do |str|
+        HUDText.new(str).draw_from_left(x, y)
+        y += 10
+      end
     end
   end
 end

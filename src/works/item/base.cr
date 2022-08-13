@@ -31,8 +31,6 @@ module Works::Item
     def add(amount)
       leftovers = 0
 
-      puts "> Item::Base#add @a: #{@amount} a: #{amount} m: #{max_amount}"
-
       @amount += amount
 
       if @amount + amount > max_amount
@@ -45,8 +43,8 @@ module Works::Item
 
     abstract def draw
 
-    def print
-      print "#{name}: #{amount}"
+    def print_str
+      "#{name}: #{amount}"
     end
   end
 end
