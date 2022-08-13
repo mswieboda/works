@@ -98,18 +98,6 @@ module Works
 
       draw_background(dx, dy, width, height)
       draw_slots(dx, dy, cols, rows)
-
-      draw_old(x, y)
-    end
-
-    def draw_old(x, y)
-      print_str.split("\n").each do |str|
-        hud_text = HUDText.new(str)
-
-        hud_text.draw_from_right(Screen::Width, y)
-
-        y += hud_text.inner_height
-      end
     end
 
     def draw_background(x, y, width, height)
