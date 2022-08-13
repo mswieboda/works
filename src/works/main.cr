@@ -7,10 +7,12 @@ module Works
     MinLinear = 0x0040
   end
 
-  FPS = 60
-  Width = 1024
-  Height = 768
-  Name = "works"
+  module Screen
+    Width = 1024
+    Height = 768
+    FPS = 60
+    Name = "works"
+  end
 
   class Main
     def check_init(test, description)
@@ -30,7 +32,7 @@ module Works
       check_init(LibAllegro.init_image_addon, "image addon")
       check_init(LibAllegro.init_primitives_addon, "primitives addon")
 
-      timer = LibAllegro.create_timer(1.0 / FPS)
+      timer = LibAllegro.create_timer(1.0 / Screen::FPS)
       check_init(timer, "timer")
 
       queue = LibAllegro.create_event_queue
@@ -41,10 +43,10 @@ module Works
       LibAllegro.set_new_display_option(LibAllegro::Samples, 8, LibAllegro::Suggest)
       LibAllegro.set_new_bitmap_flags(Allegro::MinLinear | Allegro::MagLinear)
 
-      display = LibAllegro.create_display(Width, Height)
+      display = LibAllegro.create_display(Screen::Width, Screen::Height)
       check_init(display, "display")
 
-      LibAllegro.set_window_title(display, Name)
+      LibAllegro.set_window_title(display, Screen::Name)
 
       # set to fullscreen windowed
       # al_set_display_flag(display, ALLEGRO_FULLSCREEN_WINDOW, true);
@@ -57,7 +59,7 @@ module Works
       LibAllegro.register_event_source(queue, LibAllegro.get_timer_event_source(timer))
 
       event = LibAllegro::Event.new
-      sceneManager = SceneManager.new(Width, Height)
+      sceneManager = SceneManager.new
 
       LibAllegro.start_timer(timer)
 

@@ -29,16 +29,15 @@ module Works::Item
     end
 
     def add(amount)
-      leftovers = 0
+      total = @amount + amount
 
-      @amount += amount
-
-      if @amount + amount > max_amount
-        leftovers = @amount + amount - max_amount
+      if total > max_amount
         @amount = max_amount
+      else
+        @amount += amount
       end
 
-      leftovers
+      total - @amount
     end
 
     abstract def draw

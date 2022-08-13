@@ -16,27 +16,24 @@ module Works
     end
 
     def amount_can_add(item_klass, amount : Int)
-      added = 0
       leftovers = amount
       temp_items = items.dup
 
       while leftovers > 0
         if item = temp_items.reject(&.full?).find { |i| i.key == item_klass.key }
-          added += leftovers
           leftovers = item.add(leftovers)
         else
           if temp_items.size >= max_slots
-            return added
+            return amount - leftovers
           end
 
           item = item_klass.new
-          added = leftovers
           leftovers = item.add(leftovers)
           temp_items << item
         end
       end
 
-      added
+      amount - leftovers
     end
 
     def add(item_klass, amount : Int)
@@ -67,34 +64,28 @@ module Works
     end
 
     def show_toggle
-      if shown?
-        hide
-      else
-        print
-        show
-      end
+      shown? ? hide : show
     end
 
     def print_str
-      str = "> Player Inventory:\n"
+      str = "Player Inventory:\n"
 
       items.each do |item|
-        str += "> #{item.print_str}\n"
+        str += "#{item.print_str}\n"
       end
 
       str.chomp
-    end
-
-    def print
-      puts print_str
     end
 
     def draw(x, y)
       return unless shown?
 
       print_str.split("\n").each do |str|
-        HUDText.new(str).draw_from_left(x, y)
-        y += 10
+        hud_text = HUDText.new(str)
+
+        hud_text.draw_from_right(Screen::Width, y)
+
+        y += hud_text.inner_height
       end
     end
   end

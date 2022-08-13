@@ -37,6 +37,11 @@ module Works
       draw_text(x, y - outer_height)
     end
 
+    def draw_from_right(x, y)
+      draw_background(x - outer_width, y)
+      draw_text(x - outer_width, y)
+    end
+
     def draw(x, y)
       draw_background(x, y)
       draw_text(x, y)

@@ -13,7 +13,7 @@ module Works
     getter coal
     getter coal_hover : Coal | Nil
 
-    def initialize(screen_width, screen_height)
+    def initialize
       @x = 0
       @y = 0
       @width = 0

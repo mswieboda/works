@@ -17,8 +17,8 @@ module Works
     property gameScene
 
 
-    def initialize(screen_width, screen_height)
-      super(screen_width, screen_height)
+    def initialize
+      super
 
       @redraw = false
 
@@ -26,8 +26,8 @@ module Works
       @mouse = Mouse.new
       @fps = FPSDisplay.new
 
-      @mainMenu = MainMenu.new(screen_width, screen_height)
-      @gameScene = GameScene.new(screen_width, screen_height)
+      @mainMenu = MainMenu.new
+      @gameScene = GameScene.new
 
       @scene = mainMenu
     end

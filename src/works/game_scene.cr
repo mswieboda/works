@@ -17,11 +17,11 @@ module Works
       @sheet = LibAllegro.load_bitmap("./assets/player.png")
     end
 
-    def initialize(screen_width, screen_height)
-      super(screen_width, screen_height)
+    def initialize
+      super
 
       @name = :game_scene
-      @map = Map.new(screen_width, screen_height)
+      @map = Map.new
       @player = Player.new
       @sheet = LibAllegro.load_bitmap("./assets/player.png")
     end
@@ -33,8 +33,8 @@ module Works
 
     def init_map
       # ground
-      (screen_width / Ground.size).to_u16.times do |col|
-        (screen_height / Ground.size).to_u16.times do |row|
+      (Screen::Width / Ground.size).to_u16.times do |col|
+        (Screen::Height / Ground.size).to_u16.times do |row|
           map.ground << Ground.new(row, col)
         end
       end
@@ -79,7 +79,7 @@ module Works
       player.draw(map.x, map.y)
 
       if coal_hover = player.coal_hover
-        HUDText.new("coal: #{coal_hover.amount}").draw_from_bottom(0, screen_height)
+        HUDText.new("coal: #{coal_hover.amount}").draw_from_bottom(0, Screen::Height)
       end
     end
 

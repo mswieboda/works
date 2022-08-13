@@ -29,7 +29,7 @@ module Works
     end
 
     def init_animations(sheet : LibAllegro::Bitmap)
-      idle = Animation.new((FPS / 3).to_i)
+      idle = Animation.new((Screen::FPS / 3).to_i)
       size = 64
       idle_frames = 5
 
@@ -37,7 +37,7 @@ module Works
         idle.add(sheet, i * size, 0, size, size)
       end
 
-      idle_walk_left = Animation.new((FPS / 3).to_i)
+      idle_walk_left = Animation.new((Screen::FPS / 3).to_i)
       idle_walk_left_frames = 4
 
       idle_walk_left_frames.times do |i|

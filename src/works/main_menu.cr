@@ -2,8 +2,6 @@ require "./scene"
 
 module Works
   class MainMenu < Scene
-    property screen_width
-    property screen_height
     property? start
 
     def initialize
@@ -15,8 +13,8 @@ module Works
       @fontNormal = LibAllegro.create_builtin_font
     end
 
-    def initialize(screen_width, screen_height)
-      super(screen_width, screen_height)
+    def initialize
+      super
 
       @name = :main_menu
       @start = false
@@ -37,8 +35,8 @@ module Works
     end
 
     def draw
-      LibAllegro.draw_text(@fontBig, LibAllegro.map_rgb(0, 255, 0), screen_width / 2, screen_height / 3, LibAllegro::AlignCentre, "[YOUR GAME NAME HERE]")
-      LibAllegro.draw_text(@fontNormal, LibAllegro.map_rgb(0, 255, 0), screen_width / 2, screen_height / 2, LibAllegro::AlignCentre, "press [SPACE] to start!")
+      LibAllegro.draw_text(@fontBig, LibAllegro.map_rgb(0, 255, 0), Screen::Width / 2, Screen::Height / 3, LibAllegro::AlignCentre, "[YOUR GAME NAME HERE]")
+      LibAllegro.draw_text(@fontNormal, LibAllegro.map_rgb(0, 255, 0), Screen::Width / 2, Screen::Height / 2, LibAllegro::AlignCentre, "press [SPACE] to start!")
     end
 
     def reset
