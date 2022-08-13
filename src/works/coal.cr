@@ -2,46 +2,30 @@ require "./tile"
 
 module Works
   class Coal < Tile
-    Size = Tile::Size
+    Color = LibAllegro.map_rgba_f(0.13, 0.13, 0.13, 0.69)
+    HoverColor = LibAllegro.map_rgb_f(1, 1, 1)
 
-    property? hover
+    property amount : UInt16
 
-    def initialize
-      super
-
-      @hover = false
-    end
-
-    def initialize(row, col)
+    def initialize(row = 0_u16, col = 0_u16, amount = 0_u16)
       super(row, col)
 
-      @hover = false
-    end
-
-    def clear_hover
-      @hover = false
-    end
-
-    def hover
-      @hover = true
+      @amount = amount
     end
 
     def draw(x, y)
-      color = LibAllegro.map_rgba_f(0.13, 0.13, 0.13, 0.69)
-
-      draw(x, y, color)
-      draw_hover(x, y, LibAllegro.map_rgb_f(1, 1, 1)) if hover?
+      draw(x, y, Color)
     end
 
-    def draw_hover(x, y, color)
-      x += col * Size
-      y += row * Size
+    def draw_hover(x, y)
+      x += col * size
+      y += row * size
 
-      LibAllegro.draw_rectangle(x, y, x + Size, y + Size, color, 1)
+      LibAllegro.draw_rectangle(x, y, x + size, y + size, HoverColor, 1)
     end
 
     def print
-      puts "> Coal (#{row}, #{col}) h: #{@hover}"
+      puts "> Coal (#{row}, #{col}) a: #{amount}"
     end
   end
 end

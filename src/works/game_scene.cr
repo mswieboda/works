@@ -33,17 +33,17 @@ module Works
 
     def init_map
       # ground
-      (screen_width / Tile::Size).to_i.times do |col|
-        (screen_height / Tile::Size).to_i.times do |row|
-          map.ground_tiles << Ground.new(row, col)
+      (screen_width / Ground.size).to_u16.times do |col|
+        (screen_height / Ground.size).to_u16.times do |row|
+          map.ground << Ground.new(row, col)
         end
       end
 
       # coal patches
       [
-        [3, 3, 3, 3],
-        [17, 13, 1, 1],
-        [15, 1, 5, 5]
+        [3_u16, 3_u16, 3_u16, 3_u16],
+        [17_u16, 13_u16, 1_u16, 1_u16],
+        [15_u16, 1_u16, 5_u16, 5_u16]
       ].each do |data|
         init_rows, init_cols, rows, cols = data
         rows += init_rows
@@ -51,7 +51,7 @@ module Works
 
         (init_rows...rows).to_a.each do |row|
           (init_cols...cols).to_a.each do |col|
-            map.coal_tiles << Coal.new(row, col)
+            map.coal << Coal.new(row, col, rand(UInt16::MAX))
           end
         end
       end

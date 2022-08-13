@@ -9,43 +9,44 @@ module Works
     property y
     property width
     property height
-    property ground_tiles
-    property coal_tiles
-    property tiles
+    property ground
+    property coal
+
+    @coal_hover : Coal | Nil
 
     def initialize
       @x = 0
       @y = 0
       @width = 0
       @height = 0
-      @ground_tiles = [] of Ground
-      @coal_tiles = [] of Coal
-      @tiles = [] of Tile
+      @ground = [] of Ground
+      @coal = [] of Coal
+      @coal_hover = nil
     end
 
     def update(mouse : Mouse)
-      coal_tiles.select(&.hover?).each(&.clear_hover)
+      @coal_hover = nil
 
       map_mouse = Mouse.new(mouse.x - x, mouse.y - y)
 
-      row = (map_mouse.y / Coal::Size).to_i
-      col = (map_mouse.x / Coal::Size).to_i
+      row = (map_mouse.y / Coal.size).to_u16
+      col = (map_mouse.x / Coal.size).to_u16
 
-      if coal = coal_tiles.find { |c| c.row == row && c.col == col }
-        coal.hover
-      end
+      @coal_hover = coal.find { |c| c.row == row && c.col == col }
     end
 
     def draw
-      ground_tiles.each(&.draw(x, y))
-      coal_tiles.each(&.draw(x, y))
-      tiles.each(&.draw(x, y))
+      ground.each(&.draw(x, y))
+      coal.each(&.draw(x, y))
+
+      if coal_hover = @coal_hover
+        coal_hover.draw_hover(x, y)
+      end
     end
 
     def destroy
-      ground_tiles.each(&.destroy)
-      coal_tiles.each(&.destroy)
-      tiles.each(&.destroy)
+      ground.each(&.destroy)
+      coal.each(&.destroy)
     end
   end
 end
