@@ -1,6 +1,7 @@
 module Works::Item
   abstract class Base
     MaxAmount = 100
+    IconTextColor = LibAllegro.map_rgba_f(0.5, 0.5, 0.5, 0.5)
 
     getter key
     getter name
@@ -40,7 +41,16 @@ module Works::Item
       total - @amount
     end
 
-    abstract def draw
+    def draw(x, y, size)
+      draw_icon(x, y, size)
+      draw_icon_text(x, y, size)
+    end
+
+    def draw_icon_text(x, y, size)
+      LibAllegro.draw_text(Font.default, IconTextColor, x + size, y + size - size / 3, LibAllegro::AlignRight, @amount.to_s)
+    end
+
+    abstract def draw_icon(x, y, size)
 
     def print_str
       "#{name}: #{amount}"

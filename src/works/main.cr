@@ -14,6 +14,16 @@ module Works
     Name = "works"
   end
 
+  class Font
+    def self.default
+      @@font ||= LibAllegro.create_builtin_font
+    end
+
+    def self.destroy
+      LibAllegro.destroy_font(default)
+    end
+  end
+
   class Main
     def check_init(test, description)
       return if test
@@ -85,6 +95,12 @@ module Works
       end
 
       sceneManager.destroy
+
+      destroy
+    end
+
+    def destroy
+      Font.destroy
     end
   end
 end

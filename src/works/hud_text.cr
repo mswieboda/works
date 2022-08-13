@@ -10,10 +10,9 @@ module Works
     getter text_height
 
     def initialize(text = "")
-      @font = LibAllegro.create_builtin_font
       @text = text
-      @text_width = LibAllegro.get_text_width(@font, @text)
-      @text_height = LibAllegro.get_font_line_height(@font)
+      @text_width = LibAllegro.get_text_width(Font.default, @text)
+      @text_height = LibAllegro.get_font_line_height(Font.default)
     end
 
     def inner_width
@@ -59,7 +58,7 @@ module Works
 
     def draw_text(x, y)
       LibAllegro.draw_text(
-        @font,
+        Font.default,
         TextColor,
         x + Margin + Padding,
         y + Margin + Padding,

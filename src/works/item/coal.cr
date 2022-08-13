@@ -1,6 +1,7 @@
 module Works::Item
   class Coal < Base
     MaxAmount = 50
+    IconColor = LibAllegro.map_rgba_f(0, 0, 0, 0.777)
 
     def initialize
       super(:coal, "Coal")
@@ -14,7 +15,9 @@ module Works::Item
       :coal
     end
 
-    def draw
+    def draw_icon(x, y, size)
+      LibAllegro.draw_filled_circle(x + size / 2, y + size / 2, size / 2, IconColor)
+      LibAllegro.draw_text(Font.default, IconTextColor, x + size / 5, y + size / 5, 0, "c")
     end
   end
 end

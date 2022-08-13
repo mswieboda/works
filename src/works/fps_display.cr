@@ -16,7 +16,6 @@ module Works
       @str_fps = ""
       @str_time = ""
       @fps_percent = 0.0
-      @font = LibAllegro.create_builtin_font
     end
 
     def calc
@@ -36,8 +35,8 @@ module Works
 
     def draw
       LibAllegro.draw_filled_rectangle(Margin, Margin, Width + Margin * 3, Margin * 3 + TextHeight + BarHeight + Margin, DarkShadow)
-      LibAllegro.draw_text(@font, Green, Margin * 3, Margin * 2, LibAllegro::AlignInteger, @str_fps)
-      LibAllegro.draw_text(@font, Green, Width + Margin, Margin * 2, LibAllegro::AlignRight, @str_time)
+      LibAllegro.draw_text(Font.default, Green, Margin * 3, Margin * 2, LibAllegro::AlignInteger, @str_fps)
+      LibAllegro.draw_text(Font.default, Green, Width + Margin, Margin * 2, LibAllegro::AlignRight, @str_time)
       LibAllegro.draw_filled_rectangle(Margin * 2, Margin * 3 + TextHeight, Margin * 2 + @fps_percent, Margin * 3 + TextHeight + BarHeight, Green)
     end
   end

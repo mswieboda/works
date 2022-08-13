@@ -9,17 +9,6 @@ module Works
 
       @name = :main_menu
       @start = false
-      @fontBig = LibAllegro.create_builtin_font
-      @fontNormal = LibAllegro.create_builtin_font
-    end
-
-    def initialize
-      super
-
-      @name = :main_menu
-      @start = false
-      @fontBig = LibAllegro.create_builtin_font
-      @fontNormal = LibAllegro.create_builtin_font
     end
 
     def init
@@ -35,8 +24,8 @@ module Works
     end
 
     def draw
-      LibAllegro.draw_text(@fontBig, LibAllegro.map_rgb(0, 255, 0), Screen::Width / 2, Screen::Height / 3, LibAllegro::AlignCentre, "[YOUR GAME NAME HERE]")
-      LibAllegro.draw_text(@fontNormal, LibAllegro.map_rgb(0, 255, 0), Screen::Width / 2, Screen::Height / 2, LibAllegro::AlignCentre, "press [SPACE] to start!")
+      LibAllegro.draw_text(Font.default, LibAllegro.map_rgb(0, 255, 0), Screen::Width / 2, Screen::Height / 3, LibAllegro::AlignCentre, "[YOUR GAME NAME HERE]")
+      LibAllegro.draw_text(Font.default, LibAllegro.map_rgb(0, 255, 0), Screen::Width / 2, Screen::Height / 2, LibAllegro::AlignCentre, "press [SPACE] to start!")
     end
 
     def reset
