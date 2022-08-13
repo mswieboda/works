@@ -1,9 +1,12 @@
 require "./animations"
+require "./timer"
 require "./hud_text"
 
 module Works
   class Player
     MiningDistance = 64
+    MiningInterval = 500.milliseconds
+    MiningAmount = 10
 
     property x
     property y
@@ -17,6 +20,7 @@ module Works
       @speed = 0
       @animations = Animations.new
       @coal_hover = nil
+      @mining_timer = Timer.new(MiningInterval)
     end
 
     def init_animations(sheet : LibAllegro::Bitmap)
@@ -92,7 +96,13 @@ module Works
 
       return unless mouse.right_pressed?
 
-      coal.amount -= 1
+      @mining_timer.start unless @mining_timer.started?
+
+      return unless @mining_timer.done?
+
+      coal.amount -= 5
+
+      @mining_timer.restart
     end
 
     def distance(tile : Tile)
