@@ -51,7 +51,7 @@ module Works
 
         (init_rows...rows).to_a.each do |row|
           (init_cols...cols).to_a.each do |col|
-            map.coal << Coal.new(row, col, rand(UInt16::MAX))
+            map.coal << Coal.new(row, col, rand(100_u16))
           end
         end
       end

@@ -1,5 +1,7 @@
 require "./animations"
 require "./timer"
+require "./inventory"
+require "./item/coal"
 require "./hud_text"
 
 module Works
@@ -13,6 +15,8 @@ module Works
     property speed
     property animations
     getter coal_hover : Coal | Nil
+    getter mining_timer
+    getter inventory
 
     def initialize
       @y = 0
@@ -21,6 +25,7 @@ module Works
       @animations = Animations.new
       @coal_hover = nil
       @mining_timer = Timer.new(MiningInterval)
+      @inventory = Inventory.new
     end
 
     def init_animations(sheet : LibAllegro::Bitmap)
@@ -54,8 +59,14 @@ module Works
     end
 
     def update(keys : Keys, mouse : Mouse, map : Map)
-      animations.update
+      update_movement(keys)
+      update_mining(mouse, map)
+      update_inventory(keys, mouse)
 
+      animations.update
+    end
+
+    def update_movement(keys : Keys)
       dx = 0
       dy = 0
 
@@ -75,8 +86,6 @@ module Works
         @x += dx
         @y += dy
       end
-
-      update_mining(mouse, map)
     end
 
     def update_mining(mouse : Mouse, map : Map)
@@ -96,13 +105,19 @@ module Works
 
       return unless mouse.right_pressed?
 
-      @mining_timer.start unless @mining_timer.started?
+      mining_timer.start unless mining_timer.started?
 
-      return unless @mining_timer.done?
+      return unless mining_timer.done?
 
-      coal.amount -= 5
+      inventory.add(Item::Coal, coal.mine(MiningAmount))
 
-      @mining_timer.restart
+      mining_timer.restart
+    end
+
+    def update_inventory(keys : Keys, mouse : Mouse)
+      if keys.just_pressed?(LibAllegro::KeyI)
+        inventory.print
+      end
     end
 
     def distance(tile : Tile)
