@@ -21,7 +21,7 @@ module Works
       super(screen_width, screen_height)
 
       @name = :game_scene
-      @map = Map.new
+      @map = Map.new(screen_width, screen_height)
       @player = Player.new
       @sheet = LibAllegro.load_bitmap("./assets/player.png")
     end

@@ -22,17 +22,33 @@ module Works
       self.class.size
     end
 
+    def width
+      size
+    end
+
+    def height
+      size
+    end
+
+    def x
+      col * size
+    end
+
+    def y
+      row * size
+    end
+
     def draw(x, y)
       same = [row, col].all?(&.odd?) || [row, col].all?(&.even?)
 
       draw(x, y, same ? OddColor : EvenColor)
     end
 
-    def draw(x, y, color)
-      x += col * size
-      y += row * size
+    def draw(dx, dy, color)
+      dx += x
+      dy += y
 
-      LibAllegro.draw_filled_rectangle(x, y, x + size, y + size, color)
+      LibAllegro.draw_filled_rectangle(dx, dy, dx + width, dy + height, color)
     end
 
     def destroy

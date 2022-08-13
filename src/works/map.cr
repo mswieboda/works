@@ -2,19 +2,22 @@ require "./ground"
 require "./coal"
 require "./tile"
 require "./mouse"
+require "./map_hud"
 
 module Works
   class Map
-    property x
-    property y
-    property width
-    property height
-    property ground
-    property coal
+    getter x
+    getter y
+    getter width
+    getter height
+    getter ground
+    getter coal
+    getter screen_width : Int32
+    getter screen_height : Int32
 
     @coal_hover : Coal | Nil
 
-    def initialize
+    def initialize(screen_width, screen_height)
       @x = 0
       @y = 0
       @width = 0
@@ -22,12 +25,14 @@ module Works
       @ground = [] of Ground
       @coal = [] of Coal
       @coal_hover = nil
+      @screen_width = screen_width
+      @screen_height = screen_height
     end
 
     def update(mouse : Mouse)
       @coal_hover = nil
 
-      map_mouse = Mouse.new(mouse.x - x, mouse.y - y)
+      map_mouse = Mouse.new((mouse.x - x).clamp(0, nil), (mouse.y - y).clamp(0, nil))
 
       row = (map_mouse.y / Coal.size).to_u16
       col = (map_mouse.x / Coal.size).to_u16
@@ -41,6 +46,7 @@ module Works
 
       if coal_hover = @coal_hover
         coal_hover.draw_hover(x, y)
+        MapHUD.new("coal: #{coal_hover.amount}").draw_from_bottom(0, screen_height)
       end
     end
 

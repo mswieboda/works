@@ -17,11 +17,11 @@ module Works
       draw(x, y, Color)
     end
 
-    def draw_hover(x, y)
-      x += col * size
-      y += row * size
+    def draw_hover(dx, dy)
+      dx += x
+      dy += y
 
-      LibAllegro.draw_rectangle(x, y, x + size, y + size, HoverColor, 1)
+      LibAllegro.draw_rectangle(dx, dy, dx + width, dy + height, HoverColor, 1)
     end
 
     def print
