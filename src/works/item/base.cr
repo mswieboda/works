@@ -2,12 +2,18 @@ module Works::Item
   abstract class Base
     MaxAmount = 100
 
+    getter key
     getter name
     getter amount
 
-    def initialize(name = "")
+    def initialize(key = :base, name = "")
+      @key = key
       @name = name
       @amount = 0
+    end
+
+    def self.key
+      :base
     end
 
     def self.max_amount
@@ -18,13 +24,19 @@ module Works::Item
       self.class.max_amount
     end
 
+    def full?
+      amount >= max_amount
+    end
+
     def add(amount)
       leftovers = 0
 
+      puts "> Item::Base#add @a: #{@amount} a: #{amount} m: #{max_amount}"
+
       @amount += amount
 
-      if amount > max_amount
-        leftovers = amount - max_amount
+      if @amount + amount > max_amount
+        leftovers = @amount + amount - max_amount
         @amount = max_amount
       end
 

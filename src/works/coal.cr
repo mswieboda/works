@@ -28,15 +28,14 @@ module Works
       puts "> Coal (#{row}, #{col}) a: #{amount}"
     end
 
-    def mine(amount)
-      removed = amount
+    def mine_amount(amount)
+      @amount < amount ? @amount : amount
+    end
 
-      if @amount >= amount
-        @amount -= amount
-      else
-        removed = @amount
-        @amount = 0
-      end
+    def mine(amount)
+      removed = mine_amount(amount)
+
+      @amount -= removed
 
       removed
     end

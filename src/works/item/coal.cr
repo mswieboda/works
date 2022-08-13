@@ -3,7 +3,15 @@ module Works::Item
     MaxAmount = 50
 
     def initialize
-      super("Coal")
+      super(:coal, "Coal")
+    end
+
+    def self.max_amount
+      MaxAmount
+    end
+
+    def self.key
+      :coal
     end
 
     def draw

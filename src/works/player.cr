@@ -109,7 +109,11 @@ module Works
 
       return unless mining_timer.done?
 
-      inventory.add(Item::Coal, coal.mine(MiningAmount))
+      amount = inventory.amount_can_add(Item::Coal, coal.mine_amount(MiningAmount))
+
+      if amount > 0
+        inventory.add(Item::Coal, coal.mine(amount))
+      end
 
       mining_timer.restart
     end
