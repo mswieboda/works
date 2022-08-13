@@ -1,5 +1,5 @@
+require "./tile/base"
 require "./tile/ore/base"
-require "./mouse"
 
 module Works
   class Map

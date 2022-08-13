@@ -1,4 +1,5 @@
 require "../base"
+require "../../item/base"
 
 module Works::Tile::Ore
   abstract class Base < Tile::Base
@@ -16,6 +17,14 @@ module Works::Tile::Ore
 
     def self.name
       Name
+    end
+
+    def self.item_class
+      Item::Base
+    end
+
+    def item_class
+      self.class.item_class
     end
 
     def self.color

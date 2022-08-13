@@ -1,7 +1,12 @@
 require "./animations"
+require "./animation"
 require "./timer"
 require "./inventory"
-require "./item/coal"
+require "./keys"
+require "./mouse"
+require "./map"
+require "./tile/base"
+require "./tile/ore/base"
 require "./hud_text"
 
 module Works
@@ -89,30 +94,25 @@ module Works
     end
 
     def update_mining(mouse : Mouse, map : Map)
-      @ore_hover = nil
-
       mx, my = mouse.to_map_coords(map.x, map.y)
 
-      row = (my / Tile::Ore::Coal.size).to_u16
-      col = (mx / Tile::Ore::Coal.size).to_u16
+      row = (my / Tile::Ore::Base.size).to_u16
+      col = (mx / Tile::Ore::Base.size).to_u16
 
-      ore = map.ore.find { |c| c.row == row && c.col == col }
+      @ore_hover = map.ore.find { |c| c.row == row && c.col == col }
 
-      return unless ore
+      return unless ore = @ore_hover
       return unless distance(ore) < MiningDistance
-
-      @ore_hover = ore
-
       return unless mouse.right_pressed?
 
       mining_timer.start unless mining_timer.started?
 
       return unless mining_timer.done?
 
-      amount = inventory.amount_can_add(Item::Coal, ore.mine_amount(MiningAmount))
+      amount = inventory.amount_can_add(ore.item_class, ore.mine_amount(MiningAmount))
 
       if amount > 0
-        inventory.add(Item::Coal, ore.mine(amount))
+        inventory.add(ore.item_class, ore.mine(amount))
       end
 
       mining_timer.restart

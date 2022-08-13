@@ -1,5 +1,3 @@
-require "../mouse"
-
 module Works::Tile
   class Base
     Name = "Tile"

@@ -1,12 +1,17 @@
 require "./base"
+require "../../item/ore/iron"
 
 module Works::Tile::Ore
   class Iron < Base
     Name = "Iron"
-    Color = LibAllegro.map_rgb(139, 130, 133)
+    Color = Item::Ore::Iron::Color
 
     def self.name
       Name
+    end
+
+    def self.item_class
+      Item::Ore::Iron
     end
 
     def self.color
