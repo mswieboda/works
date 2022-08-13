@@ -1,22 +1,17 @@
 require "./scene"
 require "./map"
 require "./player"
+require "./tile/grass"
 require "./tile/ore/coal"
+require "./tile/ore/iron"
+require "./tile/ore/copper"
+require "./tile/ore/stone"
 
 module Works
   class GameScene < Scene
     property map
     property player
     property sheet
-
-    def initialize
-      super
-
-      @name = :game_scene
-      @map = Map.new
-      @player = Player.new
-      @sheet = LibAllegro.load_bitmap("./assets/player.png")
-    end
 
     def initialize
       super
@@ -34,9 +29,9 @@ module Works
 
     def init_map
       # ground
-      (Screen::Width / Tile::Ground.size).to_u16.times do |col|
-        (Screen::Height / Tile::Ground.size).to_u16.times do |row|
-          map.ground << Tile::Ground.new(row, col)
+      (Screen::Width / Tile::Grass.size).to_u16.times do |col|
+        (Screen::Height / Tile::Grass.size).to_u16.times do |row|
+          map.ground << Tile::Grass.new(row, col)
         end
       end
 
@@ -46,14 +41,42 @@ module Works
         [17_u16, 13_u16, 1_u16, 1_u16],
         [15_u16, 1_u16, 5_u16, 5_u16]
       ].each do |data|
-        init_rows, init_cols, rows, cols = data
-        rows += init_rows
-        cols += init_cols
+        add_ore(Tile::Ore::Coal, data)
+      end
 
-        (init_rows...rows).to_a.each do |row|
-          (init_cols...cols).to_a.each do |col|
-            map.ore << Tile::Ore::Coal.new(row, col, rand(3_000_u16))
-          end
+      # iron patches
+      [
+        [7_u16, 6_u16, 2_u16, 2_u16],
+        [21_u16, 17_u16, 1_u16, 1_u16]
+      ].each do |data|
+        add_ore(Tile::Ore::Iron, data)
+      end
+
+      # copper patches
+      [
+        [9_u16, 10_u16, 3_u16, 2_u16],
+        [7_u16, 2_u16, 1_u16, 1_u16]
+      ].each do |data|
+        add_ore(Tile::Ore::Copper, data)
+      end
+
+      # stone patches
+      [
+        [1_u16, 13_u16, 2_u16, 3_u16],
+        [9_u16, 1_u16, 1_u16, 1_u16]
+      ].each do |data|
+        add_ore(Tile::Ore::Stone, data)
+      end
+    end
+
+    def add_ore(klass, data)
+      init_rows, init_cols, rows, cols = data
+      rows += init_rows
+      cols += init_cols
+
+      (init_rows...rows).to_a.each do |row|
+        (init_cols...cols).to_a.each do |col|
+          map.ore << klass.new(row, col, rand(3_000_u16))
         end
       end
     end

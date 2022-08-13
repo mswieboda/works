@@ -1,4 +1,3 @@
-require "./tile/ground"
 require "./tile/ore/base"
 require "./mouse"
 
@@ -16,7 +15,7 @@ module Works
       @y = 0
       @width = 0
       @height = 0
-      @ground = [] of Tile::Ground
+      @ground = [] of Tile::Base
       @ore = [] of Tile::Ore::Base
     end
 

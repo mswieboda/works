@@ -1,9 +1,9 @@
 require "./base"
 
 module Works::Tile::Ore
-  class Coal < Base
-    Name = "Coal"
-    Color = LibAllegro.map_rgb_f(0.13, 0.13, 0.13)
+  class Stone < Base
+    Name = "Stone"
+    Color = LibAllegro.map_rgb(155, 118, 83)
 
     def self.name
       Name
