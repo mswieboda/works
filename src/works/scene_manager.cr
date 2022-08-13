@@ -41,17 +41,22 @@ module Works
         check_scenes
         update(keys, mouse)
         keys.reset
+        mouse.reset
 
         @redraw = true
       when LibAllegro::EventMouseAxes
         # TODO: make a mouse input holder, similar to Keys
         #       then put both Keys and Mouse inside Input ?
-        mouse.x = event.mouse.x;
-        mouse.y = event.mouse.y;
+        mouse.x = event.mouse.x
+        mouse.y = event.mouse.y
       when LibAllegro::EventKeyDown
         keys.pressed(event.keyboard.keycode)
       when LibAllegro::EventKeyUp
         keys.released(event.keyboard.keycode)
+      when LibAllegro::EventMouseButtonDown
+        mouse.pressed(event.mouse.button)
+      when LibAllegro::EventMouseButtonUp
+        mouse.released(event.mouse.button)
       when LibAllegro::EventDisplayClose
         @exit = true
       end

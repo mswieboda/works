@@ -1,5 +1,5 @@
 module Works
-  class MapHUD
+  class HUDText
     Margin = 5
     Padding = 3
     BackgroundColor = LibAllegro.map_rgba_f(0, 0, 0, 0.69)

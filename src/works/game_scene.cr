@@ -71,13 +71,16 @@ module Works
         return
       end
 
-      map.update(mouse)
-      player.update(keys)
+      player.update(keys, mouse, map)
     end
 
     def draw
       map.draw
-      player.draw(0, 0)
+      player.draw(map.x, map.y)
+
+      if coal_hover = player.coal_hover
+        HUDText.new("coal: #{coal_hover.amount}").draw_from_bottom(0, screen_height)
+      end
     end
 
     def destroy
