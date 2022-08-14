@@ -1,9 +1,9 @@
 require "../cell"
 
-module Works::Tile
+module Works::Struct
   class Base < Cell
-    Name = "Tile"
-    Color = LibAllegro.premul_rgba_f(0, 0, 0, 0.13)
+    Name = "Struct"
+    Color = LibAllegro.map_rgb_f(0.5, 0.5, 0.1)
 
     def self.name
       Name
