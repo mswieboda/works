@@ -48,7 +48,8 @@ module Works
     end
 
     def hover?(mouse_col, mouse_row)
-      col == mouse_col && row == mouse_row
+      mouse_col >= col && mouse_col < col + dimensions[:x] &&
+        mouse_row >= row && mouse_row < row + dimensions[:y]
     end
 
     def print_str
