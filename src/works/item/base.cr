@@ -1,3 +1,5 @@
+require "../font"
+
 module Works::Item
   abstract class Base
     Key = :base

@@ -1,3 +1,5 @@
+require "./font"
+
 module Works
   class HUDText
     Margin = 5

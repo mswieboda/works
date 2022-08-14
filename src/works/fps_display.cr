@@ -1,3 +1,5 @@
+require "./font"
+
 module Works
   class FPSDisplay
     TimeSpan = 10

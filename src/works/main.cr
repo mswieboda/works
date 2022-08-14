@@ -1,4 +1,5 @@
 require "./scene_manager"
+require "./font"
 
 module Works
   module Allegro
@@ -12,16 +13,6 @@ module Works
     Height = 768
     FPS = 60
     Name = "works"
-  end
-
-  class Font
-    def self.default
-      @@font ||= LibAllegro.create_builtin_font
-    end
-
-    def self.destroy
-      LibAllegro.destroy_font(default)
-    end
   end
 
   class Main
@@ -38,7 +29,7 @@ module Works
       check_init(LibAllegro.install_keyboard, "keyboard")
       check_init(LibAllegro.install_mouse, "mouse")
       check_init(LibAllegro.init_font_addon, "font addon")
-      # check_init(LibAllegro.init_ttf_addon, "ttf addon") # need to add to bindings
+      check_init(LibAllegro.init_ttf_addon, "ttf addon")
       check_init(LibAllegro.init_image_addon, "image addon")
       check_init(LibAllegro.init_primitives_addon, "primitives addon")
 
