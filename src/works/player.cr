@@ -12,7 +12,7 @@ require "./ui/progress_bar"
 
 module Works
   class Player
-    MiningDistance = 64
+    ActionDistance = 64
     MiningInterval = 500.milliseconds
     MiningAmount = 10
     StructRemovalInterval = 1.seconds
@@ -80,7 +80,7 @@ module Works
       update_movement(keys)
       update_mining(map, mouse, mouse_col, mouse_row)
       update_structs(map, mouse, mouse_col, mouse_row)
-      update_inventory(keys, mouse)
+      inventory.update(keys, mouse, map.x, map.y)
 
       animations.update
     end
@@ -108,56 +108,46 @@ module Works
     end
 
     def update_mining(map : Map, mouse : Mouse, mouse_col, mouse_row)
-      @ore_hover = map.ore.find(&.hover?(mouse_col, mouse_row))
+      ish = inventory.shown? && inventory.hover?(mouse)
+      @ore_hover = ish ? nil : map.ore.find(&.hover?(mouse_col, mouse_row))
 
-      return unless ore = @ore_hover
-      return unless distance(ore) < MiningDistance
-      unless mouse.right_pressed?
+      if (ore = @ore_hover) && distance(ore) < ActionDistance && mouse.right_pressed?
+        mining_timer.start unless mining_timer.started?
+
+        return unless mining_timer.done?
+
+        amount = inventory.amount_can_add(ore.item_class, ore.mine_amount(MiningAmount))
+
+        if amount > 0
+          inventory.add(ore.item_class, ore.mine(amount))
+        end
+
+        mining_timer.restart
+      else
         mining_timer.stop
-        return
       end
-
-      mining_timer.start unless mining_timer.started?
-
-      return unless mining_timer.done?
-
-      amount = inventory.amount_can_add(ore.item_class, ore.mine_amount(MiningAmount))
-
-      if amount > 0
-        inventory.add(ore.item_class, ore.mine(amount))
-      end
-
-      mining_timer.restart
     end
 
     def update_structs(map : Map, mouse : Mouse, mouse_col, mouse_row)
-      @struct_hover = map.structs.find(&.hover?(mouse_col, mouse_row))
+      ish = inventory.shown? && inventory.hover?(mouse)
+      @struct_hover = ish ? nil : map.structs.find(&.hover?(mouse_col, mouse_row))
 
-      return unless strct = @struct_hover
-      return unless distance(strct) < MiningDistance
-      unless mouse.right_pressed?
-        struct_removal_timer.stop
-        return
-      end
+      if (strct = @struct_hover) && distance(strct) < ActionDistance && mouse.right_pressed?
+        struct_removal_timer.start unless struct_removal_timer.started?
 
-      struct_removal_timer.start unless struct_removal_timer.started?
+        return unless struct_removal_timer.done?
 
-      return unless struct_removal_timer.done?
+        amount = inventory.amount_can_add(strct.item_class, 1)
 
-      amount = inventory.amount_can_add(strct.item_class, 1)
-
-      if amount > 0
-        if removed = map.structs.delete(struct_hover)
-          inventory.add(strct.item_class, 1)
+        if amount > 0
+          if removed = map.structs.delete(struct_hover)
+            inventory.add(strct.item_class, 1)
+          end
         end
-      end
 
-      struct_removal_timer.restart
-    end
-
-    def update_inventory(keys : Keys, mouse : Mouse)
-      if keys.just_pressed?(LibAllegro::KeyI)
-        inventory.show_toggle
+        struct_removal_timer.restart
+      else
+        struct_removal_timer.stop
       end
     end
 

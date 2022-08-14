@@ -22,11 +22,15 @@ module Works
       @buttons = Array(UInt8).new(Button.values.size, 0)
     end
 
-    def to_map_coords(x, y)
+    def to_xy(x, y)
       [
-        ((@x - x).clamp(0, nil) / Cell.size).to_u16,
-        ((@y - y).clamp(0, nil) / Cell.size).to_u16
+        (@x - x).clamp(0, nil),
+        (@y - y).clamp(0, nil)
       ]
+    end
+
+    def to_map_coords(x, y)
+      to_xy(x, y).map { |v| (v / Cell.size).to_u16 }
     end
 
     def reset

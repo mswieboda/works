@@ -1,4 +1,5 @@
 require "./item/base"
+require "./inventory_hud"
 require "./item/struct/stone_furnace"
 require "./hud_text"
 
@@ -12,27 +13,25 @@ module Works
       Item::Struct::StoneFurnace
     ].map(&.key)
 
-    module HUD
-      BackgroundColor = LibAllegro.premul_rgba_f(0, 0, 0, 0.13)
-      SlotBackgroundColor = LibAllegro.premul_rgba_f(1, 1, 1, 0.13)
-      SlotBorderColor = LibAllegro.premul_rgba_f(0, 0, 0, 0.03)
-      SlotSize = 32
-      SlotMargin = 4
-      SlotCols = (MaxSlots / 5).to_i
-    end
-
-    getter? shown
     getter items
     getter max_slots
+    getter hud
+
+    delegate shown?, to: @hud
+    delegate hover?, to: @hud
 
     def initialize
-      @shown = false
       @max_slots = MaxSlots
       @items = [] of Item::Base
+      @hud = InventoryHUD.new(@items, @max_slots)
     end
 
     def init
       add(Item::Struct::StoneFurnace, 1)
+    end
+
+    def update(keys : Keys, mouse : Mouse, x, y)
+      hud.update(keys, mouse, x, y)
     end
 
     def amount_can_add(item_klass, amount : Int)
@@ -86,18 +85,6 @@ module Works
       @items.sort! { |a, b| (SortOrder.index(a.key) || 0) <=> (SortOrder.index(b.key) || 0) }
     end
 
-    def show
-      @shown = true
-    end
-
-    def hide
-      @shown = false
-    end
-
-    def show_toggle
-      shown? ? hide : show
-    end
-
     def print_str
       str = "Player Inventory:\n"
 
@@ -109,49 +96,7 @@ module Works
     end
 
     def draw(x, y)
-      return unless shown?
-
-      cols = HUD::SlotCols
-      rows = (max_slots / cols).ceil.to_i
-      width = HUD::SlotMargin + cols * HUD::SlotSize + HUD::SlotMargin
-      height = HUD::SlotMargin + rows * HUD::SlotSize + HUD::SlotMargin
-      dx = Screen::Width / 2 - width / 2
-      dy = Screen::Height / 2 - height / 2
-
-      draw_background(dx, dy, width, height)
-      draw_slots(dx, dy, cols, rows)
-    end
-
-    def draw_background(x, y, width, height)
-      LibAllegro.draw_filled_rectangle(x, y, x + width, y + height, HUD::BackgroundColor)
-    end
-
-    def draw_slots(x, y, cols, rows)
-      index = 0
-      cols = [cols, max_slots].min
-
-      rows.times do |row|
-        cols.times do |col|
-          dx = x + HUD::SlotMargin + col * HUD::SlotSize
-          dy = y + HUD::SlotMargin + row * HUD::SlotSize
-          LibAllegro.draw_filled_rectangle(
-            dx,
-            dy,
-            dx + HUD::SlotSize,
-            dy + HUD::SlotSize,
-            HUD::SlotBackgroundColor
-          )
-
-          if index < items.size
-            item = items[index]
-            item.draw(dx + HUD::SlotMargin, dy + HUD::SlotMargin, HUD::SlotSize - HUD::SlotMargin * 2)
-          end
-
-          LibAllegro.draw_rectangle(dx, dy, dx + HUD::SlotSize, dy + HUD::SlotSize, HUD::SlotBorderColor, 1)
-
-          index += 1
-        end
-      end
+      hud.draw(x, y)
     end
   end
 end
