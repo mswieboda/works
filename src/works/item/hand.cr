@@ -1,9 +1,9 @@
 require "./base"
 
 module Works::Item
-  class Holding < Base
-    Key = :holding
-    Name = "Holding"
+  class Hand < Base
+    Key = :hand
+    Name = "Hand"
     ShortCode = "HD"
     MaxAmount = 1
     Color = LibAllegro.map_rgb_f(0.5, 0, 0)

@@ -1,6 +1,6 @@
 require "./item/base"
 require "./item/held"
-require "./item/holding"
+require "./item/hand"
 require "./inventory_hud"
 require "./item/struct/stone_furnace"
 require "./hud_text"
@@ -73,7 +73,7 @@ module Works
                 end
 
                 if struct_item.amount <= 0
-                  if holding_item = items.delete(items[held_index])
+                  if hand_item = items.delete(items[held_index])
                     @held_index = nil
                     @held_item = nil
                   end
@@ -90,7 +90,7 @@ module Works
               @held_item = Item::Held.new(mouse.x, mouse.y, item, hud.item_size)
               @held_index = hover_index
 
-              items.insert(hover_index, Item::Holding.new)
+              items.insert(hover_index, Item::Hand.new)
             end
           end
         end
@@ -98,7 +98,7 @@ module Works
     end
 
     def put_held_item_back(held_item, held_index)
-      if holding_item = items.delete(items[held_index])
+      if hand_item = items.delete(items[held_index])
         item = held_item.item
 
         items.insert(held_index, item)
