@@ -12,7 +12,7 @@ require "./ui/progress_bar"
 
 module Works
   class Player
-    ActionDistance = 64
+    ActionDistance = Cell.size * 3
     MiningInterval = 500.milliseconds
     MiningAmount = 10
     StructRemovalInterval = 1.seconds
@@ -78,8 +78,8 @@ module Works
       mouse_col, mouse_row = mouse.to_map_coords(map.x, map.y)
 
       update_movement(keys)
-      update_mining(map, mouse, mouse_col, mouse_row)
       update_structs(map, mouse, mouse_col, mouse_row)
+      update_mining(map, mouse, mouse_col, mouse_row)
       inventory.update(keys, mouse, map)
 
       animations.update
@@ -107,32 +107,11 @@ module Works
       end
     end
 
-    def update_mining(map : Map, mouse : Mouse, mouse_col, mouse_row)
-      ish = inventory.shown? && inventory.hover?(mouse)
-      @ore_hover = ish ? nil : map.ore.find(&.hover?(mouse_col, mouse_row))
-
-      if (ore = @ore_hover) && distance(ore) < ActionDistance && mouse.right_pressed?
-        mining_timer.start unless mining_timer.started?
-
-        return unless mining_timer.done?
-
-        amount = inventory.amount_can_add(ore.item_class, ore.mine_amount(MiningAmount))
-
-        if amount > 0
-          inventory.add(ore.item_class, ore.mine(amount))
-        end
-
-        mining_timer.restart
-      else
-        mining_timer.stop
-      end
-    end
-
     def update_structs(map : Map, mouse : Mouse, mouse_col, mouse_row)
       ish = inventory.shown? && inventory.hover?(mouse)
       @struct_hover = ish ? nil : map.structs.find(&.hover?(mouse_col, mouse_row))
 
-      if (strct = @struct_hover) && distance(strct) < ActionDistance && mouse.right_pressed?
+      if (strct = @struct_hover) && actionable?(strct) && mouse.right_pressed?
         struct_removal_timer.start unless struct_removal_timer.started?
 
         return unless struct_removal_timer.done?
@@ -151,6 +130,31 @@ module Works
       end
     end
 
+    def update_mining(map : Map, mouse : Mouse, mouse_col, mouse_row)
+      ish = inventory.shown? && inventory.hover?(mouse)
+      @ore_hover = @struct_hover || ish ? nil : map.ore.find(&.hover?(mouse_col, mouse_row))
+
+      if (ore = @ore_hover) && actionable?(ore) && mouse.right_pressed?
+        mining_timer.start unless mining_timer.started?
+
+        return unless mining_timer.done?
+
+        amount = inventory.amount_can_add(ore.item_class, ore.mine_amount(MiningAmount))
+
+        if amount > 0
+          inventory.add(ore.item_class, ore.mine(amount))
+        end
+
+        mining_timer.restart
+      else
+        mining_timer.stop
+      end
+    end
+
+    def actionable?(cell : Cell)
+      distance(cell) < ActionDistance
+    end
+
     def distance(cell : Cell)
       player_x = x
       player_y = y
@@ -166,32 +170,32 @@ module Works
     def draw(x, y)
       px, py = [x + @x, y + @y]
 
-      draw_hovers(x, y)
+      draw_selections(x, y)
       animations.draw(px, py)
-      draw_hovers_progress(px - width / 2, py - height / 2)
+      draw_action_progress(px - width / 2, py - height / 2)
       inventory.draw(x, y)
     end
 
-    def draw_hovers(x, y)
+    def draw_selections(x, y)
       if ore_hover = @ore_hover
-        ore_hover.draw_hover(x, y)
+        color = actionable?(ore_hover) ? nil : LibAllegro.premul_rgba_f(1, 0, 0, 0.69)
+        ore_hover.draw_selection(x, y, color)
       end
 
       if struct_hover = @struct_hover
-        struct_hover.draw_hover(x, y)
+        color = actionable?(struct_hover) ? nil : LibAllegro.premul_rgba_f(1, 0, 0, 0.69)
+        struct_hover.draw_selection(x, y, color)
       end
     end
 
-    def draw_hovers_progress(x, y)
-      if ore_hover = @ore_hover
-        if mining_timer.started?
-          UI::ProgressBar.new(width, 5, mining_timer.percent).draw_from_bottom(x, y)
-        end
-      end
-
+    def draw_action_progress(x, y)
       if struct_hover = @struct_hover
         if struct_removal_timer.started?
           UI::ProgressBar.new(width, 5, struct_removal_timer.percent, LibAllegro.map_rgb_f(1, 0, 0)).draw_from_bottom(x, y)
+        end
+      elsif ore_hover = @ore_hover
+        if mining_timer.started?
+          UI::ProgressBar.new(width, 5, mining_timer.percent).draw_from_bottom(x, y)
         end
       end
     end

@@ -36,10 +36,6 @@ module Works::Struct
       LibAllegro.draw_filled_rectangle(dx, dy, dx + width, dy + height, color)
     end
 
-    def draw_hover(dx, dy)
-      draw_selection(dx, dy)
-    end
-
     def draw_hover_info
       HUDText.new("#{name}").draw_from_bottom(0, Screen::Height)
     end
