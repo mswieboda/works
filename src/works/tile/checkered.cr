@@ -15,7 +15,7 @@ module Works::Tile
     end
 
     def color
-      same = [row, col].all?(&.odd?) || [row, col].all?(&.even?)
+      same = [col, row].all?(&.odd?) || [col, row].all?(&.even?)
 
       same ? OddColor : EvenColor
     end

@@ -3,12 +3,12 @@ module Works
     Size = 32_u8
     Dimensions = {x: 1, y: 1}
 
-    property row : UInt16
     property col : UInt16
+    property row : UInt16
 
-    def initialize(row = 0_u16, col = 0_u16)
-      @row = row
+    def initialize(col = 0_u16, row = 0_u16)
       @col = col
+      @row = row
     end
 
     def name
@@ -47,12 +47,12 @@ module Works
       row * size
     end
 
-    def hover?(mouse_row, mouse_col)
-      row == mouse_row && col == mouse_col
+    def hover?(mouse_col, mouse_row)
+      col == mouse_col && row == mouse_row
     end
 
     def print_str
-      "> #{name} (#{row}, #{col})"
+      "> #{name} (#{col}, #{row})"
     end
   end
 end

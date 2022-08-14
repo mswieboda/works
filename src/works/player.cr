@@ -71,11 +71,11 @@ module Works
     end
 
     def update(keys : Keys, mouse : Mouse, map : Map)
-      mouse_row, mouse_col = mouse.to_map_coords(map.x, map.y)
+      mouse_col, mouse_row = mouse.to_map_coords(map.x, map.y)
 
       update_movement(keys)
-      update_mining(map, mouse, mouse_row, mouse_col)
-      update_structs(map, mouse, mouse_row, mouse_col)
+      update_mining(map, mouse, mouse_col, mouse_row)
+      update_structs(map, mouse, mouse_col, mouse_row)
       update_inventory(keys, mouse)
 
       animations.update
@@ -103,8 +103,8 @@ module Works
       end
     end
 
-    def update_mining(map : Map, mouse : Mouse, mouse_row, mouse_col)
-      @ore_hover = map.ore.find(&.hover?(mouse_row, mouse_col))
+    def update_mining(map : Map, mouse : Mouse, mouse_col, mouse_row)
+      @ore_hover = map.ore.find(&.hover?(mouse_col, mouse_row))
 
       return unless ore = @ore_hover
       return unless distance(ore) < MiningDistance
@@ -123,8 +123,8 @@ module Works
       mining_timer.restart
     end
 
-    def update_structs(map : Map, mouse : Mouse, mouse_row, mouse_col)
-      @struct_hover = map.structs.find(&.hover?(mouse_row, mouse_col))
+    def update_structs(map : Map, mouse : Mouse, mouse_col, mouse_row)
+      @struct_hover = map.structs.find(&.hover?(mouse_col, mouse_row))
     end
 
     def update_inventory(keys : Keys, mouse : Mouse)

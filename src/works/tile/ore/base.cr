@@ -9,8 +9,8 @@ module Works::Tile::Ore
 
     getter amount : UInt16
 
-    def initialize(row = 0_u16, col = 0_u16, amount = 0_u16)
-      super(row, col)
+    def initialize(col = 0_u16, row = 0_u16, amount = 0_u16)
+      super(col, row)
 
       @amount = amount
     end

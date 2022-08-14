@@ -32,55 +32,55 @@ module Works
       # ground
       (Screen::Width / Tile::Grass.size).to_u16.times do |col|
         (Screen::Height / Tile::Grass.size).to_u16.times do |row|
-          map.ground << Tile::Grass.new(row, col)
+          map.ground << Tile::Grass.new(col, row)
         end
       end
 
       # coal patches
       [
         [3_u16, 3_u16, 3_u16, 3_u16],
-        [17_u16, 13_u16, 1_u16, 1_u16],
-        [15_u16, 1_u16, 5_u16, 5_u16]
+        [13_u16, 17_u16, 1_u16, 1_u16],
+        [1_u16, 15_u16, 5_u16, 5_u16]
       ].each do |data|
         add_ore(Tile::Ore::Coal, data)
       end
 
       # iron patches
       [
-        [7_u16, 6_u16, 2_u16, 2_u16],
-        [21_u16, 17_u16, 1_u16, 1_u16]
+        [6_u16, 7_u16, 2_u16, 2_u16],
+        [17_u16, 21_u16, 1_u16, 1_u16]
       ].each do |data|
         add_ore(Tile::Ore::Iron, data)
       end
 
       # copper patches
       [
-        [9_u16, 10_u16, 3_u16, 2_u16],
-        [7_u16, 2_u16, 1_u16, 1_u16]
+        [10_u16, 9_u16, 2_u16, 3_u16],
+        [2_u16, 7_u16, 1_u16, 1_u16]
       ].each do |data|
         add_ore(Tile::Ore::Copper, data)
       end
 
       # stone patches
       [
-        [1_u16, 13_u16, 2_u16, 3_u16],
-        [9_u16, 1_u16, 1_u16, 1_u16]
+        [13_u16, 1_u16, 3_u16, 2_u16],
+        [1_u16, 9_u16, 1_u16, 1_u16]
       ].each do |data|
         add_ore(Tile::Ore::Stone, data)
       end
 
       # NOTE: *** TEMP stone furnace ***
-      map.structs << Struct::StoneFurnace.new(3, 7)
+      map.structs << Struct::StoneFurnace.new(7, 3)
     end
 
     def add_ore(klass, data)
-      init_rows, init_cols, rows, cols = data
-      rows += init_rows
+      init_cols, init_rows, cols, rows = data
       cols += init_cols
+      rows += init_rows
 
-      (init_rows...rows).to_a.each do |row|
-        (init_cols...cols).to_a.each do |col|
-          map.ore << klass.new(row, col, rand(3_000_u16))
+      (init_cols...cols).to_a.each do |col|
+        (init_rows...rows).to_a.each do |row|
+          map.ore << klass.new(col, row, rand(3_000_u16))
         end
       end
     end
