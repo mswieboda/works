@@ -39,14 +39,21 @@ module Works
     def update(keys : Keys, mouse : Mouse, map : Map)
       hud.update(keys, mouse, map.x, map.y)
 
-      update_held_item(mouse, map)
+      update_held_item(keys, mouse, map)
     end
 
-    def update_held_item(mouse : Mouse, map : Map)
+    def update_held_item(keys : Keys, mouse : Mouse, map : Map)
       if held_item = @held_item
-        if mouse.left_pressed?
-          held_item.update(mouse)
-        elsif held_index = @held_index
+        held_item.update(mouse)
+
+        if held_index = @held_index
+          if keys.just_pressed?(LibAllegro::KeyQ)
+            put_held_item_back(held_item, held_index)
+            return
+          end
+
+          return unless mouse.left_just_pressed?
+
           if hud.hover?(mouse)
             put_held_item_back(held_item, held_index)
           else
@@ -63,8 +70,6 @@ module Works
                   @held_item = nil
                 end
               end
-            else
-              put_held_item_back(held_item, held_index)
             end
           end
         end

@@ -51,12 +51,24 @@ module Works
       @buttons[button] > None
     end
 
+    def just_pressed?(button : Int)
+      @buttons[button] == Pressed
+    end
+
     def left_pressed?
       pressed?(Button::Left.value)
     end
 
     def right_pressed?
       pressed?(Button::Right.value)
+    end
+
+    def left_just_pressed?
+      just_pressed?(Button::Left.value)
+    end
+
+    def right_just_pressed?
+      just_pressed?(Button::Right.value)
     end
   end
 end

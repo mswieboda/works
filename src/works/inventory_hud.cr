@@ -27,8 +27,10 @@ module Works
     def update(keys : Keys, mouse : Mouse, x, y)
       update_hover_index(mouse, x, y) if shown?
 
-      if keys.just_pressed?(LibAllegro::KeyI)
+      if keys.just_pressed?(LibAllegro::KeyE)
         show_toggle
+      elsif shown? && keys.just_pressed?(LibAllegro::KeyQ)
+        hide
       end
     end
 

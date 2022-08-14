@@ -1,8 +1,8 @@
 module Works
   class Keys
-    KeySeen = 1_u8
-    KeyReleased = 2_u8
-    KeyPressed = 3_u8
+    Seen = 1_u8
+    Released = 2_u8
+    Pressed = 3_u8
 
     def initialize
       @keys = Array(UInt8).new(LibAllegro::KeyMax, 0_u8)
@@ -10,16 +10,16 @@ module Works
 
     def reset
       @keys.each_with_index do |key, index|
-        @keys[index] &= KeySeen
+        @keys[index] &= Seen
       end
     end
 
     def pressed(keycode : Int)
-      @keys[keycode] = KeyPressed
+      @keys[keycode] = Pressed
     end
 
     def released(keycode : Int)
-      @keys[keycode] &= KeyReleased
+      @keys[keycode] &= Released
     end
 
     def pressed?(keycode : Int)
@@ -35,7 +35,7 @@ module Works
     end
 
     def just_pressed?(keycode : Int)
-      @keys[keycode] == KeyPressed
+      @keys[keycode] == Pressed
     end
 
     def just_pressed?(keycodes : Array(Int))
@@ -43,7 +43,7 @@ module Works
     end
 
     def any_just_pressed?
-      @keys.any? { |v| v == KeyPressed }
+      @keys.any? { |v| v == Pressed }
     end
   end
 end
