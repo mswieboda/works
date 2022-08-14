@@ -12,11 +12,12 @@ require "./ui/progress_bar"
 
 module Works
   class Player
-    ActionDistance = Cell.size * 3
-    BuildDistance = Cell.size.to_i * 10
+    MiningDistance = Cell.size * 4
     MiningInterval = 500.milliseconds
     MiningAmount = 10
+    StructRemovalDistance = Cell.size * 5
     StructRemovalInterval = 1.seconds
+    BuildDistance = Cell.size.to_i * 10
 
     property x
     property y
@@ -112,7 +113,7 @@ module Works
       ish = inventory.shown? && inventory.hover?(mouse)
       @struct_hover = ish ? nil : map.structs.find(&.hover?(mouse_col, mouse_row))
 
-      if (strct = @struct_hover) && actionable?(strct) && mouse.right_pressed?
+      if (strct = @struct_hover) && removable?(strct) && mouse.right_pressed?
         struct_removal_timer.start unless struct_removal_timer.started?
 
         return unless struct_removal_timer.done?
@@ -135,7 +136,7 @@ module Works
       ish = inventory.shown? && inventory.hover?(mouse)
       @ore_hover = @struct_hover || ish ? nil : map.ore.find(&.hover?(mouse_col, mouse_row))
 
-      if (ore = @ore_hover) && actionable?(ore) && mouse.right_pressed?
+      if (ore = @ore_hover) && minable?(ore) && mouse.right_pressed?
         mining_timer.start unless mining_timer.started?
 
         return unless mining_timer.done?
@@ -152,8 +153,12 @@ module Works
       end
     end
 
-    def actionable?(cell : Cell)
-      distance(cell) < ActionDistance
+    def minable?(cell : Cell)
+      distance(cell) < MiningDistance
+    end
+
+    def removable?(cell : Cell)
+      distance(cell) < StructRemovalDistance
     end
 
     def buildable?(cell : Cell)
@@ -183,7 +188,7 @@ module Works
     def draw(x, y)
       px, py = [x + @x, y + @y]
 
-      draw_selections(x, y)
+      draw_selections(x, y) unless inventory.held_item
       animations.draw(px, py)
       draw_action_progress(px - width / 2, py - height / 2)
       draw_inventory(x, y)
@@ -191,12 +196,12 @@ module Works
 
     def draw_selections(x, y)
       if ore_hover = @ore_hover
-        color = actionable?(ore_hover) ? nil : LibAllegro.premul_rgba_f(1, 0, 0, 0.69)
+        color = minable?(ore_hover) ? nil : LibAllegro.premul_rgba_f(1, 0, 0, 0.69)
         ore_hover.draw_selection(x, y, color)
       end
 
       if struct_hover = @struct_hover
-        color = actionable?(struct_hover) ? nil : LibAllegro.premul_rgba_f(1, 0, 0, 0.69)
+        color = removable?(struct_hover) ? nil : LibAllegro.premul_rgba_f(1, 0, 0, 0.69)
         struct_hover.draw_selection(x, y, color)
       end
     end
@@ -220,13 +225,14 @@ module Works
         if inventory.hud.hover?
           held_item.draw_item
         else
-          held_item.draw_on_map(x, y)
+          color_tint = nil
 
           if strct = held_item.strct
-            color = held_item.buildable? ? nil : LibAllegro.premul_rgba_f(1, 0, 0, 0.69)
-            strct.draw_selection(x, y, color)
+            color_tint = held_item.buildable? ? LibAllegro.premul_rgba_f(0, 1, 0, 0.69) : LibAllegro.premul_rgba_f(1, 0, 0, 0.69)
             strct.draw_hover_info
           end
+
+          held_item.draw_on_map(x, y, color_tint)
         end
       end
     end

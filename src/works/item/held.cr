@@ -32,9 +32,13 @@ module Works::Item
       end
     end
 
-    def draw_on_map(x, y)
+    def draw_on_map(x, y, color_tint)
       if strct = @strct
         strct.draw(x, y)
+
+        if tint = color_tint
+          draw_color_tint(x + strct.x, y + strct.y, strct.width, strct.height, tint)
+        end
       else
         draw_item
       end
@@ -42,6 +46,10 @@ module Works::Item
 
     def draw_item
       item.draw(x, y, size)
+    end
+
+    def draw_color_tint(x, y, width, height, tint)
+      LibAllegro.draw_filled_rectangle(x, y, x + width, y + height, tint)
     end
   end
 end
