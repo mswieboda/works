@@ -1,12 +1,12 @@
 require "./base"
 
-module Works::Item::Struct
-  abstract class Base < Item::Base
-    Key = :struct
-    Name = "Struct"
-    ShortCode = "SB"
-    MaxAmount = 50
-    Color = LibAllegro.map_rgb(255, 0, 255)
+module Works::Item
+  class Holding < Base
+    Key = :holding
+    Name = "Holding"
+    ShortCode = "HD"
+    MaxAmount = 1
+    Color = LibAllegro.map_rgb_f(0.5, 0, 0)
 
     def self.key
       Key

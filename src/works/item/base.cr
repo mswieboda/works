@@ -5,6 +5,7 @@ module Works::Item
     ShortCode = "IB"
     MaxAmount = 100
     IconTextColor = LibAllegro.premul_rgba_f(1, 1, 1, 0.5)
+    Color = LibAllegro.map_rgb_f(1, 0, 1)
 
     getter amount
     protected setter amount
@@ -45,6 +46,14 @@ module Works::Item
       self.class.max_amount
     end
 
+    def self.icon_color
+      Color
+    end
+
+    def icon_color
+      self.class.icon_color
+    end
+
     def clone
       item = self.class.new
       item.amount = @amount
@@ -72,12 +81,14 @@ module Works::Item
       draw_icon_text(x, y, size)
     end
 
+    def draw_icon(x, y, size)
+      LibAllegro.draw_filled_circle(x + size / 2, y + size / 2, size / 2, icon_color)
+    end
+
     def draw_icon_text(x, y, size)
       LibAllegro.draw_text(Font.default, IconTextColor, x + size / 6, y + size / 5, 0, short_code)
       LibAllegro.draw_text(Font.default, IconTextColor, x + size, y + size - size / 3, LibAllegro::AlignRight, @amount.to_s)
     end
-
-    abstract def draw_icon(x, y, size)
 
     def print_str
       "#{name}: #{amount}"

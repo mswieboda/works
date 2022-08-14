@@ -95,8 +95,8 @@ module Works
       str.chomp
     end
 
-    def draw(x, y)
-      hud.draw(x, y)
+    def draw
+      hud.draw
     end
   end
 end

@@ -1,4 +1,6 @@
 require "./item/base"
+require "./item/held"
+require "./item/holding"
 require "./keys"
 require "./mouse"
 
@@ -16,12 +18,16 @@ module Works
     getter items
     getter max_slots : Int32
     getter hover_index : Int32 | Nil
+    getter held_item : Item::Held | Nil
+    getter held_index : Int32 | Nil
 
     def initialize(items : Array(Item::Base), max_slots)
       @shown = false
       @items = items
       @max_slots = max_slots
       @hover_index = nil
+      @held_item = nil
+      @held_index = nil
     end
 
     def update(keys : Keys, mouse : Mouse, x, y)
@@ -34,7 +40,6 @@ module Works
 
     def update_items(mouse : Mouse, x, y)
       mouse_x, mouse_y = mouse.to_xy(x, y)
-
       @hover_index = nil
 
       items.each_index do |index|
@@ -44,6 +49,34 @@ module Works
         if mouse_x >= item_x && mouse_x < item_x + HUD::SlotSize &&
            mouse_y >= item_y && mouse_y < item_y + HUD::SlotSize
           @hover_index = index
+        end
+      end
+
+      if held_item = @held_item
+        if mouse.left_pressed?
+          held_item.update(mouse)
+        else
+          if held_index = @held_index
+            if holding_item = items.delete(items[held_index])
+              item = held_item.item
+
+              items.insert(held_index, item)
+
+              @held_index = nil
+              @held_item = nil
+            end
+          end
+        end
+      else
+        if hover_index = @hover_index
+          if mouse.left_pressed?
+            if item = items.delete(items[hover_index])
+              @held_item = Item::Held.new(mouse.x, mouse.y, item, item_size)
+              @held_index = hover_index
+
+              items.insert(hover_index, Item::Holding.new)
+            end
+          end
         end
       end
     end
@@ -102,16 +135,21 @@ module Works
       y + HUD::SlotMargin + row * HUD::SlotSize
     end
 
+    def item_size
+      HUD::SlotSize - HUD::SlotMargin * 2
+    end
+
     def hover?(mouse : Mouse)
       mouse.x >= x && mouse.x < x + width &&
         mouse.y > y && mouse.y < y + height
     end
 
-    def draw(x, y)
+    def draw
       return unless shown?
 
       draw_background
       draw_slots
+      draw_held_item
     end
 
     def draw_background
@@ -136,7 +174,7 @@ module Works
 
           if index < items.size
             item = items[index]
-            item.draw(dx + HUD::SlotMargin, dy + HUD::SlotMargin, HUD::SlotSize - HUD::SlotMargin * 2)
+            item.draw(dx + HUD::SlotMargin, dy + HUD::SlotMargin, item_size)
 
             if index == hover_index
               LibAllegro.draw_rectangle(dx, dy, dx + HUD::SlotSize, dy + HUD::SlotSize, LibAllegro.map_rgb_f(1, 1, 1), 1)
@@ -147,6 +185,12 @@ module Works
 
           index += 1
         end
+      end
+    end
+
+    def draw_held_item
+      if held_item = @held_item
+        held_item.draw
       end
     end
   end

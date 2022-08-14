@@ -27,13 +27,5 @@ module Works::Item::Ore
     def self.icon_color
       Color
     end
-
-    def icon_color
-      self.class.icon_color
-    end
-
-    def draw_icon(x, y, size)
-      LibAllegro.draw_filled_circle(x + size / 2, y + size / 2, size / 2, icon_color)
-    end
   end
 end
