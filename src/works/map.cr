@@ -42,8 +42,6 @@ module Works
     end
 
     def add_struct(item : Item::Struct::Base, mouse_col, mouse_row)
-      puts ">>> place struct item on map! #{item.name} (#{mouse_col}, #{mouse_row})"
-
       @structs << item.to_struct(mouse_col, mouse_row)
     end
   end

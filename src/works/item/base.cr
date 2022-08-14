@@ -76,6 +76,19 @@ module Works::Item
       total - @amount
     end
 
+    def remove(amount)
+      if amount > @amount
+        pre_amount = @amount
+        @amount = 0
+
+        amount - pre_amount
+      else
+        @amount -= amount
+
+        0
+      end
+    end
+
     def draw(x, y, size)
       draw_icon(x, y, size)
       draw_icon_text(x, y, size)

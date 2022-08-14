@@ -39,7 +39,11 @@ module Works
     def update(keys : Keys, mouse : Mouse, map : Map)
       hud.update(keys, mouse, map.x, map.y)
 
-      update_held_item(keys, mouse, map)
+      if shown? && !held_item && keys.just_pressed?(LibAllegro::KeyQ)
+        hud.hide
+      else
+        update_held_item(keys, mouse, map)
+      end
     end
 
     def update_held_item(keys : Keys, mouse : Mouse, map : Map)
@@ -63,11 +67,16 @@ module Works
               if held_item.item.is_a?(Item::Struct::Base)
                 struct_item = held_item.item.as(Item::Struct::Base)
 
-                if holding_item = items.delete(items[held_index])
+                if struct_item.amount > 0
+                  struct_item.remove(1)
                   map.add_struct(struct_item, mouse_col, mouse_row)
+                end
 
-                  @held_index = nil
-                  @held_item = nil
+                if struct_item.amount <= 0
+                  if holding_item = items.delete(items[held_index])
+                    @held_index = nil
+                    @held_item = nil
+                  end
                 end
               end
             end

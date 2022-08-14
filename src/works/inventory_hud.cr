@@ -29,8 +29,6 @@ module Works
 
       if keys.just_pressed?(LibAllegro::KeyE)
         show_toggle
-      elsif shown? && keys.just_pressed?(LibAllegro::KeyQ)
-        hide
       end
     end
 
@@ -108,6 +106,8 @@ module Works
     end
 
     def hover?(mouse : Mouse)
+      return false unless shown?
+
       mouse.x >= x && mouse.x < x + width &&
         mouse.y > y && mouse.y < y + height
     end
