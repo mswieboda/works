@@ -80,7 +80,7 @@ module Works
       update_movement(keys)
       update_mining(map, mouse, mouse_col, mouse_row)
       update_structs(map, mouse, mouse_col, mouse_row)
-      inventory.update(keys, mouse, map.x, map.y)
+      inventory.update(keys, mouse, map)
 
       animations.update
     end

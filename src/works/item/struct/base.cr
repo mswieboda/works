@@ -1,4 +1,6 @@
 require "./base"
+require "../../struct/base"
+require "../../struct/stone_furnace"
 
 module Works::Item::Struct
   abstract class Base < Item::Base
@@ -26,6 +28,15 @@ module Works::Item::Struct
 
     def self.icon_color
       Color
+    end
+
+    def to_struct(mouse_col, mouse_row)
+      case key
+      when :stone_furnace
+        Works::Struct::StoneFurnace.new(mouse_col, mouse_row)
+      else
+        Works::Struct::Base.new(mouse_col, mouse_row)
+      end
     end
   end
 end

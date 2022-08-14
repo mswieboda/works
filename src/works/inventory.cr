@@ -36,25 +36,35 @@ module Works
       add(Item::Struct::StoneFurnace, 1)
     end
 
-    def update(keys : Keys, mouse : Mouse, x, y)
-      hud.update(keys, mouse, x, y)
+    def update(keys : Keys, mouse : Mouse, map : Map)
+      hud.update(keys, mouse, map.x, map.y)
 
-      update_held_item(mouse)
+      update_held_item(mouse, map)
     end
 
-    def update_held_item(mouse : Mouse)
+    def update_held_item(mouse : Mouse, map : Map)
       if held_item = @held_item
         if mouse.left_pressed?
           held_item.update(mouse)
-        else
-          if held_index = @held_index
-            if holding_item = items.delete(items[held_index])
-              item = held_item.item
+        elsif held_index = @held_index
+          if hud.hover?(mouse)
+            put_held_item_back(held_item, held_index)
+          else
+            mouse_col, mouse_row = mouse.to_map_coords(map.x, map.y)
 
-              items.insert(held_index, item)
+            if map.can_place?(held_item.item, mouse_col, mouse_row)
+              if held_item.item.is_a?(Item::Struct::Base)
+                struct_item = held_item.item.as(Item::Struct::Base)
 
-              @held_index = nil
-              @held_item = nil
+                if holding_item = items.delete(items[held_index])
+                  map.add_struct(struct_item, mouse_col, mouse_row)
+
+                  @held_index = nil
+                  @held_item = nil
+                end
+              end
+            else
+              put_held_item_back(held_item, held_index)
             end
           end
         end
@@ -69,6 +79,17 @@ module Works
             end
           end
         end
+      end
+    end
+
+    def put_held_item_back(held_item, held_index)
+      if holding_item = items.delete(items[held_index])
+        item = held_item.item
+
+        items.insert(held_index, item)
+
+        @held_index = nil
+        @held_item = nil
       end
     end
 
