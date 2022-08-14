@@ -72,28 +72,28 @@ module Works
         mouse_row >= row && mouse_row < row + dimensions[:y]
     end
 
-    def draw_selection(dx, dy, selection_color = nil)
-      dx += x
-      dy += y
+    def draw_selection(dx, dy, color = nil)
+      self.class.draw_selection(dx + x, dy + y, width, height, color)
+    end
 
+    def self.draw_selection(x, y, width, height, selection_color = nil)
       color = selection_color || LibAllegro.premul_rgba_f(1, 1, 1, 0.69)
-      other = LibAllegro.map_rgb_f(1, 0, 1)
 
       # top left
-      LibAllegro.draw_line(dx - SelectionThickness / 2, dy, dx + SelectionLength, dy, color, SelectionThickness)
-      LibAllegro.draw_line(dx, dy, dx, dy + SelectionLength, color, SelectionThickness)
+      LibAllegro.draw_line(x - SelectionThickness / 2, y, x + SelectionLength, y, color, SelectionThickness)
+      LibAllegro.draw_line(x, y, x, y + SelectionLength, color, SelectionThickness)
 
       # top right
-      LibAllegro.draw_line(dx + width - SelectionLength, dy, dx + width + SelectionThickness / 2, dy, color, SelectionThickness)
-      LibAllegro.draw_line(dx + width, dy, dx + width, dy + SelectionLength, color, SelectionThickness)
+      LibAllegro.draw_line(x + width - SelectionLength, y, x + width + SelectionThickness / 2, y, color, SelectionThickness)
+      LibAllegro.draw_line(x + width, y, x + width, y + SelectionLength, color, SelectionThickness)
 
       # bottom left
-      LibAllegro.draw_line(dx - SelectionThickness / 2, dy + height, dx + SelectionLength, dy + height, color, SelectionThickness)
-      LibAllegro.draw_line(dx, dy + height, dx, dy + height - SelectionLength, color, SelectionThickness)
+      LibAllegro.draw_line(x - SelectionThickness / 2, y + height, x + SelectionLength, y + height, color, SelectionThickness)
+      LibAllegro.draw_line(x, y + height, x, y + height - SelectionLength, color, SelectionThickness)
 
       # bottom right
-      LibAllegro.draw_line(dx + width - SelectionLength, dy + height, dx + width + SelectionThickness / 2, dy + height, color, SelectionThickness)
-      LibAllegro.draw_line(dx + width, dy + height, dx + width, dy + height - SelectionLength, color, SelectionThickness)
+      LibAllegro.draw_line(x + width - SelectionLength, y + height, x + width + SelectionThickness / 2, y + height, color, SelectionThickness)
+      LibAllegro.draw_line(x + width, y + height, x + width, y + height - SelectionLength, color, SelectionThickness)
     end
 
     def print_str

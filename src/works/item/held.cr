@@ -7,7 +7,9 @@ module Works::Item
     getter item : Item::Base
     property strct : Works::Struct::Base | Nil
     getter size : Int32
-    getter? buildable
+    getter? player_buildable
+    getter? player_overlaps
+    getter struct_overlaps : Array(Works::Struct::Base)
 
     def initialize(x, y, item, size)
       @x = x
@@ -15,13 +17,18 @@ module Works::Item
       @item = item
       @strct = nil
       @size = size
-      @buildable = false
+      @player_buildable = false
+      @player_overlaps = false
+      @struct_overlaps = [] of Works::Struct::Base
     end
 
-    def update(mouse : Mouse, map : Map, buildable : Bool)
+    def buildable?
+      strct && player_buildable? && !player_overlaps? && struct_overlaps.empty?
+    end
+
+    def update(mouse : Mouse, map : Map, player : Player)
       @x = mouse.x
       @y = mouse.y
-      @buildable = buildable
 
       if strct = @strct
         col, row = mouse.to_map_coords(map.x, map.y)
@@ -29,6 +36,10 @@ module Works::Item
         # TODO: improve for 2x2, see how factorio does it using half cells when mouse moves
         strct.col = col - ((strct.cols / 2).ceil.to_i - 1)
         strct.row = row - ((strct.rows / 2).ceil.to_i - 1)
+
+        @player_buildable = player.buildable?(strct)
+        @player_overlaps = player.overlaps?(strct)
+        @struct_overlaps = map.structs.select(&.overlaps?(strct))
       end
     end
 

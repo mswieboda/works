@@ -219,7 +219,7 @@ module Works
     end
 
     def draw_inventory(x, y)
-      inventory.draw(x, y)
+      inventory.draw
 
       if held_item = inventory.held_item
         if inventory.hud.hover?
@@ -229,12 +229,23 @@ module Works
 
           if strct = held_item.strct
             color_tint = held_item.buildable? ? LibAllegro.premul_rgba_f(0, 1, 0, 0.69) : LibAllegro.premul_rgba_f(1, 0, 0, 0.69)
+
+            held_item.struct_overlaps.each do |overlap|
+              overlap.draw_selection(x, y, color_tint)
+            end
+
+            draw_selection(x, y, color_tint) if held_item.player_overlaps?
+
             strct.draw_hover_info
           end
 
           held_item.draw_on_map(x, y, color_tint)
         end
       end
+    end
+
+    def draw_selection(dx, dy, color)
+      Cell.draw_selection(dx + x - width / 2, dy + y - height / 2, width, height, color)
     end
 
     def destroy

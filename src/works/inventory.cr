@@ -48,15 +48,7 @@ module Works
 
     def update_held_item(keys : Keys, mouse : Mouse, map : Map, player : Player)
       if held_item = @held_item
-        buildable = false
-
-        if strct = held_item.strct
-          if map.can_place?(strct, player)
-            buildable = true
-          end
-        end
-
-        held_item.update(mouse, map, buildable)
+        held_item.update(mouse, map, player)
 
         if held_index = @held_index
           if keys.just_pressed?(LibAllegro::KeyQ)
@@ -64,25 +56,21 @@ module Works
             return
           end
 
-          return unless buildable && mouse.left_just_pressed?
+          return unless mouse.left_just_pressed?
 
           if hud.hover?
             put_held_item_back(held_item, held_index)
           else
-            if held_item.item.is_a?(Item::Struct::Base)
-              struct_item = held_item.item.as(Item::Struct::Base)
+            if held_item.buildable? && held_item.item.amount > 0
+              if strct = held_item.strct
+                map.structs << strct.clone
+                held_item.item.remove(1)
+              end
 
-              if struct_item.amount > 0
-                if strct = held_item.strct
-                  map.structs << strct.clone
-                  struct_item.remove(1)
-                end
-
-                if struct_item.amount <= 0
-                  if hand_item = items.delete(items[held_index])
-                    @held_index = nil
-                    @held_item = nil
-                  end
+              if held_item.item.amount <= 0
+                if hand_item = items.delete(items[held_index])
+                  @held_index = nil
+                  @held_item = nil
                 end
               end
             end
@@ -182,7 +170,7 @@ module Works
       str.chomp
     end
 
-    def draw(x, y)
+    def draw
       hud.draw
     end
   end

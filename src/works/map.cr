@@ -33,13 +33,5 @@ module Works
       ore.each(&.destroy)
       structs.each(&.destroy)
     end
-
-    def can_place?(strct : Struct::Base, player : Player)
-      return false unless player.buildable?(strct)
-      return false if player.overlaps?(strct)
-
-      # TODO: improve by only checking the structs around the player buildable area
-      structs.none?(&.overlaps?(strct))
-    end
   end
 end
