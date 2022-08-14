@@ -1,4 +1,6 @@
 require "./item/base"
+require "./item/held"
+require "./item/holding"
 require "./inventory_hud"
 require "./item/struct/stone_furnace"
 require "./hud_text"
@@ -16,6 +18,8 @@ module Works
     getter items
     getter max_slots
     getter hud
+    getter held_item : Item::Held | Nil
+    getter held_index : Int32 | Nil
 
     delegate shown?, to: @hud
     delegate hover?, to: @hud
@@ -24,6 +28,8 @@ module Works
       @max_slots = MaxSlots
       @items = [] of Item::Base
       @hud = InventoryHUD.new(@items, @max_slots)
+      @held_item = nil
+      @held_index = nil
     end
 
     def init
@@ -32,6 +38,38 @@ module Works
 
     def update(keys : Keys, mouse : Mouse, x, y)
       hud.update(keys, mouse, x, y)
+
+      update_held_item(mouse)
+    end
+
+    def update_held_item(mouse : Mouse)
+      if held_item = @held_item
+        if mouse.left_pressed?
+          held_item.update(mouse)
+        else
+          if held_index = @held_index
+            if holding_item = items.delete(items[held_index])
+              item = held_item.item
+
+              items.insert(held_index, item)
+
+              @held_index = nil
+              @held_item = nil
+            end
+          end
+        end
+      else
+        if hover_index = hud.hover_index
+          if mouse.left_pressed?
+            if item = items.delete(items[hover_index])
+              @held_item = Item::Held.new(mouse.x, mouse.y, item, hud.item_size)
+              @held_index = hover_index
+
+              items.insert(hover_index, Item::Holding.new)
+            end
+          end
+        end
+      end
     end
 
     def amount_can_add(item_klass, amount : Int)
@@ -97,6 +135,10 @@ module Works
 
     def draw
       hud.draw
+
+      if held_item = @held_item
+        held_item.draw
+      end
     end
   end
 end

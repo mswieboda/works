@@ -1,6 +1,4 @@
 require "./item/base"
-require "./item/held"
-require "./item/holding"
 require "./keys"
 require "./mouse"
 
@@ -18,27 +16,23 @@ module Works
     getter items
     getter max_slots : Int32
     getter hover_index : Int32 | Nil
-    getter held_item : Item::Held | Nil
-    getter held_index : Int32 | Nil
 
     def initialize(items : Array(Item::Base), max_slots)
       @shown = false
       @items = items
       @max_slots = max_slots
       @hover_index = nil
-      @held_item = nil
-      @held_index = nil
     end
 
     def update(keys : Keys, mouse : Mouse, x, y)
-      update_items(mouse, x, y) if shown?
+      update_hover_index(mouse, x, y) if shown?
 
       if keys.just_pressed?(LibAllegro::KeyI)
         show_toggle
       end
     end
 
-    def update_items(mouse : Mouse, x, y)
+    def update_hover_index(mouse : Mouse, x, y)
       mouse_x, mouse_y = mouse.to_xy(x, y)
       @hover_index = nil
 
@@ -49,34 +43,6 @@ module Works
         if mouse_x >= item_x && mouse_x < item_x + HUD::SlotSize &&
            mouse_y >= item_y && mouse_y < item_y + HUD::SlotSize
           @hover_index = index
-        end
-      end
-
-      if held_item = @held_item
-        if mouse.left_pressed?
-          held_item.update(mouse)
-        else
-          if held_index = @held_index
-            if holding_item = items.delete(items[held_index])
-              item = held_item.item
-
-              items.insert(held_index, item)
-
-              @held_index = nil
-              @held_item = nil
-            end
-          end
-        end
-      else
-        if hover_index = @hover_index
-          if mouse.left_pressed?
-            if item = items.delete(items[hover_index])
-              @held_item = Item::Held.new(mouse.x, mouse.y, item, item_size)
-              @held_index = hover_index
-
-              items.insert(hover_index, Item::Holding.new)
-            end
-          end
         end
       end
     end
@@ -149,7 +115,6 @@ module Works
 
       draw_background
       draw_slots
-      draw_held_item
     end
 
     def draw_background
@@ -185,12 +150,6 @@ module Works
 
           index += 1
         end
-      end
-    end
-
-    def draw_held_item
-      if held_item = @held_item
-        held_item.draw
       end
     end
   end
