@@ -7,6 +7,7 @@ module Works::Item
     getter item : Item::Base
     property strct : Works::Struct::Base | Nil
     getter size : Int32
+    getter? buildable
 
     def initialize(x, y, item, size)
       @x = x
@@ -14,11 +15,13 @@ module Works::Item
       @item = item
       @strct = nil
       @size = size
+      @buildable = false
     end
 
-    def update(mouse : Mouse, map : Map)
+    def update(mouse : Mouse, map : Map, buildable : Bool)
       @x = mouse.x
       @y = mouse.y
+      @buildable = buildable
 
       if strct = @strct
         col, row = mouse.to_map_coords(map.x, map.y)

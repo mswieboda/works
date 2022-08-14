@@ -62,6 +62,11 @@ module Works
       row * size
     end
 
+    def overlaps?(cell : Cell)
+      col < cell.col + cell.cols && cell.col < col + cols &&
+        row < cell.row + cell.rows && cell.row < row + rows
+    end
+
     def hover?(mouse_col, mouse_row)
       mouse_col >= col && mouse_col < col + dimensions[:x] &&
         mouse_row >= row && mouse_row < row + dimensions[:y]

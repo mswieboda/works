@@ -160,9 +160,17 @@ module Works
       distance(cell) < BuildDistance
     end
 
+    def overlaps?(cell : Cell)
+      px = x - width / 2
+      py = y - height / 2
+
+      px < cell.x + cell.width && cell.x < px + width &&
+        py < cell.y + cell.height && cell.y < py + height
+    end
+
     def distance(cell : Cell)
-      player_x = x
-      player_y = y
+      player_x = x - width / 2
+      player_y = y - height / 2
       cell_x = cell.x + cell.width / 2
       cell_y = cell.y + cell.height / 2
 
@@ -215,7 +223,7 @@ module Works
           held_item.draw_on_map(x, y)
 
           if strct = held_item.strct
-            color = buildable?(strct) ? nil : LibAllegro.premul_rgba_f(1, 0, 0, 0.69)
+            color = held_item.buildable? ? nil : LibAllegro.premul_rgba_f(1, 0, 0, 0.69)
             strct.draw_selection(x, y, color)
             strct.draw_hover_info
           end
