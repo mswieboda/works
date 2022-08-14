@@ -1,5 +1,8 @@
 module Works
   class Cell
+    SelectionLength = 10
+    SelectionThickness = 3
+
     Size = 32_u8
     Dimensions = {x: 1, y: 1}
 
@@ -50,6 +53,30 @@ module Works
     def hover?(mouse_col, mouse_row)
       mouse_col >= col && mouse_col < col + dimensions[:x] &&
         mouse_row >= row && mouse_row < row + dimensions[:y]
+    end
+
+    def draw_selection(dx, dy, selection_color = nil)
+      dx += x
+      dy += y
+
+      color = selection_color || LibAllegro.premul_rgba_f(1, 1, 1, 0.69)
+      other = LibAllegro.map_rgb_f(1, 0, 1)
+
+      # top left
+      LibAllegro.draw_line(dx - SelectionThickness / 2, dy, dx + SelectionLength, dy, color, SelectionThickness)
+      LibAllegro.draw_line(dx, dy, dx, dy + SelectionLength, color, SelectionThickness)
+
+      # top right
+      LibAllegro.draw_line(dx + width - SelectionLength, dy, dx + width + SelectionThickness / 2, dy, color, SelectionThickness)
+      LibAllegro.draw_line(dx + width, dy, dx + width, dy + SelectionLength, color, SelectionThickness)
+
+      # bottom left
+      LibAllegro.draw_line(dx - SelectionThickness / 2, dy + height, dx + SelectionLength, dy + height, color, SelectionThickness)
+      LibAllegro.draw_line(dx, dy + height, dx, dy + height - SelectionLength, color, SelectionThickness)
+
+      # bottom right
+      LibAllegro.draw_line(dx + width - SelectionLength, dy + height, dx + width + SelectionThickness / 2, dy + height, color, SelectionThickness)
+      LibAllegro.draw_line(dx + width, dy + height, dx + width, dy + height - SelectionLength, color, SelectionThickness)
     end
 
     def print_str

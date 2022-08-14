@@ -5,7 +5,6 @@ module Works::Tile::Ore
   abstract class Base < Tile::Base
     Name = "Ore"
     Color = LibAllegro.premul_rgba_f(1, 0, 1, 0.69)
-    HoverColor = LibAllegro.map_rgb_f(1, 1, 1)
 
     getter amount : UInt16
 
@@ -35,19 +34,8 @@ module Works::Tile::Ore
       self.class.color
     end
 
-    def self.hover_color
-      HoverColor
-    end
-
-    def hover_color
-      self.class.hover_color
-    end
-
     def draw_hover(dx, dy)
-      dx += x
-      dy += y
-
-      LibAllegro.draw_rectangle(dx, dy, dx + width, dy + height, hover_color, 1)
+      draw_selection(dx, dy)
     end
 
     def draw_hover_info
