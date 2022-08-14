@@ -15,6 +15,7 @@ module Works
     MiningDistance = 64
     MiningInterval = 500.milliseconds
     MiningAmount = 10
+    StructRemovalInterval = 1.seconds
 
     property x
     property y
@@ -24,6 +25,7 @@ module Works
     getter ore_hover : Tile::Ore::Base | Nil
     getter mining_timer
     getter struct_hover : Struct::Base | Nil
+    getter struct_removal_timer
 
     def initialize
       @y = 0
@@ -34,6 +36,7 @@ module Works
       @ore_hover = nil
       @mining_timer = Timer.new(MiningInterval)
       @struct_hover = nil
+      @struct_removal_timer = Timer.new(StructRemovalInterval)
     end
 
     def init(sheet : LibAllegro::Bitmap)
@@ -110,7 +113,7 @@ module Works
       return unless ore = @ore_hover
       return unless distance(ore) < MiningDistance
       unless mouse.right_pressed?
-        @mining_timer.stop
+        mining_timer.stop
         return
       end
 
@@ -132,7 +135,14 @@ module Works
 
       return unless strct = @struct_hover
       return unless distance(strct) < MiningDistance
-      return unless mouse.right_pressed?
+      unless mouse.right_pressed?
+        struct_removal_timer.stop
+        return
+      end
+
+      struct_removal_timer.start unless struct_removal_timer.started?
+
+      return unless struct_removal_timer.done?
 
       amount = inventory.amount_can_add(strct.item_class, 1)
 
@@ -141,6 +151,8 @@ module Works
           inventory.add(strct.item_class, 1)
         end
       end
+
+      struct_removal_timer.restart
     end
 
     def update_inventory(keys : Keys, mouse : Mouse)
@@ -162,6 +174,15 @@ module Works
     end
 
     def draw(x, y)
+      px, py = [x + @x, y + @y]
+
+      draw_hovers(x, y)
+      animations.draw(px, py)
+      draw_hovers_progress(px - width / 2, py - height / 2)
+      inventory.draw(x, y)
+    end
+
+    def draw_hovers(x, y)
       if ore_hover = @ore_hover
         ore_hover.draw_hover(x, y)
       end
@@ -169,16 +190,20 @@ module Works
       if struct_hover = @struct_hover
         struct_hover.draw_hover(x, y)
       end
+    end
 
-      animations.draw(x + @x, y + @y)
-
+    def draw_hovers_progress(x, y)
       if ore_hover = @ore_hover
         if mining_timer.started?
-          UI::ProgressBar.new(width, 5, mining_timer.percent).draw_from_bottom(x + @x - width / 2, y + @y - height / 2)
+          UI::ProgressBar.new(width, 5, mining_timer.percent).draw_from_bottom(x, y)
         end
       end
 
-      inventory.draw(x, y)
+      if struct_hover = @struct_hover
+        if struct_removal_timer.started?
+          UI::ProgressBar.new(width, 5, struct_removal_timer.percent).draw_from_bottom(x, y)
+        end
+      end
     end
 
     def destroy
