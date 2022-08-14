@@ -201,7 +201,7 @@ module Works
 
       if struct_hover = @struct_hover
         if struct_removal_timer.started?
-          UI::ProgressBar.new(width, 5, struct_removal_timer.percent).draw_from_bottom(x, y)
+          UI::ProgressBar.new(width, 5, struct_removal_timer.percent, LibAllegro.map_rgb_f(1, 0, 0)).draw_from_bottom(x, y)
         end
       end
     end

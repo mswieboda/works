@@ -8,11 +8,13 @@ module Works::UI
     Padding = 3
 
     property progress : Float64
+    property color
 
-    def initialize(width, height, progress)
+    def initialize(width, height, progress, color = Color)
       super(width, height, Margin, Padding)
 
       @progress = progress
+      @color = color
     end
 
     def draw_from_bottom(x, y)
@@ -42,7 +44,7 @@ module Works::UI
         y + margin + padding,
         x + margin + padding + progress_width,
         y + margin + padding + height,
-        Color
+        color
       )
     end
   end
