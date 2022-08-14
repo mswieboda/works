@@ -40,11 +40,15 @@ module Works
     end
 
     def x
-      col * width
+      col * size
     end
 
     def y
-      row * height
+      row * size
+    end
+
+    def hover?(mouse_row, mouse_col)
+      row == mouse_row && col == mouse_col
     end
 
     def print_str

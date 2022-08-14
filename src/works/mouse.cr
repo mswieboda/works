@@ -24,8 +24,8 @@ module Works
 
     def to_map_coords(x, y)
       [
-        (@x - x).clamp(0, nil),
-        (@y - y).clamp(0, nil)
+        ((@y - y).clamp(0, nil) / Cell.size).to_u16,
+        ((@x - x).clamp(0, nil) / Cell.size).to_u16
       ]
     end
 

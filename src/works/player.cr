@@ -19,18 +19,20 @@ module Works
     property y
     property speed
     property animations
+    getter inventory
     getter ore_hover : Tile::Ore::Base | Nil
     getter mining_timer
-    getter inventory
+    getter struct_hover : Struct::Base | Nil
 
     def initialize
       @y = 0
       @x = 0
       @speed = 0
       @animations = Animations.new
+      @inventory = Inventory.new
       @ore_hover = nil
       @mining_timer = Timer.new(MiningInterval)
-      @inventory = Inventory.new
+      @struct_hover = nil
     end
 
     def init(sheet : LibAllegro::Bitmap)
@@ -69,8 +71,11 @@ module Works
     end
 
     def update(keys : Keys, mouse : Mouse, map : Map)
+      mouse_row, mouse_col = mouse.to_map_coords(map.x, map.y)
+
       update_movement(keys)
-      update_mining(mouse, map)
+      update_mining(map, mouse, mouse_row, mouse_col)
+      update_structs(map, mouse, mouse_row, mouse_col)
       update_inventory(keys, mouse)
 
       animations.update
@@ -98,13 +103,8 @@ module Works
       end
     end
 
-    def update_mining(mouse : Mouse, map : Map)
-      mx, my = mouse.to_map_coords(map.x, map.y)
-
-      row = (my / Tile::Ore::Base.size).to_u16
-      col = (mx / Tile::Ore::Base.size).to_u16
-
-      @ore_hover = map.ore.find { |c| c.row == row && c.col == col }
+    def update_mining(map : Map, mouse : Mouse, mouse_row, mouse_col)
+      @ore_hover = map.ore.find(&.hover?(mouse_row, mouse_col))
 
       return unless ore = @ore_hover
       return unless distance(ore) < MiningDistance
@@ -121,6 +121,10 @@ module Works
       end
 
       mining_timer.restart
+    end
+
+    def update_structs(map : Map, mouse : Mouse, mouse_row, mouse_col)
+      @struct_hover = map.structs.find(&.hover?(mouse_row, mouse_col))
     end
 
     def update_inventory(keys : Keys, mouse : Mouse)
@@ -144,6 +148,10 @@ module Works
     def draw(x, y)
       if ore_hover = @ore_hover
         ore_hover.draw_hover(x, y)
+      end
+
+      if struct_hover = @struct_hover
+        struct_hover.draw_hover(x, y)
       end
 
       animations.draw(x + @x, y + @y)
