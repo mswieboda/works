@@ -10,6 +10,14 @@ module Works::Struct
       Name
     end
 
+    def self.item_class
+      Item::Struct::Base
+    end
+
+    def item_class
+      self.class.item_class
+    end
+
     def self.color
       Color
     end
@@ -43,6 +51,10 @@ module Works::Struct
       dy += y
 
       LibAllegro.draw_rectangle(dx, dy, dx + width, dy + height, hover_color, 1)
+    end
+
+    def draw_hover_info
+      HUDText.new("#{name}").draw_from_bottom(0, Screen::Height)
     end
 
     def destroy

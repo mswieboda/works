@@ -1,5 +1,5 @@
 require "../base"
-require "../../item/base"
+require "../../item/ore/base"
 
 module Works::Tile::Ore
   abstract class Base < Tile::Base
@@ -20,7 +20,7 @@ module Works::Tile::Ore
     end
 
     def self.item_class
-      Item::Base
+      Item::Ore::Base
     end
 
     def item_class
@@ -48,6 +48,10 @@ module Works::Tile::Ore
       dy += y
 
       LibAllegro.draw_rectangle(dx, dy, dx + width, dy + height, hover_color, 1)
+    end
+
+    def draw_hover_info
+      HUDText.new("#{name}: #{amount}").draw_from_bottom(0, Screen::Height)
     end
 
     def print_str

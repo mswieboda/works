@@ -107,7 +107,11 @@ module Works
       player.draw(map.x, map.y)
 
       if ore_hover = player.ore_hover
-        HUDText.new("#{ore_hover.name}: #{ore_hover.amount}").draw_from_bottom(0, Screen::Height)
+        ore_hover.draw_hover_info
+      end
+
+      if struct_hover = player.struct_hover
+        struct_hover.draw_hover_info
       end
     end
 

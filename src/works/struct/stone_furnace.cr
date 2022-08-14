@@ -3,7 +3,7 @@ require "../item/struct/stone_furnace"
 
 module Works::Struct
   class StoneFurnace < Base
-    Name = "StoneFurnace"
+    Name = "Stone furnace"
     Dimensions = {x: 2, y: 2}
     Color = Item::Struct::StoneFurnace::Color
     HoverColor = LibAllegro.map_rgb_f(1, 1, 1)
@@ -14,6 +14,10 @@ module Works::Struct
 
     def self.dimensions
       Dimensions
+    end
+
+    def self.item_class
+      Item::Struct::StoneFurnace
     end
 
     def self.color

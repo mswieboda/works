@@ -5,8 +5,8 @@ require "./inventory"
 require "./keys"
 require "./mouse"
 require "./map"
-require "./tile/base"
 require "./tile/ore/base"
+require "./cell"
 require "./hud_text"
 
 module Works
@@ -125,6 +125,18 @@ module Works
 
     def update_structs(map : Map, mouse : Mouse, mouse_col, mouse_row)
       @struct_hover = map.structs.find(&.hover?(mouse_col, mouse_row))
+
+      return unless strct = @struct_hover
+      return unless distance(strct) < MiningDistance
+      return unless mouse.right_pressed?
+
+      amount = inventory.amount_can_add(strct.item_class, 1)
+
+      if amount > 0
+        if removed = map.structs.delete(struct_hover)
+          inventory.add(strct.item_class, 1)
+        end
+      end
     end
 
     def update_inventory(keys : Keys, mouse : Mouse)
@@ -133,14 +145,14 @@ module Works
       end
     end
 
-    def distance(tile : Tile::Base)
+    def distance(cell : Cell)
       player_x = x
       player_y = y
-      tile_x = tile.x + tile.width / 2
-      tile_y = tile.y + tile.height / 2
+      cell_x = cell.x + cell.width / 2
+      cell_y = cell.y + cell.height / 2
 
-      dx = player_x - tile_x
-      dy = player_y - tile_y
+      dx = player_x - cell_x
+      dy = player_y - cell_y
 
       Math.sqrt(dx * dx + dy * dy).to_i
     end

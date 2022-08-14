@@ -1,4 +1,4 @@
-require "./base"
+require "../base"
 
 module Works::Item::Ore
   abstract class Base < Item::Base
