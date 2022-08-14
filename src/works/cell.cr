@@ -38,12 +38,20 @@ module Works
       self.class.new(col, row)
     end
 
+    def cols
+      dimensions[:x]
+    end
+
+    def rows
+      dimensions[:y]
+    end
+
     def width
-      size * dimensions[:x]
+      size * cols
     end
 
     def height
-      size * dimensions[:y]
+      size * rows
     end
 
     def x

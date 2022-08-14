@@ -23,9 +23,9 @@ module Works::Item
       if strct = @strct
         col, row = mouse.to_map_coords(map.x, map.y)
 
-        # TODO: do cell / 2 - 1, etc to center the struct
-        strct.col = col
-        strct.row = row
+        # TODO: improve for 2x2, see how factorio does it using half cells when mouse moves
+        strct.col = col - ((strct.cols / 2).ceil.to_i - 1)
+        strct.row = row - ((strct.rows / 2).ceil.to_i - 1)
       end
     end
 
