@@ -34,6 +34,10 @@ module Works
       self.class.size
     end
 
+    def clone
+      self.class.new(col, row)
+    end
+
     def width
       size * dimensions[:x]
     end

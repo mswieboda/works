@@ -169,7 +169,7 @@ module Works
       draw_hovers(x, y)
       animations.draw(px, py)
       draw_hovers_progress(px - width / 2, py - height / 2)
-      inventory.draw
+      inventory.draw(x, y)
     end
 
     def draw_hovers(x, y)

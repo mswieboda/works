@@ -40,9 +40,5 @@ module Works
       # TODO: impl
       true
     end
-
-    def add_struct(item : Item::Struct::Base, mouse_col, mouse_row)
-      @structs << item.to_struct(mouse_col, mouse_row)
-    end
   end
 end

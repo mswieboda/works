@@ -48,7 +48,7 @@ module Works
 
     def update_held_item(keys : Keys, mouse : Mouse, map : Map)
       if held_item = @held_item
-        held_item.update(mouse)
+        held_item.update(mouse, map)
 
         if held_index = @held_index
           if keys.just_pressed?(LibAllegro::KeyQ)
@@ -58,7 +58,7 @@ module Works
 
           return unless mouse.left_just_pressed?
 
-          if hud.hover?(mouse)
+          if hud.hover?
             put_held_item_back(held_item, held_index)
           else
             mouse_col, mouse_row = mouse.to_map_coords(map.x, map.y)
@@ -68,8 +68,10 @@ module Works
                 struct_item = held_item.item.as(Item::Struct::Base)
 
                 if struct_item.amount > 0
-                  struct_item.remove(1)
-                  map.add_struct(struct_item, mouse_col, mouse_row)
+                  if strct = held_item.strct
+                    map.structs << strct.clone
+                    struct_item.remove(1)
+                  end
                 end
 
                 if struct_item.amount <= 0
@@ -88,6 +90,13 @@ module Works
             if item = items.delete(items[hover_index])
               # TODO: should show struct when hovering over map, and item hovering over inventory
               @held_item = Item::Held.new(mouse.x, mouse.y, item, hud.item_size)
+
+              if item.is_a?(Item::Struct::Base)
+                if held_item = @held_item
+                  held_item.strct = item.to_struct
+                end
+              end
+
               @held_index = hover_index
 
               items.insert(hover_index, Item::Hand.new)
@@ -169,11 +178,15 @@ module Works
       str.chomp
     end
 
-    def draw
+    def draw(x, y)
       hud.draw
 
       if held_item = @held_item
-        held_item.draw
+        if hud.hover?
+          held_item.draw_item
+        else
+          held_item.draw_on_map(x, y)
+        end
       end
     end
   end

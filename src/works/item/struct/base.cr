@@ -30,12 +30,12 @@ module Works::Item::Struct
       Color
     end
 
-    def to_struct(mouse_col, mouse_row)
+    def to_struct
       case key
       when :stone_furnace
-        Works::Struct::StoneFurnace.new(mouse_col, mouse_row)
+        Works::Struct::StoneFurnace.new
       else
-        Works::Struct::Base.new(mouse_col, mouse_row)
+        Works::Struct::Base.new
       end
     end
   end

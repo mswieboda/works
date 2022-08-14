@@ -13,28 +13,36 @@ module Works
     end
 
     getter? shown
+    getter? hover
     getter items
     getter max_slots : Int32
     getter hover_index : Int32 | Nil
 
     def initialize(items : Array(Item::Base), max_slots)
       @shown = false
+      @hover = false
       @items = items
       @max_slots = max_slots
       @hover_index = nil
     end
 
     def update(keys : Keys, mouse : Mouse, x, y)
-      update_hover_index(mouse, x, y) if shown?
+      @hover_index = nil
+
+      update_hover(mouse)
+      update_hover_index(mouse, x, y) if hover?
 
       if keys.just_pressed?(LibAllegro::KeyE)
         show_toggle
       end
     end
 
+    def update_hover(mouse : Mouse)
+      @hover = shown? && hover?(mouse)
+    end
+
     def update_hover_index(mouse : Mouse, x, y)
       mouse_x, mouse_y = mouse.to_xy(x, y)
-      @hover_index = nil
 
       items.each_index do |index|
         item_x = x(col(index))
