@@ -8,13 +8,11 @@ module Works::Tile::Ore
     HoverColor = LibAllegro.map_rgb_f(1, 1, 1)
 
     getter amount : UInt16
-    getter initial_amount : UInt16
 
     def initialize(row = 0_u16, col = 0_u16, amount = 0_u16)
       super(row, col)
 
       @amount = amount
-      @initial_amount = amount
     end
 
     def self.name
