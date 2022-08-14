@@ -8,6 +8,7 @@ require "./map"
 require "./tile/ore/base"
 require "./cell"
 require "./hud_text"
+require "./ui/progress_bar"
 
 module Works
   class Player
@@ -108,7 +109,10 @@ module Works
 
       return unless ore = @ore_hover
       return unless distance(ore) < MiningDistance
-      return unless mouse.right_pressed?
+      unless mouse.right_pressed?
+        @mining_timer.stop
+        return
+      end
 
       mining_timer.start unless mining_timer.started?
 
@@ -167,6 +171,12 @@ module Works
       end
 
       animations.draw(x + @x, y + @y)
+
+      if ore_hover = @ore_hover
+        if mining_timer.started?
+          UI::ProgressBar.new(width, 5, mining_timer.percent).draw_from_bottom(x + @x - width / 2, y + @y - height / 2)
+        end
+      end
 
       inventory.draw(x, y)
     end
