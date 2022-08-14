@@ -10,7 +10,7 @@ targets:
 
 dependencies:
   crystal_allegro:
-    github: Fryguy/crystal_allegro
+    github: mswieboda/crystal_allegro
 
 crystal: 1.5.0
 

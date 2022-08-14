@@ -1,6 +1,6 @@
 version: 2.0
 shards:
   crystal_allegro:
-    git: https://github.com/fryguy/crystal_allegro.git
+    git: https://github.com/mswieboda/crystal_allegro.git
     version: 0.1.0+git.commit.e7e3115268cefd74725f6932d4889b507e2e9fde
 
