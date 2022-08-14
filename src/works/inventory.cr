@@ -36,17 +36,17 @@ module Works
       add(Item::Struct::StoneFurnace, 1)
     end
 
-    def update(keys : Keys, mouse : Mouse, map : Map)
+    def update(keys : Keys, mouse : Mouse, map : Map, player : Player)
       hud.update(keys, mouse, map.x, map.y)
 
       if shown? && !held_item && keys.just_pressed?(LibAllegro::KeyQ)
         hud.hide
       else
-        update_held_item(keys, mouse, map)
+        update_held_item(keys, mouse, map, player)
       end
     end
 
-    def update_held_item(keys : Keys, mouse : Mouse, map : Map)
+    def update_held_item(keys : Keys, mouse : Mouse, map : Map, player : Player)
       if held_item = @held_item
         held_item.update(mouse, map)
 
@@ -63,12 +63,12 @@ module Works
           else
             mouse_col, mouse_row = mouse.to_map_coords(map.x, map.y)
 
-            if map.can_place?(held_item.item, mouse_col, mouse_row)
-              if held_item.item.is_a?(Item::Struct::Base)
-                struct_item = held_item.item.as(Item::Struct::Base)
+            if held_item.item.is_a?(Item::Struct::Base)
+              struct_item = held_item.item.as(Item::Struct::Base)
 
-                if struct_item.amount > 0
-                  if strct = held_item.strct
+              if struct_item.amount > 0
+                if strct = held_item.strct
+                  if map.can_place?(strct, player)
                     map.structs << strct.clone
                     struct_item.remove(1)
                   end
@@ -180,14 +180,6 @@ module Works
 
     def draw(x, y)
       hud.draw
-
-      if held_item = @held_item
-        if hud.hover?
-          held_item.draw_item
-        else
-          held_item.draw_on_map(x, y)
-        end
-      end
     end
   end
 end

@@ -34,10 +34,10 @@ module Works
       structs.each(&.destroy)
     end
 
-    def can_place?(item, mouse_col, mouse_row)
-      return false unless item.is_a?(Item::Struct::Base)
+    def can_place?(strct : Struct::Base, player : Player)
+      return false unless player.buildable?(strct)
 
-      # TODO: impl
+      # TODO: impl checks with other structs
       true
     end
   end

@@ -13,6 +13,7 @@ require "./ui/progress_bar"
 module Works
   class Player
     ActionDistance = Cell.size * 3
+    BuildDistance = Cell.size.to_i * 10
     MiningInterval = 500.milliseconds
     MiningAmount = 10
     StructRemovalInterval = 1.seconds
@@ -80,7 +81,7 @@ module Works
       update_movement(keys)
       update_structs(map, mouse, mouse_col, mouse_row)
       update_mining(map, mouse, mouse_col, mouse_row)
-      inventory.update(keys, mouse, map)
+      inventory.update(keys, mouse, map, self)
 
       animations.update
     end
@@ -155,6 +156,10 @@ module Works
       distance(cell) < ActionDistance
     end
 
+    def buildable?(cell : Cell)
+      distance(cell) < BuildDistance
+    end
+
     def distance(cell : Cell)
       player_x = x
       player_y = y
@@ -173,7 +178,7 @@ module Works
       draw_selections(x, y)
       animations.draw(px, py)
       draw_action_progress(px - width / 2, py - height / 2)
-      inventory.draw(x, y)
+      draw_inventory(x, y)
     end
 
     def draw_selections(x, y)
@@ -196,6 +201,24 @@ module Works
       elsif ore_hover = @ore_hover
         if mining_timer.started?
           UI::ProgressBar.new(width, 5, mining_timer.percent).draw_from_bottom(x, y)
+        end
+      end
+    end
+
+    def draw_inventory(x, y)
+      inventory.draw(x, y)
+
+      if held_item = inventory.held_item
+        if inventory.hud.hover?
+          held_item.draw_item
+        else
+          held_item.draw_on_map(x, y)
+
+          if strct = held_item.strct
+            color = buildable?(strct) ? nil : LibAllegro.premul_rgba_f(1, 0, 0, 0.69)
+            strct.draw_selection(x, y, color)
+            strct.draw_hover_info
+          end
         end
       end
     end
