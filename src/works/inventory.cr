@@ -86,6 +86,7 @@ module Works
         if hover_index = hud.hover_index
           if mouse.left_pressed?
             if item = items.delete(items[hover_index])
+              # TODO: should show struct when hovering over map, and item hovering over inventory
               @held_item = Item::Held.new(mouse.x, mouse.y, item, hud.item_size)
               @held_index = hover_index
 
