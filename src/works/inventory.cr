@@ -1,8 +1,8 @@
 require "./item/base"
 require "./item/held"
 require "./item/hand"
+require "./item/**"
 require "./inventory_hud"
-require "./item/struct/stone_furnace"
 require "./hud_text"
 
 module Works
@@ -12,7 +12,7 @@ module Works
       # ore
       Item::Ore::Coal, Item::Ore::Copper, Item::Ore::Iron, Item::Ore::Stone,
       # struct
-      Item::Struct::StoneFurnace
+      Item::Struct::Furnace::Stone, Item::Struct::Furnace::Electric
     ].map(&.key)
 
     getter items
@@ -33,7 +33,8 @@ module Works
     end
 
     def init
-      add(Item::Struct::StoneFurnace, 1)
+      add(Item::Struct::Furnace::Stone, 1)
+      add(Item::Struct::Furnace::Electric, 1)
     end
 
     def update(keys : Keys, mouse : Mouse, map : Map, player : Player)
@@ -80,7 +81,6 @@ module Works
         if hover_index = hud.hover_index
           if mouse.left_pressed?
             if item = items.delete(items[hover_index])
-              # TODO: should show struct when hovering over map, and item hovering over inventory
               @held_item = Item::Held.new(mouse.x, mouse.y, item, hud.item_size)
 
               if item.is_a?(Item::Struct::Base)

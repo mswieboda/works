@@ -1,20 +1,21 @@
 require "../cell"
 
 module Works::Struct
-  class Base < Cell
+  abstract class Base < Cell
+    Key = :struct
     Name = "Struct"
     Color = LibAllegro.map_rgb_f(0.5, 0.5, 0.1)
 
+    def self.key
+      Key
+    end
+
+    def key
+      self.class.key
+    end
+
     def self.name
       Name
-    end
-
-    def self.item_class
-      Item::Struct::Base
-    end
-
-    def item_class
-      self.class.item_class
     end
 
     def self.color
@@ -24,6 +25,8 @@ module Works::Struct
     def color
       self.class.color
     end
+
+    abstract def item_class
 
     def draw(x, y)
       draw(x, y, color)

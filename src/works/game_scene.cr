@@ -6,7 +6,6 @@ require "./tile/ore/coal"
 require "./tile/ore/iron"
 require "./tile/ore/copper"
 require "./tile/ore/stone"
-require "./struct/stone_furnace"
 
 module Works
   class GameScene < Scene
@@ -68,9 +67,6 @@ module Works
       ].each do |data|
         add_ore(Tile::Ore::Stone, data)
       end
-
-      # NOTE: *** TEMP stone furnace ***
-      map.structs << Struct::StoneFurnace.new(7, 3)
     end
 
     def add_ore(klass, data)

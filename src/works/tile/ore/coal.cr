@@ -1,5 +1,4 @@
 require "./base"
-require "../../item/ore/coal"
 
 module Works::Tile::Ore
   class Coal < Base

@@ -31,11 +31,10 @@ module Works::Item
       @y = mouse.y
 
       if strct = @strct
-        col, row = mouse.to_map_coords(map.x, map.y)
+        col, row = mouse.to_map_coords_centered(map.x, map.y, strct.cols, strct.rows)
 
-        # TODO: improve for 2x2, see how factorio does it using half cells when mouse moves
-        strct.col = col - ((strct.cols / 2).ceil.to_i - 1)
-        strct.row = row - ((strct.rows / 2).ceil.to_i - 1)
+        strct.col = col
+        strct.row = row
 
         @player_buildable = player.buildable?(strct)
         @player_overlaps = player.overlaps?(strct)

@@ -33,6 +33,22 @@ module Works
       to_xy(x, y).map { |v| (v / Cell.size).to_u16 }
     end
 
+    def to_map_coords_centered(x, y, cols, rows)
+      x, y = to_xy(x, y)
+      col = (x / Cell.size).to_u16
+      row = (y / Cell.size).to_u16
+
+      if (cols + rows) % 2 == 0
+        col -= 1 if x % Cell.size < Cell.size / 2.125
+        row -= 1 if y % Cell.size < Cell.size / 2.125
+      else
+        col -= (cols / 2).ceil.to_i - 1
+        row -= (rows / 2).ceil.to_i - 1
+      end
+
+      [col, row]
+    end
+
     def reset
       @buttons.each_with_index do |key, index|
         @buttons[index] &= Seen

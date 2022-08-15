@@ -1,11 +1,10 @@
 require "./base"
 
-module Works::Item::Struct
-  class StoneFurnace < Base
+module Works::Item::Struct::Furnace
+  class Stone < Base
     Key = :stone_furnace
     Name = "Stone Furnace"
     ShortCode = "SF"
-    MaxAmount = 50
     Color = LibAllegro.map_rgb_f(0.5, 0.5, 0.1)
 
     def self.key
@@ -18,10 +17,6 @@ module Works::Item::Struct
 
     def self.short_code
       ShortCode
-    end
-
-    def self.max_amount
-      MaxAmount
     end
 
     def self.icon_color
