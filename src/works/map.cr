@@ -6,8 +6,6 @@ module Works
   class Map
     property x
     property y
-    getter width
-    getter height
     getter ground
     getter ore
     getter structs

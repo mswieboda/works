@@ -26,11 +26,11 @@ module Works
       @hover_index = nil
     end
 
-    def update(keys : Keys, mouse : Mouse, x, y)
+    def update(keys : Keys, mouse : Mouse)
       @hover_index = nil
 
       update_hover(mouse)
-      update_hover_index(mouse, x, y) if hover?
+      update_hover_index(mouse) if hover?
 
       if keys.just_pressed?(LibAllegro::KeyE)
         show_toggle
@@ -41,15 +41,13 @@ module Works
       @hover = shown? && hover?(mouse)
     end
 
-    def update_hover_index(mouse : Mouse, x, y)
-      mouse_x, mouse_y = mouse.to_xy(x, y)
-
+    def update_hover_index(mouse : Mouse)
       items.each_index do |index|
         item_x = x(col(index))
         item_y = y(row(index))
 
-        if mouse_x >= item_x && mouse_x < item_x + HUD::SlotSize &&
-           mouse_y >= item_y && mouse_y < item_y + HUD::SlotSize
+        if mouse.x >= item_x && mouse.x < item_x + HUD::SlotSize &&
+           mouse.y >= item_y && mouse.y < item_y + HUD::SlotSize
           @hover_index = index
         end
       end

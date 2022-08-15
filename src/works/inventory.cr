@@ -38,7 +38,7 @@ module Works
     end
 
     def update(keys : Keys, mouse : Mouse, map : Map, player : Player)
-      hud.update(keys, mouse, map.x, map.y)
+      hud.update(keys, mouse)
 
       if !held_item && keys.just_pressed?(LibAllegro::KeyQ)
         if strct = map.get_struct(mouse)
