@@ -33,15 +33,23 @@ module Works
     end
 
     def init
-      add(Item::Struct::Furnace::Stone, 1)
-      add(Item::Struct::Furnace::Electric, 1)
+      add(Item::Struct::Furnace::Stone, 15)
+      add(Item::Struct::Furnace::Electric, 9)
     end
 
     def update(keys : Keys, mouse : Mouse, map : Map, player : Player)
       hud.update(keys, mouse, map.x, map.y)
 
-      if shown? && !held_item && keys.just_pressed?(LibAllegro::KeyQ)
-        hud.hide
+      if !held_item && keys.just_pressed?(LibAllegro::KeyQ)
+        if strct = map.get_struct(mouse)
+          key = strct.item_class.key
+
+          if index = items.index { |i| i.key == key }
+            grab_item(index, mouse)
+          end
+        elsif shown?
+          hud.hide
+        end
       else
         update_held_item(keys, mouse, map, player)
       end
@@ -80,19 +88,7 @@ module Works
       else
         if hover_index = hud.hover_index
           if mouse.left_pressed?
-            if item = items.delete(items[hover_index])
-              @held_item = Item::Held.new(mouse.x, mouse.y, item, hud.item_size)
-
-              if item.is_a?(Item::Struct::Base)
-                if held_item = @held_item
-                  held_item.strct = item.to_struct
-                end
-              end
-
-              @held_index = hover_index
-
-              items.insert(hover_index, Item::Hand.new)
-            end
+            grab_item(hover_index, mouse)
           end
         end
       end
@@ -106,6 +102,22 @@ module Works
 
         @held_index = nil
         @held_item = nil
+      end
+    end
+
+    def grab_item(index, mouse : Mouse)
+      if item = items.delete(items[index])
+        @held_item = Item::Held.new(mouse.x, mouse.y, item, hud.item_size)
+
+        if item.is_a?(Item::Struct::Base)
+          if held_item = @held_item
+            held_item.strct = item.to_struct
+          end
+        end
+
+        @held_index = index
+
+        items.insert(index, Item::Hand.new)
       end
     end
 

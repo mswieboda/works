@@ -33,5 +33,11 @@ module Works
       ore.each(&.destroy)
       structs.each(&.destroy)
     end
+
+    def get_struct(mouse)
+      col, row = mouse.to_map_coords(x, y)
+
+      structs.find(&.hover?(col, row))
+    end
   end
 end

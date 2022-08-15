@@ -219,8 +219,6 @@ module Works
     end
 
     def draw_inventory(x, y)
-      inventory.draw
-
       if held_item = inventory.held_item
         if inventory.hud.hover?
           held_item.draw_item
@@ -242,6 +240,8 @@ module Works
           held_item.draw_on_map(x, y, color_tint)
         end
       end
+
+      inventory.draw
     end
 
     def draw_selection(dx, dy, color)
