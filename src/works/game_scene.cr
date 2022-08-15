@@ -82,9 +82,9 @@ module Works
     end
 
     def init_player
-      @player.x = 100
-      @player.y = 100
-      @player.speed = 5
+      player.x = 100
+      player.y = 100
+      player.speed = 5
 
       player.init(sheet)
     end
@@ -96,6 +96,12 @@ module Works
       end
 
       player.update(keys, mouse, map)
+      update_viewport
+    end
+
+    def update_viewport
+      map.x = (Screen::Width / 2).to_i - player.x
+      map.y = (Screen::Height / 2).to_i - player.y
     end
 
     def draw

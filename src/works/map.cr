@@ -4,8 +4,8 @@ require "./struct/base"
 
 module Works
   class Map
-    getter x
-    getter y
+    property x
+    property y
     getter width
     getter height
     getter ground
