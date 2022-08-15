@@ -233,8 +233,6 @@ module Works
             end
 
             draw_selection(x, y, color_tint) if held_item.player_overlaps?
-
-            strct.draw_hover_info
           end
 
           held_item.draw_on_map(x, y, color_tint)

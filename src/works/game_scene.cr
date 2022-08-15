@@ -28,9 +28,13 @@ module Works
     end
 
     def init_map
+      # TODO: try 500x500, see huge lag, fix FPS counter it still says ~58FPS...
+      map_cols = 100
+      map_rows = 100
+
       # ground
-      (Screen::Width / Tile::Grass.size).to_u16.times do |col|
-        (Screen::Height / Tile::Grass.size).to_u16.times do |row|
+      map_cols.to_u16.times do |col|
+        map_rows.to_u16.times do |row|
           map.ground << Tile::Grass.new(col, row)
         end
       end
@@ -82,8 +86,8 @@ module Works
     end
 
     def init_player
-      player.x = 100
-      player.y = 100
+      player.x = 333
+      player.y = 333
       player.speed = 5
 
       player.init(sheet)
@@ -96,24 +100,29 @@ module Works
       end
 
       player.update(keys, mouse, map)
-      update_viewport
-    end
-
-    def update_viewport
-      map.x = (Screen::Width / 2).to_i - player.x
-      map.y = (Screen::Height / 2).to_i - player.y
+      map.update_viewport(player.x, player.y)
     end
 
     def draw
       map.draw
       player.draw(map.x, map.y)
 
+      draw_hover_info
+    end
+
+    def draw_hover_info
       if ore_hover = player.ore_hover
         ore_hover.draw_hover_info
       end
 
       if struct_hover = player.struct_hover
         struct_hover.draw_hover_info
+      end
+
+      if (held_item = player.inventory.held_item) && !player.inventory.hud.hover?
+        if strct = held_item.strct
+          strct.draw_hover_info
+        end
       end
     end
 

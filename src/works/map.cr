@@ -4,8 +4,8 @@ require "./struct/base"
 
 module Works
   class Map
-    property x
-    property y
+    getter x
+    getter y
     getter ground
     getter ore
     getter structs
@@ -26,12 +26,17 @@ module Works
       -y
     end
 
-    def width
+    def swidth
       Screen::Width
     end
 
-    def height
+    def sheight
       Screen::Height
+    end
+
+    def update_viewport(player_x, player_y)
+      @x = (swidth / 2).to_i - player_x
+      @y = (sheight / 2).to_i - player_y
     end
 
     def draw
@@ -57,8 +62,8 @@ module Works
     end
 
     def viewable?(cell : Cell)
-      cell.x + cell.width + Cell.size >= sx && cell.x.to_i - Cell.size <= sx + width &&
-        cell.y + cell.height + Cell.size >= sy && cell.y.to_i - Cell.size <= sy + height
+      cell.x + cell.width + Cell.size >= sx && cell.x.to_i - Cell.size <= sx + swidth &&
+        cell.y + cell.height + Cell.size >= sy && cell.y.to_i - Cell.size <= sy + sheight
     end
   end
 end
