@@ -13,17 +13,31 @@ module Works
     def initialize
       @x = 0
       @y = 0
-      @width = 0
-      @height = 0
       @ground = [] of Tile::Base
       @ore = [] of Tile::Ore::Base
       @structs = [] of Struct::Base
     end
 
+    def sx
+      -x
+    end
+
+    def sy
+      -y
+    end
+
+    def width
+      Screen::Width
+    end
+
+    def height
+      Screen::Height
+    end
+
     def draw
-      ground.each(&.draw(x, y))
-      ore.each(&.draw(x, y))
-      structs.each(&.draw(x, y))
+      viewables(ground).each(&.draw(x, y))
+      viewables(ore).each(&.draw(x, y))
+      viewables(structs).each(&.draw(x, y))
     end
 
     def destroy
@@ -36,6 +50,15 @@ module Works
       col, row = mouse.to_map_coords(x, y)
 
       structs.find(&.hover?(col, row))
+    end
+
+    def viewables(cells : Array(Cell))
+      cells.select { |c| viewable?(c) }
+    end
+
+    def viewable?(cell : Cell)
+      cell.x + cell.width + Cell.size >= sx && cell.x.to_i - Cell.size <= sx + width &&
+        cell.y + cell.height + Cell.size >= sy && cell.y.to_i - Cell.size <= sy + height
     end
   end
 end
