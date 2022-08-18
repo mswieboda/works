@@ -14,7 +14,7 @@ module Works
     def initialize
       @x = 0
       @y = 0
-      @ground = [] of Tile::Base
+      @ground = [] of Array(Tile::Base)
       @ore = [] of Tile::Ore::Base
       @structs = [] of Struct::Base
       @viewables = [] of Cell
@@ -43,7 +43,7 @@ module Works
 
     def update
       @viewables.clear
-      @viewables += viewables(ground)
+      @viewables += viewables_grid(ground)
       @viewables += viewables(ore)
       @viewables += viewables(structs)
     end
@@ -53,7 +53,7 @@ module Works
     end
 
     def destroy
-      ground.each(&.destroy)
+      ground.flatten.each(&.destroy)
       ore.each(&.destroy)
       structs.each(&.destroy)
     end
@@ -62,6 +62,30 @@ module Works
       col, row = mouse.to_map_coords(x, y)
 
       structs.find(&.hover?(col, row))
+    end
+
+    def viewport_col_min
+      ((sx - Cell.size) / Cell.size).round.to_i
+    end
+
+    def viewport_col_max
+      ((sx + swidth + Cell.size) / Cell.size).round.to_i
+    end
+
+    def viewport_row_min
+      ((sy - Cell.size) / Cell.size).round.to_i
+    end
+
+    def viewport_row_max
+      ((sy + sheight + Cell.size) / Cell.size).round.to_i
+    end
+
+    def viewables_grid(cells : Array(Array(Cell)))
+      cols = cells[viewport_col_min.clamp(0, nil)..viewport_col_max]
+
+      cols.flat_map do |col|
+        col[viewport_row_min.clamp(0, nil)..viewport_row_max]
+      end
     end
 
     def viewables(cells : Array(Cell))

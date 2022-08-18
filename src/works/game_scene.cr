@@ -28,14 +28,15 @@ module Works
     end
 
     def init_map
-      # TODO: try 500x500, see huge lag, fix FPS counter it still says ~58FPS...
       map_cols = 500
       map_rows = 500
 
       # ground
       map_cols.to_u16.times do |col|
+        map.ground << [] of Tile::Base
+
         map_rows.to_u16.times do |row|
-          map.ground << Tile::Grass.new(col, row)
+          map.ground[col] << Tile::Grass.new(col, row)
         end
       end
 
