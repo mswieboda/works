@@ -40,6 +40,15 @@ module Works
         end
       end
 
+      # nil ore
+      map_cols.to_u16.times do |col|
+        map.ore << [] of Tile::Ore::Base | Nil
+
+        map_rows.to_u16.times do |row|
+          map.ore[col] << nil
+        end
+      end
+
       # coal patches
       [
         [3_u16, 3_u16, 3_u16, 3_u16],
@@ -81,7 +90,7 @@ module Works
 
       (init_cols...cols).to_a.each do |col|
         (init_rows...rows).to_a.each do |row|
-          map.ore << klass.new(col, row, rand(3_000_u16))
+          map.ore[col][row] = klass.new(col, row, rand(3_000_u16))
         end
       end
     end

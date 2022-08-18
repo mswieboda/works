@@ -134,7 +134,7 @@ module Works
 
     def update_mining(map : Map, mouse : Mouse, mouse_col, mouse_row)
       ish = inventory.shown? && inventory.hover?(mouse)
-      @ore_hover = @struct_hover || ish ? nil : map.ore.find(&.hover?(mouse_col, mouse_row))
+      @ore_hover = @struct_hover || ish ? nil : map.get_ore(mouse_col, mouse_row)
 
       if (ore = @ore_hover) && minable?(ore) && mouse.right_pressed?
         mining_timer.start unless mining_timer.started?
