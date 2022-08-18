@@ -104,7 +104,7 @@ module Works
     end
 
     def update(keys : Keys, mouse : Mouse)
-      if keys.just_pressed?(LibAllegro::KeyEscape)
+      if keys.just_pressed?(LibAllegro::KeyEscape) && !player.inventory.shown?
         @exit = true
         return
       end

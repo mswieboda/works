@@ -81,6 +81,7 @@ module Works
 
       update_movement(keys)
       update_structs(map, mouse, mouse_col, mouse_row)
+      update_struct_info(mouse)
       update_mining(map, mouse, mouse_col, mouse_row)
       inventory.update(keys, mouse, map, self)
 
@@ -129,6 +130,12 @@ module Works
         struct_removal_timer.restart
       else
         struct_removal_timer.stop
+      end
+    end
+
+    def update_struct_info(mouse : Mouse)
+      if mouse.left_just_pressed? && (strct = @struct_hover) && !inventory.held_item
+        inventory.show_struct(strct)
       end
     end
 

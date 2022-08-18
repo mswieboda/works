@@ -50,7 +50,7 @@ module Works
       LibAllegro.set_window_title(display, Screen::Name)
 
       # set to fullscreen windowed
-      # al_set_display_flag(display, ALLEGRO_FULLSCREEN_WINDOW, true);
+      # LibAllegro.set_display_flag(display, LibAllegro::FullscreenWindow, 1)
 
       # al_hide_mouse_cursor(display);
 

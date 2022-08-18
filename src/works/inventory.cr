@@ -3,7 +3,6 @@ require "./item/held"
 require "./item/hand"
 require "./item/**"
 require "./inventory_hud"
-require "./hud_text"
 
 module Works
   class Inventory
@@ -23,6 +22,7 @@ module Works
 
     delegate shown?, to: @hud
     delegate hover?, to: @hud
+    delegate show_struct, to: @hud
 
     def initialize
       @max_slots = MaxSlots
@@ -40,15 +40,11 @@ module Works
     def update(keys : Keys, mouse : Mouse, map : Map, player : Player)
       hud.update(keys, mouse)
 
-      if !held_item && keys.just_pressed?(LibAllegro::KeyQ)
-        if strct = map.get_struct(mouse)
-          key = strct.item_class.key
+      if keys.just_pressed?(LibAllegro::KeyQ) && !held_item && (strct = map.get_struct(mouse))
+        key = strct.item_class.key
 
-          if index = items.index { |i| i.key == key }
-            grab_item(index, mouse)
-          end
-        elsif shown?
-          hud.hide
+        if index = items.index { |i| i.key == key }
+          grab_item(index, mouse)
         end
       else
         update_held_item(keys, mouse, map, player)
@@ -86,8 +82,8 @@ module Works
           end
         end
       else
-        if hover_index = hud.hover_index
-          if mouse.left_pressed?
+        if (hover_index = hud.hover_index) && mouse.left_pressed?
+          if hover_index <= items.size - 1
             grab_item(hover_index, mouse)
           end
         end

@@ -4,19 +4,20 @@ require "./mouse"
 
 module Works
   class InventoryHUD
-    module HUD
-      BackgroundColor = LibAllegro.premul_rgba_f(0, 0, 0, 0.13)
-      SlotBackgroundColor = LibAllegro.premul_rgba_f(1, 1, 1, 0.13)
-      SlotBorderColor = LibAllegro.premul_rgba_f(0, 0, 0, 0.03)
-      SlotSize = 32
-      SlotMargin = 4
-    end
+    BackgroundColor = LibAllegro.premul_rgba_f(0, 0, 0, 0.13)
+    HoverColor = LibAllegro.premul_rgba_f(1, 0.5, 0, 0.33)
+    Margin = 4
+    SlotBackgroundColor = LibAllegro.premul_rgba_f(1, 1, 1, 0.13)
+    SlotBorderColor = LibAllegro.premul_rgba_f(0, 0, 0, 0.03)
+    SlotSize = 32
+    StructInfoSize = 192
 
     getter? shown
     getter? hover
     getter items
     getter max_slots : Int32
     getter hover_index : Int32 | Nil
+    getter show_struct : Struct::Base | Nil
 
     def initialize(items : Array(Item::Base), max_slots)
       @shown = false
@@ -24,6 +25,7 @@ module Works
       @items = items
       @max_slots = max_slots
       @hover_index = nil
+      @show_struct = nil
     end
 
     def update(keys : Keys, mouse : Mouse)
@@ -34,6 +36,8 @@ module Works
 
       if keys.just_pressed?(LibAllegro::KeyE)
         show_toggle
+      elsif keys.just_pressed?(LibAllegro::KeyEscape)
+        hide
       end
     end
 
@@ -42,12 +46,12 @@ module Works
     end
 
     def update_hover_index(mouse : Mouse)
-      items.each_index do |index|
+      max_slots.times do |index|
         item_x = x(col(index))
         item_y = y(row(index))
 
-        if mouse.x >= item_x && mouse.x < item_x + HUD::SlotSize &&
-           mouse.y >= item_y && mouse.y < item_y + HUD::SlotSize
+        if mouse.x >= item_x && mouse.x < item_x + SlotSize &&
+           mouse.y >= item_y && mouse.y < item_y + SlotSize
           @hover_index = index
         end
       end
@@ -58,11 +62,21 @@ module Works
     end
 
     def hide
+      if shown? && show_struct
+        @show_struct = nil
+      end
+
       @shown = false
     end
 
     def show_toggle
       shown? ? hide : show
+    end
+
+    def show_struct(strct : Struct::Base)
+      @show_struct = strct
+
+      show
     end
 
     def cols
@@ -83,12 +97,22 @@ module Works
       (index / cols).to_i % rows
     end
 
+    def inventory_width
+      Margin + cols * SlotSize + Margin
+    end
+
+    def struct_info_width
+      StructInfoSize
+    end
+
     def width
-      HUD::SlotMargin + cols * HUD::SlotSize + HUD::SlotMargin
+      width = inventory_width
+      width += struct_info_width if show_struct
+      width
     end
 
     def height
-      HUD::SlotMargin + rows * HUD::SlotSize + HUD::SlotMargin
+      Margin + rows * SlotSize + Margin
     end
 
     def x
@@ -100,15 +124,15 @@ module Works
     end
 
     def x(col)
-      x + HUD::SlotMargin + col * HUD::SlotSize
+      x + Margin + col * SlotSize
     end
 
     def y(row)
-      y + HUD::SlotMargin + row * HUD::SlotSize
+      y + Margin + row * SlotSize
     end
 
     def item_size
-      HUD::SlotSize - HUD::SlotMargin * 2
+      SlotSize - Margin * 2
     end
 
     def hover?(mouse : Mouse)
@@ -123,10 +147,11 @@ module Works
 
       draw_background
       draw_slots
+      draw_struct_info if show_struct
     end
 
     def draw_background
-      LibAllegro.draw_filled_rectangle(x, y, x + width, y + height, HUD::BackgroundColor)
+      LibAllegro.draw_filled_rectangle(x, y, x + width, y + height, BackgroundColor)
     end
 
     def draw_slots
@@ -137,27 +162,56 @@ module Works
           dx = x(col)
           dy = y(row)
 
-          LibAllegro.draw_filled_rectangle(
-            dx,
-            dy,
-            dx + HUD::SlotSize,
-            dy + HUD::SlotSize,
-            HUD::SlotBackgroundColor
-          )
+          item = index < items.size ? items[index] : nil
 
-          if index < items.size
-            item = items[index]
-            item.draw(dx + HUD::SlotMargin, dy + HUD::SlotMargin, item_size)
-
-            if index == hover_index
-              LibAllegro.draw_rectangle(dx, dy, dx + HUD::SlotSize, dy + HUD::SlotSize, LibAllegro.map_rgb_f(1, 1, 1), 1)
-            end
-          end
-
-          LibAllegro.draw_rectangle(dx, dy, dx + HUD::SlotSize, dy + HUD::SlotSize, HUD::SlotBorderColor, 1)
+          draw_slot(dx, dy, item, index == hover_index)
 
           index += 1
         end
+      end
+    end
+
+    def draw_slot(dx, dy, item : Item::Base | Nil, hovering = false)
+      LibAllegro.draw_filled_rectangle(
+        dx,
+        dy,
+        dx + SlotSize,
+        dy + SlotSize,
+        SlotBackgroundColor
+      )
+
+      if hovering
+        LibAllegro.draw_filled_rectangle(dx, dy, dx + SlotSize, dy + SlotSize, HoverColor)
+      end
+
+      if item
+        item.draw(dx + Margin, dy + Margin, item_size)
+      end
+
+      LibAllegro.draw_rectangle(dx, dy, dx + SlotSize, dy + SlotSize, SlotBorderColor, 1)
+    end
+
+    def draw_struct_info
+      if strct = @show_struct
+        dx = x + inventory_width
+        dy = y + Margin
+
+        # background
+        LibAllegro.draw_filled_rectangle(dx, dy, dx + struct_info_width - Margin, dy + height - Margin * 2, BackgroundColor)
+
+        dx += Margin
+        dy += Margin
+
+        HUDText.new("#{strct.name}").draw_from_bottom(dx, y + height - Margin)
+
+        # input slot
+        draw_slot(dx, dy, nil, false)
+
+        # output slot
+        draw_slot(dx + struct_info_width - Margin - SlotSize - Margin, dy, nil, false)
+
+        # fuel slot
+        draw_slot(dx, dy + Margin + SlotSize, nil, false)
       end
     end
   end
