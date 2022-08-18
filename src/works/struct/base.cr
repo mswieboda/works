@@ -6,6 +6,18 @@ module Works::Struct
     Name = "Struct"
     Color = LibAllegro.map_rgb_f(0.5, 0.5, 0.1)
 
+    property input_item : Item::Base | Nil
+    property output_item : Item::Base | Nil
+    property fuel_item : Item::Base | Nil
+
+    def initialize(col = 0_u16, row = 0_u16)
+      super(col, row)
+
+      @input_item = nil
+      @output_item = nil
+      @fuel_item = nil
+    end
+
     def self.key
       Key
     end

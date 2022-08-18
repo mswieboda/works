@@ -246,13 +246,13 @@ module Works
         LibAllegro.draw_filled_rectangle(dx, dy, dx + struct_info_width - Margin, dy + height - Margin * 2, BackgroundColor)
 
         # input slot
-        draw_slot(input_slot_x, input_slot_y, nil, input_slot_hover?)
+        draw_slot(input_slot_x, input_slot_y, strct.input_item, input_slot_hover?)
 
         # output slot
-        draw_slot(output_slot_x, output_slot_y, nil, output_slot_hover?)
+        draw_slot(output_slot_x, output_slot_y, strct.output_item, output_slot_hover?)
 
         # fuel slot
-        draw_slot(fuel_slot_x, fuel_slot_y, nil, fuel_slot_hover?)
+        draw_slot(fuel_slot_x, fuel_slot_y, strct.fuel_item, fuel_slot_hover?)
 
         # info text at bottom
         HUDText.new("#{strct.name}").draw_from_bottom(dx + Margin, y + height - Margin)

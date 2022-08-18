@@ -4,7 +4,7 @@ module Works::Item
   class Held
     getter x : Int32
     getter y : Int32
-    getter item : Item::Base
+    property item : Item::Base
     property strct : Works::Struct::Base | Nil
     getter size : Int32
     getter? player_buildable

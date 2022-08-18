@@ -44,7 +44,7 @@ module Works
         key = strct.item_class.key
 
         if index = items.index { |i| i.key == key }
-          grab_item(index, mouse)
+          grab_inventory_item(index, mouse)
         end
       else
         update_held_item(keys, mouse, map, player)
@@ -55,36 +55,56 @@ module Works
       if held_item = @held_item
         held_item.update(mouse, map, player)
 
-        if held_index = @held_index
-          if keys.just_pressed?(LibAllegro::KeyQ)
-            put_held_item_back(held_item, held_index)
-            return
-          end
-
-          return unless mouse.left_just_pressed?
-
-          if hud.hover?
+        if keys.just_pressed?(LibAllegro::KeyQ)
+          if held_index = @held_index
             put_held_item_back(held_item, held_index)
           else
-            if held_item.buildable? && held_item.item.amount > 0
-              if strct = held_item.strct
-                map.structs << strct.clone
-                held_item.item.remove(1)
-              end
+            add_held_item_to_inventory(held_item.item)
+          end
 
-              if held_item.item.amount <= 0
-                if hand_item = items.delete(items[held_index])
-                  @held_index = nil
-                  @held_item = nil
+          return
+        end
+
+        return unless mouse.left_just_pressed?
+
+        if held_index = @held_index
+          if !hud.hover? && held_item.buildable? && held_item.item.amount > 0
+            if strct = held_item.strct
+              map.structs << strct.clone
+              held_item.item.remove(1)
+            end
+
+            if held_item.item.amount <= 0
+              remove_hand_item(held_index)
+            end
+          elsif hud.shown?
+            if hud.hover_index
+              put_held_item_back(held_item, held_index)
+            elsif strct = hud.show_struct
+              if hud.input_slot_hover?
+                if item = strct.input_item
+                  strct.input_item = swap_held_item(held_index, item)
+                elsif item = remove_held_item(held_index)
+                  # TODO: see if it's valid for slot, etc
+                  strct.input_item = item
                 end
               end
             end
           end
+        elsif hud.shown? && hud.hover_index
+          add_held_item_to_inventory(held_item.item)
         end
-      else
-        if (hover_index = hud.hover_index) && mouse.left_pressed?
+      elsif mouse.left_just_pressed?
+        if hover_index = hud.hover_index
           if hover_index <= items.size - 1
-            grab_item(hover_index, mouse)
+            grab_inventory_item(hover_index, mouse)
+          end
+        elsif strct = hud.show_struct
+          if hud.input_slot_hover?
+            if item = strct.input_item
+              grab_slot_item(item, mouse)
+              strct.input_item = nil
+            end
           end
         end
       end
@@ -101,19 +121,60 @@ module Works
       end
     end
 
-    def grab_item(index, mouse : Mouse)
-      if item = items.delete(items[index])
-        @held_item = Item::Held.new(mouse.x, mouse.y, item, hud.item_size)
+    def add_held_item_to_inventory(item)
+      add_item_and_sort!(item)
 
-        if item.is_a?(Item::Struct::Base)
-          if held_item = @held_item
-            held_item.strct = item.to_struct
-          end
-        end
+      @held_index = nil
+      @held_item = nil
+    end
+
+    def grab_inventory_item(index, mouse : Mouse)
+      if item = items.delete(items[index])
+        grab_slot_item(item, mouse)
 
         @held_index = index
 
         items.insert(index, Item::Hand.new)
+      end
+    end
+
+    def grab_slot_item(item, mouse : Mouse)
+      @held_item = Item::Held.new(mouse.x, mouse.y, item, hud.item_size)
+
+      if item.is_a?(Item::Struct::Base)
+        if held_item = @held_item
+          held_item.strct = item.to_struct
+        end
+      end
+    end
+
+    def remove_held_item(held_index)
+      if held_item = @held_item
+        remove_hand_item(held_index)
+
+        return held_item.item
+      end
+    end
+
+    def remove_hand_item(held_index)
+      if hand_item = items.delete(items[held_index])
+        @held_index = nil
+        @held_item = nil
+      end
+    end
+
+    def swap_held_item(held_index, item : Item::Base)
+      if held_item = @held_item
+        swap_item = held_item.item
+        held_item.item = item
+
+        if item.is_a?(Item::Struct::Base)
+          held_item.strct = item.to_struct
+        else
+          held_item.strct = nil
+        end
+
+        return swap_item
       end
     end
 
