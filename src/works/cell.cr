@@ -1,5 +1,5 @@
 module Works
-  class Cell
+  abstract class Cell
     SelectionLength = 10
     SelectionThickness = 3
 
@@ -71,6 +71,8 @@ module Works
       mouse_col >= col && mouse_col < col + dimensions[:x] &&
         mouse_row >= row && mouse_row < row + dimensions[:y]
     end
+
+    abstract def draw(x, y)
 
     def draw_selection(dx, dy, color = nil)
       self.class.draw_selection(dx + x, dy + y, width, height, color)

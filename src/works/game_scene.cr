@@ -29,8 +29,8 @@ module Works
 
     def init_map
       # TODO: try 500x500, see huge lag, fix FPS counter it still says ~58FPS...
-      map_cols = 100
-      map_rows = 100
+      map_cols = 500
+      map_rows = 500
 
       # ground
       map_cols.to_u16.times do |col|
@@ -101,6 +101,7 @@ module Works
 
       player.update(keys, mouse, map)
       map.update_viewport(player.x, player.y)
+      map.update
     end
 
     def draw

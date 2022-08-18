@@ -9,6 +9,7 @@ module Works
     getter ground
     getter ore
     getter structs
+    getter viewables
 
     def initialize
       @x = 0
@@ -16,6 +17,7 @@ module Works
       @ground = [] of Tile::Base
       @ore = [] of Tile::Ore::Base
       @structs = [] of Struct::Base
+      @viewables = [] of Cell
     end
 
     def sx
@@ -39,10 +41,15 @@ module Works
       @y = (sheight / 2).to_i - player_y
     end
 
+    def update
+      @viewables.clear
+      @viewables += viewables(ground)
+      @viewables += viewables(ore)
+      @viewables += viewables(structs)
+    end
+
     def draw
-      viewables(ground).each(&.draw(x, y))
-      viewables(ore).each(&.draw(x, y))
-      viewables(structs).each(&.draw(x, y))
+      viewables.each(&.draw(x, y))
     end
 
     def destroy

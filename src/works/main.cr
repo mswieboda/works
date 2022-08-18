@@ -80,8 +80,6 @@ module Works
           sceneManager.draw
 
           LibAllegro.flip_display
-
-          sceneManager.calc_fps
         end
       end
 

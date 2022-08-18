@@ -2,7 +2,7 @@ require "./font"
 
 module Works
   class FPSDisplay
-    TimeSpan = 10
+    TimeSpan = 1
 
     Margin = 3
     Width = 100
@@ -25,7 +25,7 @@ module Works
       time = @time_end - @time_start
       fps = (@frames + 1) / time.total_seconds
       @str_fps = "#{fps.round(2)}"
-      @str_time = "#{time.total_seconds.round(1)}s"
+      @str_time = "#{(time.total_milliseconds / (@frames + 1)).round(1)}ms"
       @fps_percent = time.total_seconds / TimeSpan * 100
       @frames += 1
 

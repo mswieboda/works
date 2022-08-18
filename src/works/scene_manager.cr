@@ -16,7 +16,6 @@ module Works
     property mainMenu
     property gameScene
 
-
     def initialize
       super
 
@@ -42,6 +41,8 @@ module Works
         update(keys, mouse)
         keys.reset
         mouse.reset
+
+        calc_fps
 
         @redraw = true
       when LibAllegro::EventMouseAxes
@@ -87,12 +88,6 @@ module Works
     def draw
       scene.draw
       fps.draw
-    end
-
-    def reset
-      super
-
-      @redraw = false
     end
 
     def destroy
