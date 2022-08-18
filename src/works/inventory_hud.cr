@@ -14,6 +14,9 @@ module Works
 
     getter? shown
     getter? hover
+    getter? input_slot_hover
+    getter? output_slot_hover
+    getter? fuel_slot_hover
     getter items
     getter max_slots : Int32
     getter hover_index : Int32 | Nil
@@ -26,13 +29,15 @@ module Works
       @max_slots = max_slots
       @hover_index = nil
       @show_struct = nil
+      @input_slot_hover = false
+      @output_slot_hover = false
+      @fuel_slot_hover = false
     end
 
     def update(keys : Keys, mouse : Mouse)
-      @hover_index = nil
-
       update_hover(mouse)
-      update_hover_index(mouse) if hover?
+      update_hover_index(mouse)
+      update_struct_info_slot_hovers(mouse)
 
       if keys.just_pressed?(LibAllegro::KeyE)
         show_toggle
@@ -42,10 +47,14 @@ module Works
     end
 
     def update_hover(mouse : Mouse)
-      @hover = shown? && hover?(mouse)
+      @hover = hover?(mouse)
     end
 
     def update_hover_index(mouse : Mouse)
+      @hover_index = nil
+
+      return unless hover?
+
       max_slots.times do |index|
         item_x = x(col(index))
         item_y = y(row(index))
@@ -55,6 +64,12 @@ module Works
           @hover_index = index
         end
       end
+    end
+
+    def update_struct_info_slot_hovers(mouse : Mouse)
+      @input_slot_hover = slot_hover?(input_slot_x, input_slot_y, mouse)
+      @output_slot_hover = slot_hover?(output_slot_x, output_slot_y,mouse)
+      @fuel_slot_hover = slot_hover?(fuel_slot_x, fuel_slot_y,mouse)
     end
 
     def show
@@ -135,11 +150,42 @@ module Works
       SlotSize - Margin * 2
     end
 
+    def input_slot_x
+      x + inventory_width + Margin
+    end
+
+    def input_slot_y
+      y + Margin + Margin
+    end
+
+    def output_slot_x
+      input_slot_x + struct_info_width - Margin - SlotSize - Margin
+    end
+
+    def output_slot_y
+      input_slot_y
+    end
+
+    def fuel_slot_x
+      input_slot_x
+    end
+
+    def fuel_slot_y
+      input_slot_y + Margin + SlotSize
+    end
+
     def hover?(mouse : Mouse)
       return false unless shown?
 
       mouse.x >= x && mouse.x < x + width &&
         mouse.y > y && mouse.y < y + height
+    end
+
+    def slot_hover?(slot_x, slot_y, mouse : Mouse)
+      return false unless hover? && show_struct
+
+      mouse.x >= slot_x && mouse.x < slot_x + SlotSize &&
+        mouse.y > slot_y && mouse.y < slot_y + SlotSize
     end
 
     def draw
@@ -199,19 +245,17 @@ module Works
         # background
         LibAllegro.draw_filled_rectangle(dx, dy, dx + struct_info_width - Margin, dy + height - Margin * 2, BackgroundColor)
 
-        dx += Margin
-        dy += Margin
-
-        HUDText.new("#{strct.name}").draw_from_bottom(dx, y + height - Margin)
-
         # input slot
-        draw_slot(dx, dy, nil, false)
+        draw_slot(input_slot_x, input_slot_y, nil, input_slot_hover?)
 
         # output slot
-        draw_slot(dx + struct_info_width - Margin - SlotSize - Margin, dy, nil, false)
+        draw_slot(output_slot_x, output_slot_y, nil, output_slot_hover?)
 
         # fuel slot
-        draw_slot(dx, dy + Margin + SlotSize, nil, false)
+        draw_slot(fuel_slot_x, fuel_slot_y, nil, fuel_slot_hover?)
+
+        # info text at bottom
+        HUDText.new("#{strct.name}").draw_from_bottom(dx + Margin, y + height - Margin)
       end
     end
   end
