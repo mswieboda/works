@@ -66,6 +66,10 @@ module Works::Item
       amount >= max_amount
     end
 
+    def none?
+      amount <= 0
+    end
+
     def add(amount)
       total = @amount + amount
 
@@ -89,6 +93,16 @@ module Works::Item
 
         0
       end
+    end
+
+    def remove_as_new(amount)
+      item = self.class.new
+
+      leftovers = remove(amount)
+
+      item.add(amount - leftovers)
+
+      item
     end
 
     def draw(x, y, size)

@@ -22,5 +22,16 @@ module Works::Struct::Furnace
     def self.color
       Color
     end
+
+    def output_duration(item : Item::Base) : Time::Span
+      case item
+      when Item::Ore::Iron, Item::Ore::Copper, Item::Ore::Stone
+        1.6.seconds
+      # when Item::IronPlate
+      #   8.seconds
+      else
+        0.seconds
+      end
+    end
   end
 end

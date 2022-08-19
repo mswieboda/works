@@ -6,6 +6,7 @@ module Works
   class InventoryHUD
     BackgroundColor = LibAllegro.premul_rgba_f(0, 0, 0, 0.13)
     HoverColor = LibAllegro.premul_rgba_f(1, 0.5, 0, 0.33)
+    OutputProgressColor = LibAllegro.premul_rgba_f(0, 1, 0, 0.33)
     Margin = 4
     SlotBackgroundColor = LibAllegro.premul_rgba_f(1, 1, 1, 0.13)
     SlotBorderColor = LibAllegro.premul_rgba_f(0, 0, 0, 0.03)
@@ -247,6 +248,14 @@ module Works
 
         # input slot
         draw_slot(input_slot_x, input_slot_y, strct.input_item, input_slot_hover?)
+
+        # output progress
+        dx = input_slot_x + SlotSize + Margin
+        dy = input_slot_y + Margin * 3
+        progress_total_x = output_slot_x - Margin
+        progress_width = progress_total_x - dx
+        progress_end_x = dx + progress_width * strct.output_timer.percent
+        LibAllegro.draw_filled_rectangle(dx, dy, progress_end_x, dy - Margin * 3 + SlotSize - Margin * 3, OutputProgressColor)
 
         # output slot
         draw_slot(output_slot_x, output_slot_y, strct.output_item, output_slot_hover?)

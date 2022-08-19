@@ -1,7 +1,8 @@
 module Works
   class Timer
+    property duration : Time::Span
+
     @start_time : Time | Nil
-    @duration : Time::Span
 
     def initialize(duration)
       @duration = duration
