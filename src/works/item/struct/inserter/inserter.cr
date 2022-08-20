@@ -1,11 +1,11 @@
 require "./base"
 
 module Works::Item::Struct::Inserter
-  class Burner < Base
-    Key = :burner_inserter
-    Name = "Burner inserter"
-    ShortCode = "BI"
-    Color = LibAllegro.map_rgb_f(0.333, 0.25, 0.21)
+  class Inserter < Base
+    Key = :inserter
+    Name = "Inserter"
+    ShortCode = "IN"
+    Color = LibAllegro.map_rgb_f(0.75, 0.75, 0.1)
 
     def self.key
       Key

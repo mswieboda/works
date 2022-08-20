@@ -15,7 +15,7 @@ module Works
       # other
       Item::StoneBrick,
       # inserters
-      Item::Struct::Inserter::Burner,
+      Item::Struct::Inserter::Burner, Item::Struct::Inserter::Inserter,
       # furnaces
       Item::Struct::Furnace::Stone, Item::Struct::Furnace::Electric
     ].map(&.key)
@@ -45,6 +45,7 @@ module Works
       add(Item::Struct::Furnace::Stone, 3)
       add(Item::Struct::Furnace::Electric, 1)
       add(Item::Struct::Inserter::Burner, 5)
+      add(Item::Struct::Inserter::Inserter, 5)
     end
 
     def update(keys : Keys, mouse : Mouse, map : Map, player : Player)
