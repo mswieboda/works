@@ -39,8 +39,8 @@ module Works
       row = (y / Cell.size).to_u16
 
       if (cols + rows) % 2 == 0
-        col -= 1 if x % Cell.size < Cell.size / 2.125
-        row -= 1 if y % Cell.size < Cell.size / 2.125
+        col -= 1 if col > 1 && x % Cell.size < Cell.size.to_i / 2.125
+        row -= 1 if row > 1 && y % Cell.size < Cell.size.to_i / 2.125
       else
         col -= (cols / 2).ceil.to_i - 1
         row -= (rows / 2).ceil.to_i - 1
