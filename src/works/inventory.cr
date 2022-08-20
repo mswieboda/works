@@ -85,7 +85,7 @@ module Works
             end
 
             if held_item.item.amount <= 0
-              remove_hand_item(held_index)
+              remove_held_item
             end
           elsif hud.shown? && hud.hover_index
             put_held_item_back(held_item, held_index)
