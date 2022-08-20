@@ -1,18 +1,95 @@
 # works
 
-TODO: Write a description here
+[Factorio](https://factorio.com/) clone using [Crystal](https://crystal-lang.org/) and [Allegro](https://liballeg.org/)
 
 ## Installation
 
-TODO: Write installation instructions here
+```
+make
+```
 
-## Usage
+or
 
-TODO: Write usage instructions here
+```
+make test
+```
+
+to run the quickly compiled, more debuggable build, or
+
+```
+make release
+```
+
+for the more efficient production ready build.
+
 
 ## Development
 
-TODO: Write development instructions here
+- [x] Ore Mining
+  - [x] Coal ore
+  - [x] Copper ore
+  - [x] Iron ore
+  - [x] Stone ore
+  - [ ] Uranium ore
+- [ ] Furnaces
+  - [x] Stone (doesn't consume fuel yet)
+  - [ ] Steel
+  - [x] Electric (doesn't take electricity yet)
+- [ ] Furnace Recipes
+  - [x] Copper plate
+  - [x] Iron plate
+  - [x] Steel plate
+  - [x] Stone brick
+- [ ] Inserters
+  - [x] Burner (doesn't consume fuel yet)
+  - [x] Inserter (doesn't take electricity yet)
+  - [ ] Long-handed
+  - [ ] Fast
+  - [ ] Filter
+  - [ ] Stack
+  - [ ] Stack filter
+- [ ] Transport belts
+  - [ ] Transport belt
+  - [ ] Fast transport belt
+  - [ ] Express transport belt
+- [ ] Underground belts
+  - [ ] Underground belt
+  - [ ] Fast underground belt
+  - [ ] Express underground belt
+- [ ] Splitters
+  - [ ] Splitter
+  - [ ] Fast splitter
+  - [ ] Express splitter
+- [ ] Drills
+  - [ ] Burner mining drill
+  - [ ] Electric mining drill
+- [ ] Offshore pump
+- [ ] Pumpjack
+- [ ] Pipes
+  - [ ] Pipe
+  - [ ] Underground pipe
+- [ ] Boiler
+- [ ] Steam engine
+- [ ] Assembling machines
+  - [ ] Assembling machine 1
+  - [ ] Assembling machine 2
+  - [ ] Assembling machine 3
+- [ ] Oil refinery
+- [ ] Chemical plant
+- [ ] Fluid handling
+  - [ ] Pump
+  - [ ] Storage tank
+  - [ ] Barrels
+- [ ] Centrifuge
+
+## Graphics
+
+- [ ] Everything...
+
+## Sound
+
+- [ ] Everything...
+- [ ] Music
 
 ## Contributing
 
