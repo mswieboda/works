@@ -140,9 +140,13 @@ module Works
       end
     end
 
-    def remove_held_item(held_index)
+    def remove_held_item
       if held_item = @held_item
-        remove_hand_item(held_index)
+        @held_item = nil
+
+        if held_index = @held_index
+          remove_hand_item(held_index)
+        end
 
         return held_item.item
       end
@@ -151,23 +155,20 @@ module Works
     def remove_hand_item(held_index)
       if hand_item = items.delete(items[held_index])
         @held_index = nil
-        @held_item = nil
       end
     end
 
-    def swap_held_item(held_index, item : Item::Base)
-      if held_item = @held_item
-        swap_item = held_item.item
-        held_item.item = item
+    def swap_held_item(held_item : Item::Held, item : Item::Base)
+      swap_item = held_item.item
+      held_item.item = item
 
-        if item.is_a?(Item::Struct::Base)
-          held_item.strct = item.to_struct
-        else
-          held_item.strct = nil
-        end
-
-        return swap_item
+      if item.is_a?(Item::Struct::Base)
+        held_item.strct = item.to_struct
+      else
+        held_item.strct = nil
       end
+
+      return swap_item
     end
 
     def amount_can_add(item_klass, amount : Int)

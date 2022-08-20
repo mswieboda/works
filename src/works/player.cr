@@ -181,13 +181,23 @@ module Works
 
         if mouse.left_just_pressed? && inventory.hud.hover_index.nil?
           if (held_item = inventory.held_item)
-            if held_index = inventory.held_index
-              if strct.responds_to?(:input_slot_hover?) && strct.input_slot_hover? && strct.accept_input?(held_item.item)
-                if item = strct.input_item
-                  strct.input_item = inventory.swap_held_item(held_index, item)
-                elsif item = inventory.remove_held_item(held_index)
-                  strct.input_item = item
-                end
+            if strct.responds_to?(:input_slot_hover?) && strct.input_slot_hover? && strct.accept_input?(held_item.item)
+              if item = strct.input_item
+                strct.input_item = inventory.swap_held_item(held_item, item)
+              elsif item = inventory.remove_held_item
+                strct.input_item = item
+              end
+            elsif strct.responds_to?(:output_slot_hover?) && strct.output_slot_hover? && strct.accept_output?(held_item.item)
+              if item = strct.output_item
+                strct.output_item = inventory.swap_held_item(held_item, item)
+              elsif item = inventory.remove_held_item
+                strct.output_item = item
+              end
+            elsif strct.responds_to?(:fuel_slot_hover?) && strct.fuel_slot_hover? && strct.accept_fuel?(held_item.item)
+              if item = strct.fuel_item
+                strct.fuel_item = inventory.swap_held_item(held_item, item)
+              elsif item = inventory.remove_held_item
+                strct.fuel_item = item
               end
             end
           else
@@ -200,6 +210,11 @@ module Works
               if item = strct.output_item
                 inventory.grab_slot_item(item, mouse)
                 strct.output_item = nil
+              end
+            elsif strct.responds_to?(:fuel_slot_hover?) && strct.fuel_slot_hover?
+              if item = strct.fuel_item
+                inventory.grab_slot_item(item, mouse)
+                strct.fuel_item = nil
               end
             end
           end
