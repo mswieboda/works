@@ -14,7 +14,7 @@ module Works
   class Player
     MiningDistance = Cell.size * 4
     MiningInterval = 500.milliseconds
-    MiningAmount = 10
+    MiningAmount = 1
     StructRemovalDistance = Cell.size * 5
     StructRemovalInterval = 1.seconds
     BuildDistance = Cell.size.to_i * 10

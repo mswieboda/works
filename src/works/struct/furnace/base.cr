@@ -51,33 +51,37 @@ module Works::Struct::Furnace
     end
 
     def update
-      if input = input_item
+      if working = @working_item
+        if @output_timer.done?
+          create_output(working)
+
+          @output_timer.stop
+        end
+      elsif input = input_item
         if output = output_item
-          return if output.full?
+          if output.full?
+            @output_timer.stop
+
+            return
+          end
         end
 
-        update_output(input)
+        init_timer(input)
+        burn_item(input)
+      else
+        @output_timer.stop
       end
     end
 
-    def update_output(item : Item::Base)
+    def init_timer(item : Item::Base)
       duration = output_duration(item)
 
       if @output_timer.duration != duration
         @output_timer.stop
         @output_timer.duration = duration
-        @output_timer.start
       end
 
-      burn_item(item) unless @working_item
-
-      if @output_timer.done?
-        if working = @working_item
-          create_output(working)
-
-          @output_timer.restart
-        end
-      end
+      @output_timer.start
     end
 
     def burn_item(item : Item::Base)
