@@ -6,7 +6,7 @@ require "./inventory_hud"
 
 module Works
   class Inventory
-    MaxSlots = 60
+    MaxSlots = 80
     SortOrder = [
       # ore
       Item::Ore::Coal, Item::Ore::Copper, Item::Ore::Iron, Item::Ore::Stone,
@@ -14,7 +14,9 @@ module Works
       Item::CopperPlate, Item::IronPlate, Item::SteelPlate,
       # other
       Item::StoneBrick,
-      # struct
+      # inserters
+      Item::Struct::Inserter::Burner,
+      # furnaces
       Item::Struct::Furnace::Stone, Item::Struct::Furnace::Electric
     ].map(&.key)
 
@@ -27,6 +29,9 @@ module Works
     delegate shown?, to: @hud
     delegate hover?, to: @hud
     delegate show_struct, to: @hud
+    delegate show_toggle, to: @hud
+    delegate show, to: @hud
+    delegate hide, to: @hud
 
     def initialize
       @max_slots = MaxSlots
@@ -37,8 +42,9 @@ module Works
     end
 
     def init
-      add(Item::Struct::Furnace::Stone, 15)
-      add(Item::Struct::Furnace::Electric, 9)
+      add(Item::Struct::Furnace::Stone, 3)
+      add(Item::Struct::Furnace::Electric, 1)
+      add(Item::Struct::Inserter::Burner, 5)
     end
 
     def update(keys : Keys, mouse : Mouse, map : Map, player : Player)
@@ -81,18 +87,8 @@ module Works
             if held_item.item.amount <= 0
               remove_hand_item(held_index)
             end
-          elsif hud.shown?
-            if hud.hover_index
-              put_held_item_back(held_item, held_index)
-            elsif strct = hud.show_struct
-              if hud.input_slot_hover? && strct.accept_input?(held_item.item)
-                if item = strct.input_item
-                  strct.input_item = swap_held_item(held_index, item)
-                elsif item = remove_held_item(held_index)
-                  strct.input_item = item
-                end
-              end
-            end
+          elsif hud.shown? && hud.hover_index
+            put_held_item_back(held_item, held_index)
           end
         elsif hud.shown? && hud.hover_index
           add_held_item_to_inventory(held_item.item)
@@ -101,18 +97,6 @@ module Works
         if hover_index = hud.hover_index
           if hover_index <= items.size - 1
             grab_inventory_item(hover_index, mouse)
-          end
-        elsif strct = hud.show_struct
-          if hud.input_slot_hover?
-            if item = strct.input_item
-              grab_slot_item(item, mouse)
-              strct.input_item = nil
-            end
-          elsif hud.output_slot_hover?
-            if item = strct.output_item
-              grab_slot_item(item, mouse)
-              strct.output_item = nil
-            end
           end
         end
       end

@@ -6,6 +6,14 @@ module Works::Struct
     Name = "Struct"
     Color = LibAllegro.map_rgb_f(0.5, 0.5, 0.1)
 
+    getter? hud_shown
+
+    def initialize(col = 0_u16, row = 0_u16)
+      super(col, row)
+
+      @hud_shown = false
+    end
+
     def self.key
       Key
     end
@@ -30,6 +38,21 @@ module Works::Struct
 
     abstract def update
 
+    def update_struct_info_slot_hovers(mouse : Mouse, inventory_width,  inventory_height)
+    end
+
+    def slot_hover?(slot_x, slot_y, mouse : Mouse)
+      false
+    end
+
+    def show_hud
+      @hud_shown = true
+    end
+
+    def hide_hud
+      @hud_shown = false
+    end
+
     def draw(x, y)
       draw(x, y, color)
     end
@@ -43,6 +66,9 @@ module Works::Struct
 
     def draw_hover_info
       HUDText.new("#{name}").draw_from_bottom(0, Screen::Height)
+    end
+
+    def draw_struct_info(inventory_width, inventory_height)
     end
 
     def destroy

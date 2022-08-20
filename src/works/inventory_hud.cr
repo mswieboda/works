@@ -6,22 +6,17 @@ module Works
   class InventoryHUD
     BackgroundColor = LibAllegro.premul_rgba_f(0, 0, 0, 0.13)
     HoverColor = LibAllegro.premul_rgba_f(1, 0.5, 0, 0.33)
-    OutputProgressColor = LibAllegro.premul_rgba_f(0, 1, 0, 0.33)
     Margin = 4 * Screen::ScaleFactor
     SlotBackgroundColor = LibAllegro.premul_rgba_f(1, 1, 1, 0.13)
     SlotBorderColor = LibAllegro.premul_rgba_f(0, 0, 0, 0.03)
+    SlotCols = 10
     SlotSize = 32 * Screen::ScaleFactor
-    StructInfoSize = 192 * Screen::ScaleFactor
 
     getter? shown
     getter? hover
-    getter? input_slot_hover
-    getter? output_slot_hover
-    getter? fuel_slot_hover
     getter items
     getter max_slots : Int32
     getter hover_index : Int32 | Nil
-    getter show_struct : Struct::Base | Nil
 
     def initialize(items : Array(Item::Base), max_slots)
       @shown = false
@@ -29,21 +24,12 @@ module Works
       @items = items
       @max_slots = max_slots
       @hover_index = nil
-      @show_struct = nil
-      @input_slot_hover = false
-      @output_slot_hover = false
-      @fuel_slot_hover = false
     end
 
     def update(keys : Keys, mouse : Mouse)
-      update_hover(mouse)
-      update_hover_index(mouse)
-      update_struct_info_slot_hovers(mouse)
-
-      if keys.just_pressed?(LibAllegro::KeyE)
-        show_toggle
-      elsif keys.just_pressed?(LibAllegro::KeyEscape)
-        hide
+      if shown?
+        update_hover(mouse)
+        update_hover_index(mouse)
       end
     end
 
@@ -67,21 +53,11 @@ module Works
       end
     end
 
-    def update_struct_info_slot_hovers(mouse : Mouse)
-      @input_slot_hover = slot_hover?(input_slot_x, input_slot_y, mouse)
-      @output_slot_hover = slot_hover?(output_slot_x, output_slot_y,mouse)
-      @fuel_slot_hover = slot_hover?(fuel_slot_x, fuel_slot_y,mouse)
-    end
-
     def show
       @shown = true
     end
 
     def hide
-      if shown? && show_struct
-        @show_struct = nil
-      end
-
       @shown = false
     end
 
@@ -89,14 +65,8 @@ module Works
       shown? ? hide : show
     end
 
-    def show_struct(strct : Struct::Base)
-      @show_struct = strct
-
-      show
-    end
-
     def cols
-      cols = (max_slots / 5).to_i
+      cols = SlotCols
 
       [cols, max_slots].min
     end
@@ -117,13 +87,9 @@ module Works
       Margin + cols * SlotSize + Margin
     end
 
-    def struct_info_width
-      StructInfoSize
-    end
-
     def width
       width = inventory_width
-      width += struct_info_width if show_struct
+      width += inventory_width - Margin
       width
     end
 
@@ -147,32 +113,12 @@ module Works
       y + Margin + row * SlotSize
     end
 
-    def item_size
+    def self.item_size
       SlotSize - Margin * 2
     end
 
-    def input_slot_x
-      x + inventory_width + Margin
-    end
-
-    def input_slot_y
-      y + Margin + Margin
-    end
-
-    def output_slot_x
-      input_slot_x + struct_info_width - Margin - SlotSize - Margin
-    end
-
-    def output_slot_y
-      input_slot_y
-    end
-
-    def fuel_slot_x
-      input_slot_x
-    end
-
-    def fuel_slot_y
-      input_slot_y + Margin + SlotSize
+    def item_size
+      self.class.item_size
     end
 
     def hover?(mouse : Mouse)
@@ -182,19 +128,11 @@ module Works
         mouse.y > y && mouse.y < y + height
     end
 
-    def slot_hover?(slot_x, slot_y, mouse : Mouse)
-      return false unless hover? && show_struct
-
-      mouse.x >= slot_x && mouse.x < slot_x + SlotSize &&
-        mouse.y > slot_y && mouse.y < slot_y + SlotSize
-    end
-
     def draw
       return unless shown?
 
       draw_background
       draw_slots
-      draw_struct_info if show_struct
     end
 
     def draw_background
@@ -219,6 +157,10 @@ module Works
     end
 
     def draw_slot(dx, dy, item : Item::Base | Nil, hovering = false)
+      self.class.draw_slot(dx, dy, item, hovering)
+    end
+
+    def self.draw_slot(dx, dy, item : Item::Base | Nil, hovering = false)
       LibAllegro.draw_filled_rectangle(
         dx,
         dy,
@@ -236,36 +178,6 @@ module Works
       end
 
       LibAllegro.draw_rectangle(dx, dy, dx + SlotSize, dy + SlotSize, SlotBorderColor, 1)
-    end
-
-    def draw_struct_info
-      if strct = @show_struct
-        dx = x + inventory_width
-        dy = y + Margin
-
-        # background
-        LibAllegro.draw_filled_rectangle(dx, dy, dx + struct_info_width - Margin, dy + height - Margin * 2, BackgroundColor)
-
-        # input slot
-        draw_slot(input_slot_x, input_slot_y, strct.input_item, input_slot_hover?)
-
-        # output progress
-        dx = input_slot_x + SlotSize + Margin
-        dy = input_slot_y + Margin * 3
-        progress_total_x = output_slot_x - Margin
-        progress_width = progress_total_x - dx
-        progress_end_x = dx + progress_width * strct.output_timer.percent
-        LibAllegro.draw_filled_rectangle(dx, dy, progress_end_x, dy - Margin * 3 + SlotSize - Margin * 3, OutputProgressColor)
-
-        # output slot
-        draw_slot(output_slot_x, output_slot_y, strct.output_item, output_slot_hover?)
-
-        # fuel slot
-        draw_slot(fuel_slot_x, fuel_slot_y, strct.fuel_item, fuel_slot_hover?)
-
-        # info text at bottom
-        HUDText.new("#{strct.name}").draw_from_bottom(dx + Margin, y + height - Margin)
-      end
     end
   end
 end

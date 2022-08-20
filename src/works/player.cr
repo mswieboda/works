@@ -28,6 +28,7 @@ module Works
     getter mining_timer
     getter struct_hover : Struct::Base | Nil
     getter struct_removal_timer
+    getter struct_info : Struct::Base | Nil
 
     def initialize
       @y = 0
@@ -85,7 +86,7 @@ module Works
       update_structs(map, mouse, mouse_col, mouse_row)
       update_struct_info(mouse)
       update_mining(map, mouse, mouse_col, mouse_row)
-      inventory.update(keys, mouse, map, self)
+      update_inventory(keys, mouse, map)
 
       animations.update
     end
@@ -137,7 +138,9 @@ module Works
 
     def update_struct_info(mouse : Mouse)
       if mouse.left_just_pressed? && (strct = @struct_hover) && !inventory.held_item
-        inventory.show_struct(strct)
+        @struct_info = strct
+        strct.show_hud
+        inventory.show
       end
     end
 
@@ -159,6 +162,66 @@ module Works
         mining_timer.restart
       else
         mining_timer.stop
+      end
+    end
+
+    def update_inventory(keys : Keys, mouse : Mouse, map : Map)
+      inventory.update(keys, mouse, map, self)
+
+      if keys.just_pressed?(LibAllegro::KeyE)
+        hide_struct_info if inventory.shown?
+        inventory.show_toggle
+      elsif keys.just_pressed?(LibAllegro::KeyEscape)
+        inventory.hide
+        hide_struct_info
+      end
+
+      if strct = struct_hud_shown
+        strct.update_struct_info_slot_hovers(mouse, inventory.hud.inventory_width, inventory.hud.height)
+
+        if mouse.left_just_pressed? && inventory.hud.hover_index.nil?
+          if (held_item = inventory.held_item)
+            if held_index = inventory.held_index
+              if strct.responds_to?(:input_slot_hover?) && strct.input_slot_hover? && strct.accept_input?(held_item.item)
+                if item = strct.input_item
+                  strct.input_item = inventory.swap_held_item(held_index, item)
+                elsif item = inventory.remove_held_item(held_index)
+                  strct.input_item = item
+                end
+              end
+            end
+          else
+            if strct.responds_to?(:input_slot_hover?) && strct.input_slot_hover?
+              if item = strct.input_item
+                inventory.grab_slot_item(item, mouse)
+                strct.input_item = nil
+              end
+            elsif strct.responds_to?(:output_slot_hover?) && strct.output_slot_hover?
+              if item = strct.output_item
+                inventory.grab_slot_item(item, mouse)
+                strct.output_item = nil
+              end
+            end
+          end
+        end
+      end
+    end
+
+    def struct_hud_shown
+      if strct = struct_info
+        if strct.hud_shown?
+          return strct
+        end
+      end
+
+      nil
+    end
+
+    def hide_struct_info
+      if strct = struct_info
+        strct.hide_hud
+
+        @struct_info = nil
       end
     end
 
@@ -249,6 +312,10 @@ module Works
       end
 
       inventory.draw
+
+      if strct = struct_info
+        strct.draw_struct_info(inventory.hud.inventory_width, inventory.hud.height)
+      end
     end
 
     def draw_selection(dx, dy, color)
