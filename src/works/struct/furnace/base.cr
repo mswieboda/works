@@ -16,24 +16,20 @@ module Works::Struct::Furnace
 
     property input_item : Item::Base | Nil
     property output_item : Item::Base | Nil
-    property fuel_item : Item::Base | Nil
     getter working_item : Item::Base | Nil
     getter output_timer
     getter? input_slot_hover
     getter? output_slot_hover
-    getter? fuel_slot_hover
 
     def initialize(col = 0_u16, row = 0_u16)
       super(col, row)
 
       @input_item = nil
       @output_item = nil
-      @fuel_item = nil
       @output_timer = Timer.new(0.seconds)
       @working_item = nil
       @input_slot_hover = false
       @output_slot_hover = false
-      @fuel_slot_hover = false
     end
 
     def self.key
@@ -75,15 +71,6 @@ module Works::Struct::Furnace
     def accept_output?(item : Item::Base)
       case item
       when Item::CopperPlate, Item::IronPlate, Item::SteelPlate, Item::StoneBrick
-        true
-      else
-        false
-      end
-    end
-
-    def accept_fuel?(item : Item::Base)
-      case item
-      when Item::Ore::Coal
         true
       else
         false
@@ -195,13 +182,7 @@ module Works::Struct::Furnace
       if hud_shown?
         @input_slot_hover = slot_hover?(input_slot_x, input_slot_y(inventory_height), mouse)
         @output_slot_hover = slot_hover?(output_slot_x(inventory_width), output_slot_y(inventory_height), mouse)
-        @fuel_slot_hover = slot_hover?(fuel_slot_x, fuel_slot_y(inventory_height), mouse)
       end
-    end
-
-    def slot_hover?(slot_x, slot_y, mouse : Mouse)
-      mouse.x >= slot_x && mouse.x < slot_x + SlotSize &&
-        mouse.y > slot_y && mouse.y < slot_y + SlotSize
     end
 
     def hud_x
@@ -259,9 +240,6 @@ module Works::Struct::Furnace
 
       # output slot
       InventoryHUD.draw_slot(os_x, output_slot_y(inventory_height), output_item, output_slot_hover?)
-
-      # fuel slot
-      InventoryHUD.draw_slot(fuel_slot_x, fuel_slot_y(inventory_height), fuel_item, fuel_slot_hover?)
 
       # info text at bottom
       HUDText.new("#{name}").draw_from_bottom(dx + Margin, dy + inventory_height - Margin)

@@ -199,6 +199,18 @@ module Works
               elsif item = inventory.remove_held_item
                 strct.fuel_item = item
               end
+            elsif strct.responds_to?(:item_slot_hover?) && strct.item_slot_hover? && strct.accept_item?(held_item.item)
+              if strct.item.nil?
+                held_item.item.remove(strct.item_grab_size)
+
+                item = held_item.item.class.new
+
+                item.add(strct.item_grab_size)
+
+                strct.item = item
+
+                inventory.remove_held_item if held_item.item.amount <= 0
+              end
             end
           else
             if strct.responds_to?(:input_slot_hover?) && strct.input_slot_hover?
@@ -215,6 +227,11 @@ module Works
               if item = strct.fuel_item
                 inventory.grab_slot_item(item, mouse)
                 strct.fuel_item = nil
+              end
+            elsif strct.responds_to?(:item_slot_hover?) && strct.item_slot_hover?
+              if item = strct.item
+                inventory.grab_slot_item(item, mouse)
+                strct.item = nil
               end
             end
           end

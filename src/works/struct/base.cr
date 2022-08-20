@@ -6,6 +6,9 @@ module Works::Struct
     Name = "Struct"
     Color = LibAllegro.map_rgb_f(0.5, 0.5, 0.1)
 
+    # HUD
+    SlotSize = 32 * Screen::ScaleFactor
+
     getter? hud_shown
 
     def initialize(col = 0_u16, row = 0_u16)
@@ -42,7 +45,8 @@ module Works::Struct
     end
 
     def slot_hover?(slot_x, slot_y, mouse : Mouse)
-      false
+      mouse.x >= slot_x && mouse.x < slot_x + SlotSize &&
+        mouse.y > slot_y && mouse.y < slot_y + SlotSize
     end
 
     def show_hud

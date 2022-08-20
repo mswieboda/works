@@ -6,12 +6,24 @@ module Works::Struct::Inserter
     Name = "inserter"
     Color = LibAllegro.map_rgb_f(1, 0, 1)
 
+    # HUD
+    Margin = 4 * Screen::ScaleFactor
+    SlotSize = 32 * Screen::ScaleFactor
+    BackgroundColor = LibAllegro.premul_rgba_f(0, 0, 0, 0.13)
+    HoverColor = LibAllegro.premul_rgba_f(1, 0.5, 0, 0.33)
+
     property item : Item::Base | Nil
+    property fuel_item : Item::Base | Nil
+    getter? item_slot_hover
+    getter? fuel_slot_hover
 
     def initialize(col = 0_u16, row = 0_u16)
       super(col, row)
 
       @item = nil
+      @fuel_item = nil
+      @item_slot_hover = false
+      @fuel_slot_hover = false
     end
 
     def self.key
@@ -35,12 +47,75 @@ module Works::Struct::Inserter
       end
     end
 
-    def accept_input?(item : Item::Base)
+    def accept_item?(item : Item::Base)
       true
+    end
+
+    def accept_fuel?(item : Item::Base)
+      case item
+      when Item::Ore::Coal
+        true
+      else
+        false
+      end
+    end
+
+    def item_grab_size
+      1
     end
 
     def update
 
+    end
+
+    # HUD
+
+    def update_struct_info_slot_hovers(mouse, inventory_width, inventory_height)
+      if hud_shown?
+        @item_slot_hover = slot_hover?(item_slot_x, item_slot_y(inventory_height), mouse)
+        @fuel_slot_hover = slot_hover?(fuel_slot_x, fuel_slot_y(inventory_height), mouse)
+      end
+    end
+
+    def hud_x
+      Screen::Width / 2
+    end
+
+    def hud_y(inventory_height)
+      Screen::Height / 2 - inventory_height / 2
+    end
+
+    def item_slot_x
+      hud_x + Margin
+    end
+
+    def item_slot_y(inventory_height)
+      hud_y(inventory_height) + Margin + Margin
+    end
+
+    def fuel_slot_x
+      hud_x + Margin
+    end
+
+    def fuel_slot_y(inventory_height)
+      item_slot_y(inventory_height) + Margin + SlotSize
+    end
+
+    def draw_struct_info(inventory_width, inventory_height)
+      dx = hud_x
+      dy = hud_y(inventory_height) + Margin
+
+      # background
+      LibAllegro.draw_filled_rectangle(dx, dy, dx + inventory_width - Margin, dy + inventory_height - Margin * 2, BackgroundColor)
+
+      # item slot
+      InventoryHUD.draw_slot(item_slot_x, item_slot_y(inventory_height), item, item_slot_hover?)
+
+      # fuel slot
+      InventoryHUD.draw_slot(fuel_slot_x, fuel_slot_y(inventory_height), fuel_item, fuel_slot_hover?)
+
+      # info text at bottom
+      HUDText.new("#{name}").draw_from_bottom(dx + Margin, dy + inventory_height - Margin)
     end
   end
 end

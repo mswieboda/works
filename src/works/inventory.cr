@@ -106,7 +106,7 @@ module Works
       if hand_item = items.delete(items[held_index])
         item = held_item.item
 
-        items.insert(held_index, item)
+        add(item.class, item.amount)
 
         @held_index = nil
         @held_item = nil
