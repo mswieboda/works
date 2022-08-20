@@ -12,10 +12,10 @@ require "./ui/progress_bar"
 
 module Works
   class Player
-    MiningDistance = Cell.size * 4
+    MiningDistance = Cell.size.to_i * 4
     MiningInterval = 500.milliseconds
     MiningAmount = 1
-    StructRemovalDistance = Cell.size * 5
+    StructRemovalDistance = Cell.size.to_i * 5
     StructRemovalInterval = 1.seconds
     BuildDistance = Cell.size.to_i * 10
 
@@ -69,11 +69,13 @@ module Works
     end
 
     def width
-      48 # temp until calc'ed from sprite
+      # temp until calc'ed from sprite
+      48 * Screen::ScaleFactor
     end
 
     def height
-      64 # temp until calc'ed from sprite
+      # temp until calc'ed from sprite
+      64 * Screen::ScaleFactor
     end
 
     def update(keys : Keys, mouse : Mouse, map : Map)

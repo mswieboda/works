@@ -56,15 +56,22 @@ module Works
 
       raise "> Animation#draw !sprite" unless sprite
 
-      drawX = x
-      drawY = y
+      dx = x
+      dy = y
 
       if center?
-        drawX -= LibAllegro.get_bitmap_width(sprite) / 2
-        drawY -= LibAllegro.get_bitmap_height(sprite) / 2
+        dx -= LibAllegro.get_bitmap_width(sprite) / 2
+        dy -= LibAllegro.get_bitmap_height(sprite) / 2
       end
 
-      LibAllegro.draw_bitmap(sprite, drawX, drawY, 0)
+      if Screen::ScaleFactor > 1
+        w = LibAllegro.get_bitmap_width(sprite)
+        h = LibAllegro.get_bitmap_height(sprite)
+
+        LibAllegro.draw_scaled_bitmap(sprite, 0, 0, w, h, dx, dy, w * Screen::ScaleFactor, h * Screen::ScaleFactor, 0)
+      else
+        LibAllegro.draw_bitmap(sprite, dx, dy, 0)
+      end
     end
 
     def destroy

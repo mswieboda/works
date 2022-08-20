@@ -1,9 +1,9 @@
 module Works
   abstract class Cell
-    SelectionLength = 10
-    SelectionThickness = 3
+    SelectionLength = 10 * Screen::ScaleFactor
+    SelectionThickness = 3 * Screen::ScaleFactor
 
-    Size = 32_u8
+    Size = 32_u8 * Screen::ScaleFactor
     Dimensions = {x: 1, y: 1}
 
     property col : UInt16

@@ -7,11 +7,11 @@ module Works
     BackgroundColor = LibAllegro.premul_rgba_f(0, 0, 0, 0.13)
     HoverColor = LibAllegro.premul_rgba_f(1, 0.5, 0, 0.33)
     OutputProgressColor = LibAllegro.premul_rgba_f(0, 1, 0, 0.33)
-    Margin = 4
+    Margin = 4 * Screen::ScaleFactor
     SlotBackgroundColor = LibAllegro.premul_rgba_f(1, 1, 1, 0.13)
     SlotBorderColor = LibAllegro.premul_rgba_f(0, 0, 0, 0.03)
-    SlotSize = 32
-    StructInfoSize = 192
+    SlotSize = 32 * Screen::ScaleFactor
+    StructInfoSize = 192 * Screen::ScaleFactor
 
     getter? shown
     getter? hover

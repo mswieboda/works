@@ -4,10 +4,10 @@ module Works
   class FPSDisplay
     TimeSpan = 1
 
-    Margin = 3
-    Width = 100
-    TextHeight = 10
-    BarHeight = 3
+    Margin = 3 * Screen::ScaleFactor
+    Width = 100 * Screen::ScaleFactor
+    TextHeight = 10 * Screen::ScaleFactor
+    BarHeight = 3 * Screen::ScaleFactor
     DarkShadow = LibAllegro.premul_rgba_f(0, 0, 0, 0.3)
     Green = LibAllegro.premul_rgba_f(0, 1, 0, 0.3)
 

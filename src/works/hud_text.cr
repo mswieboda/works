@@ -2,8 +2,8 @@ require "./font"
 
 module Works
   class HUDText
-    Margin = 5
-    Padding = 3
+    Margin = 5 * Screen::ScaleFactor
+    Padding = 3 * Screen::ScaleFactor
     BackgroundColor = LibAllegro.premul_rgba_f(0, 0, 0, 0.69)
     TextColor = LibAllegro.premul_rgba_f(0, 1, 0, 0.69)
 

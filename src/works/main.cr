@@ -9,8 +9,9 @@ module Works
   end
 
   module Screen
-    Width = 1024
-    Height = 768
+    ScaleFactor = 2
+    Width = 1024 * ScaleFactor
+    Height = 768 * ScaleFactor
     FPS = 60
     Name = "works"
   end
