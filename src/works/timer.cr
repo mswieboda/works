@@ -5,10 +5,14 @@ module Works
     @start_time : Time | Nil
     @paused_duration : Time::Span | Nil
 
-    def initialize(duration)
+    def initialize(duration, initialize_as_done = false)
       @duration = duration
       @start_time = nil
       @paused_duration = nil
+
+      if initialize_as_done
+        @start_time = duration.ago
+      end
     end
 
     def start

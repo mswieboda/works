@@ -59,6 +59,22 @@ module Works::Struct::Furnace
       end
     end
 
+    def grab_item
+      output_item
+    end
+
+    def grab_item(item_grab_size)
+      if item = grab_item
+        leftovers = item.remove(item_grab_size)
+
+        if item.amount <= 0
+          @output_item = nil
+        end
+
+        leftovers
+      end
+    end
+
     def accept_input?(item : Item::Base)
       case item
       when Item::Ore::Copper, Item::Ore::Iron, Item::IronPlate, Item::Ore::Stone
@@ -77,7 +93,7 @@ module Works::Struct::Furnace
       end
     end
 
-    def update
+    def update(map : Map)
       if working = @working_item
         if @output_timer.done?
           if create_output(working)

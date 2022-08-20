@@ -47,7 +47,7 @@ module Works
       @viewables += viewables_grid(ore)
       @viewables += viewables(structs)
 
-      structs.each(&.update)
+      structs.each(&.update(self))
     end
 
     def draw

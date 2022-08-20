@@ -39,7 +39,13 @@ module Works::Struct
 
     abstract def item_class
 
-    abstract def update
+    abstract def update(map : Map)
+
+    def grab_item
+      nil
+    end
+
+    abstract def grab_item(item_grab_size)
 
     def update_struct_info_slot_hovers(mouse : Mouse, inventory_width,  inventory_height)
     end
