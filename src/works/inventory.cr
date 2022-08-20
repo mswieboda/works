@@ -11,7 +11,9 @@ module Works
       # ore
       Item::Ore::Coal, Item::Ore::Copper, Item::Ore::Iron, Item::Ore::Stone,
       # plates
-      Item::IronPlate,
+      Item::CopperPlate, Item::IronPlate, Item::SteelPlate,
+      # other
+      Item::StoneBrick,
       # struct
       Item::Struct::Furnace::Stone, Item::Struct::Furnace::Electric
     ].map(&.key)
@@ -83,11 +85,10 @@ module Works
             if hud.hover_index
               put_held_item_back(held_item, held_index)
             elsif strct = hud.show_struct
-              if hud.input_slot_hover?
+              if hud.input_slot_hover? && strct.accept_input?(held_item.item)
                 if item = strct.input_item
                   strct.input_item = swap_held_item(held_index, item)
                 elsif item = remove_held_item(held_index)
-                  # TODO: see if it's valid for slot, etc
                   strct.input_item = item
                 end
               end

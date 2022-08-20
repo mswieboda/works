@@ -27,8 +27,8 @@ module Works::Struct::Furnace
       case item
       when Item::Ore::Iron, Item::Ore::Copper, Item::Ore::Stone
         1.6.seconds
-      # when Item::IronPlate
-      #   8.seconds
+      when Item::IronPlate
+        8.seconds
       else
         0.seconds
       end

@@ -1,12 +1,12 @@
 require "./base"
 
 module Works::Item
-  class IronPlate < Base
-    Key = :iron_plate
-    Name = "Iron plate"
-    ShortCode = "I#"
+  class CopperPlate < Base
+    Key = :copper_plate
+    Name = "Copper plate"
+    ShortCode = "C#"
     MaxAmount = 100
-    Color = LibAllegro.map_rgb(139, 130, 133)
+    Color = LibAllegro.map_rgb(235, 103, 75)
 
     def self.key
       Key

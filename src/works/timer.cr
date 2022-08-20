@@ -3,17 +3,21 @@ module Works
     property duration : Time::Span
 
     @start_time : Time | Nil
+    @paused_duration : Time::Span | Nil
 
     def initialize(duration)
       @duration = duration
       @start_time = nil
+      @paused_duration = nil
     end
 
     def start
+      @paused_duration = nil
       @start_time = Time.local
     end
 
     def stop
+      @paused_duration = nil
       @start_time = nil
     end
 
@@ -21,11 +25,22 @@ module Works
       start
     end
 
+    def pause
+      @paused_duration = time_expired
+    end
+
+    def paused?
+      @paused_duration != nil
+    end
+
     def started?
       @start_time != nil
     end
 
     def time_expired
+      if paused_duration = @paused_duration
+        return paused_duration
+      end
       return Time::Span.new unless start_time = @start_time
 
       Time.local - start_time

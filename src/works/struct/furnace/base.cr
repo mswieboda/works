@@ -50,12 +50,23 @@ module Works::Struct::Furnace
       end
     end
 
+    def accept_input?(item : Item::Base)
+      case item
+      when Item::Ore::Copper, Item::Ore::Iron, Item::Ore::Stone, Item::IronPlate
+        true
+      else
+        false
+      end
+    end
+
     def update
       if working = @working_item
         if @output_timer.done?
-          create_output(working)
-
-          @output_timer.stop
+          if create_output(working)
+            @output_timer.stop
+          else
+            @output_timer.pause
+          end
         end
       elsif input = input_item
         if output = output_item
@@ -86,14 +97,14 @@ module Works::Struct::Furnace
 
     def burn_item(item : Item::Base)
       klass = case item
-      # when Item::Ore::Copper
-      #   Item::CopperPlate
+      when Item::Ore::Copper
+        Item::CopperPlate
       when Item::Ore::Iron
         Item::IronPlate
-      # when Item::Ore::Stone
-      #   Item::StoneBrick
-      # when Item::IronPlate
-      #   Item::SteelPlate
+      when Item::Ore::Stone
+        Item::StoneBrick
+      when Item::IronPlate
+        Item::SteelPlate
       else
         Item::Base
       end
@@ -101,23 +112,25 @@ module Works::Struct::Furnace
       amount = case item
       when Item::Ore::Copper, Item::Ore::Iron
         1
-      # when Item::Ore::Stone
-      #   2
-      # when Item::IronPlate
-      #   5
+      when Item::Ore::Stone
+        2
+      when Item::IronPlate
+        5
       else
         1
       end
 
-      working = klass.new
+      if item.amount >= amount
+        working = klass.new
 
-      item.remove(amount)
-      working.add(1)
+        item.remove(amount)
+        working.add(1)
 
-      @working_item = working
+        @working_item = working
 
-      if item.none?
-        @input_item = nil
+        if item.none?
+          @input_item = nil
+        end
       end
     end
 
@@ -132,11 +145,15 @@ module Works::Struct::Furnace
           else
             @working_item = nil
           end
+        else
+          return false
         end
       else
         @output_item = working_item
         @working_item = nil
       end
+
+      true
     end
 
     abstract def output_duration(item : Item::Base) : Time::Span
