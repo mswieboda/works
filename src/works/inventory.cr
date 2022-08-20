@@ -10,6 +10,8 @@ module Works
     SortOrder = [
       # ore
       Item::Ore::Coal, Item::Ore::Copper, Item::Ore::Iron, Item::Ore::Stone,
+      # plates
+      Item::IronPlate,
       # struct
       Item::Struct::Furnace::Stone, Item::Struct::Furnace::Electric
     ].map(&.key)
@@ -105,6 +107,11 @@ module Works
               grab_slot_item(item, mouse)
               strct.input_item = nil
             end
+          elsif hud.output_slot_hover?
+            if item = strct.output_item
+              grab_slot_item(item, mouse)
+              strct.output_item = nil
+            end
           end
         end
       end
@@ -122,7 +129,7 @@ module Works
     end
 
     def add_held_item_to_inventory(item)
-      add_item_and_sort!(item)
+      add(item.class, item.amount)
 
       @held_index = nil
       @held_item = nil
