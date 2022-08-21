@@ -58,7 +58,7 @@ module Works::Struct
       nil
     end
 
-    def add_input?(item)
+    def add_input?(item : Item::Base)
       false
     end
 

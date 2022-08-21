@@ -60,10 +60,10 @@ for the more efficient production ready build.
   - [ ] Splitter
   - [ ] Fast splitter
   - [ ] Express splitter
-- [ ] Chests
-  - [x] Wooden chest (doesn't interact with inserters yet)
-  - [x] Iron chest (doesn't interact with inserters yet)
-  - [x] Steel chest (doesn't interact with inserters yet)
+- [x] Chests
+  - [x] Wooden chest
+  - [x] Iron chest
+  - [x] Steel chest
 - [ ] Drills
   - [ ] Burner mining drill
   - [ ] Electric mining drill

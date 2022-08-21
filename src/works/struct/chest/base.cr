@@ -57,8 +57,46 @@ module Works::Struct::Chest
 
     end
 
+    def grab_item
+      actual_items = items.compact
+
+      return nil if actual_items.empty?
+
+      actual_items.last
+    end
+
     def grab_item(item_grab_size)
-      # TODO: implement
+      if item = grab_item
+        leftovers = item.remove(item_grab_size)
+
+        if item.amount <= 0 && (index = items.index(item))
+          items[index] = nil
+        end
+
+        leftovers
+      end
+    end
+
+    def add_input?(item : Item::Base)
+      # TODO: add conditions for chests marked limited
+      return true if items.compact.any? { |i| i.class == item.class && !i.full? }
+
+      items.any?(&.nil?)
+    end
+
+    def add_input(klass, amount)
+      leftovers = amount
+
+      if item = items.compact.find { |i| i.class == klass && !i.full? }
+        leftovers = item.add(amount)
+      elsif index = items.index(nil)
+        item = klass.new
+        leftovers = item.add(amount)
+
+        items[index] = item
+      end
+
+      leftovers
     end
 
     # HUD
