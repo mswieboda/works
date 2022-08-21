@@ -229,8 +229,13 @@ module Works
     end
 
     def sort_items
-      # TODO: also sort by `amount` if keys are the same
-      @items.sort! { |a, b| (SortOrder.index(a.key) || 0) <=> (SortOrder.index(b.key) || 0) }
+      @items.sort! do |a, b|
+        # sort by key
+        sort = (SortOrder.index(a.key) || 0) <=> (SortOrder.index(b.key) || 0)
+        # than by amount (descending)
+        sort = b.amount <=> a.amount if sort == 0
+        sort
+      end
     end
 
     def print_str
