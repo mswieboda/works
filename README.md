@@ -25,7 +25,7 @@ for the more efficient production ready build.
 
 ## Development
 
-- [x] Ore Mining
+- [ ] Ore Mining
   - [x] Coal ore
   - [x] Copper ore
   - [x] Iron ore
