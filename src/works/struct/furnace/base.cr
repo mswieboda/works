@@ -85,8 +85,17 @@ module Works::Struct::Furnace
       end
     end
 
-    def add_input(klass, amount, input_item)
-      input_item.add(amount)
+    def add_input(klass, amount)
+      if input_item = @input_item
+        input_item.add(amount)
+      else
+        item = klass.new
+        leftovers = item.add(amount)
+
+        @input_item = item
+
+        leftovers
+      end
     end
 
     def accept_input?(item : Item::Base)

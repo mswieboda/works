@@ -74,18 +74,19 @@ module Works::Struct::Inserter
       return unless rotation_timer.done?
 
       if item = @item
-        if strct = inputting_struct(map)
+        if strct = struct_to_input_into(map)
           if strct.add_input?(item)
             leftovers = strct.add_input(item.class, item.amount)
 
             item.remove(item.amount - leftovers)
 
-            @item = nil if item.none?
-
-            rotation_timer.restart
+            if item.none?
+              rotation_timer.restart
+              @item = nil
+            end
           end
         end
-      elsif strct = outputting_struct(map)
+      elsif strct = struct_to_grab_output_from(map)
         if grab_item = strct.grab_item
           if leftovers = strct.grab_item(item_grab_size)
             item = grab_item.class.new
@@ -149,12 +150,12 @@ module Works::Struct::Inserter
       end
     end
 
-    def inputting_struct(map : Map)
+    def struct_to_input_into(map : Map)
       col, row = output_coords
       map.structs.find(&.overlaps_input?(col, row))
     end
 
-    def outputting_struct(map : Map)
+    def struct_to_grab_output_from(map : Map)
       col, row = input_coords
       map.structs.find(&.overlaps_output?(col, row))
     end
