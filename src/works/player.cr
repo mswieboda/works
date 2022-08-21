@@ -139,6 +139,7 @@ module Works
     def update_struct_info(mouse : Mouse)
       if mouse.left_just_pressed? && (strct = @struct_hover) && !inventory.held_item
         @struct_info = strct
+        mouse.reset
         strct.show_hud
         inventory.show
       end

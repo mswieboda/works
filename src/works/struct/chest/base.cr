@@ -127,6 +127,8 @@ module Works::Struct::Chest
     end
 
     def update_struct_info_slot_hovers(mouse : Mouse, inventory_width,  inventory_height)
+      @hover_index = nil
+
       storage.times do |index|
         if mouse.hover?(item_x(item_col(index)), item_y(item_row(index), inventory_height), hud_slot_size, hud_slot_size)
           @hover_index = index
