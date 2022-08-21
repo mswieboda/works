@@ -67,6 +67,13 @@ module Works
         row < cell.row + cell.rows && cell.row < row + rows
     end
 
+    def overlaps?(o_col, o_row)
+      cols_full = cols.times.map { |i| i + col }
+      rows_full = rows.times.map { |i| i + row }
+
+      cols_full.includes?(o_col) && rows_full.includes?(o_row)
+    end
+
     def hover?(mouse_col, mouse_row)
       mouse_col >= col && mouse_col < col + dimensions[:x] &&
         mouse_row >= row && mouse_row < row + dimensions[:y]

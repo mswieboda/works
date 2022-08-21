@@ -47,6 +47,18 @@ module Works::Struct
 
     abstract def grab_item(item_grab_size)
 
+    def input_item
+      nil
+    end
+
+    def add_input?(item)
+      false
+    end
+
+    def add_input(klass, amount, input_item)
+      amount
+    end
+
     def update_struct_info_slot_hovers(mouse : Mouse, inventory_width,  inventory_height)
     end
 

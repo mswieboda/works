@@ -5,7 +5,11 @@ module Works::Struct::Inserter
     Key = :inserter
     Name = "inserter"
     Color = LibAllegro.map_rgb_f(1, 0, 1)
-    MoveDuration = 500.milliseconds
+    RotationSpeed = 180 # degrees per second
+
+    # drawing
+    ArmWidth = (Cell.size / 8).to_i
+    ArmLength = Cell.size
 
     # HUD
     Margin = 4 * Screen::ScaleFactor
@@ -16,7 +20,7 @@ module Works::Struct::Inserter
     property item : Item::Base | Nil
     getter? item_slot_hover
     getter facing
-    getter move_timer
+    getter rotation_timer
 
     def initialize(col = 0_u16, row = 0_u16)
       super(col, row)
@@ -24,7 +28,7 @@ module Works::Struct::Inserter
       @item = nil
       @item_slot_hover = false
       @facing = :right
-      @move_timer = Timer.new(MoveDuration, true)
+      @rotation_timer = Timer.new((180 / rotation_speed).seconds, true)
     end
 
     def self.key
@@ -39,10 +43,20 @@ module Works::Struct::Inserter
       Color
     end
 
+    def self.rotation_speed
+      RotationSpeed
+    end
+
+    def rotation_speed
+      self.class.rotation_speed
+    end
+
     def item_class
       case key
       when :burner_inserter
         Item::Struct::Inserter::Burner
+      when :inserter
+        Item::Struct::Inserter::Inserter
       else
         raise "#{self.class.name}#item_class item not found for #{key}"
       end
@@ -57,21 +71,37 @@ module Works::Struct::Inserter
     end
 
     def update(map : Map)
-      # TODO: figure out how to set the move_timer to done initially
-      return unless move_timer.done?
+      return unless rotation_timer.done?
 
       if item = @item
-        # drop item
-        puts ">>> #{name} drops: #{item.print_str}"
-        @item = nil
-        @move_timer.restart
+        if strct = output_struct(map)
+          if strct.add_input?(item)
+            if input_item = strct.input_item
+              leftovers = strct.add_input(item.class, item.amount, input_item)
+
+              item.remove(item.amount - leftovers)
+
+              @item = nil if item.none?
+
+              rotation_timer.restart
+            else
+              strct.input_item = item
+              @item = nil
+
+              rotation_timer.restart
+            end
+          end
+        end
       elsif strct = input_struct(map)
         if grab_item = strct.grab_item
           if leftovers = strct.grab_item(item_grab_size)
             item = grab_item.class.new
+
             item.add(item_grab_size - leftovers)
+
             @item = item
-            @move_timer.restart
+
+            rotation_timer.restart
           end
         end
       end
@@ -93,6 +123,29 @@ module Works::Struct::Inserter
       end
     end
 
+    def input_item
+      item
+    end
+
+    def input_item=(item)
+      @item = item
+    end
+
+    def add_input?(item)
+      if input = input_item
+        input.amount < item_grab_size && input.class == item.class
+      else
+        true
+      end
+    end
+
+    def add_input(klass, amount, input_item)
+      amount_to_add = [item_grab_size - input_item.amount, amount].min
+      leftovers = input_item.add(amount_to_add)
+
+      amount - amount_to_add - leftovers
+    end
+
     def input_coords
       case facing
       when :right
@@ -108,26 +161,59 @@ module Works::Struct::Inserter
       end
     end
 
+    def output_coords
+      case facing
+      when :right
+        [col - 1, row]
+      when :left
+        [col + 1, row]
+      when :up
+        [col, row + 1]
+      when :down
+        [col, row - 1]
+      else
+        raise "#{self.class.name}#input_coords facing direction #{facing} not found"
+      end
+    end
+
     def input_struct(map : Map)
       col, row = input_coords
-      map.structs.find { |s| s.col == col && s.row == row }
+      map.structs.find(&.overlaps?(col, row))
+    end
+
+    def output_struct(map : Map)
+      col, row = output_coords
+      map.structs.find(&.overlaps?(col, row))
     end
 
     def draw(x, y)
-      super(x, y)
-
-      # draw arm
+      draw_body(x, y)
       draw_arm(x, y)
     end
 
-    def draw_arm(x, y)
-      angle = (180 * (move_timer.percent).clamp(0, 1)).round(1)
+    def draw_body(dx, dy)
+      dx = dx + x + width / 2
+      dy = dy + y + height / 2
+      LibAllegro.draw_filled_circle(dx, dy, size / 4, color)
+      LibAllegro.draw_line(dx, dy, dx, dy - size / 3 - ArmWidth, color, ArmWidth)
+      LibAllegro.draw_line(dx, dy, dx - size / 3, dy + size / 3, color, ArmWidth)
+      LibAllegro.draw_line(dx, dy, dx + size / 3, dy + size / 3, color, ArmWidth)
+    end
+
+    def draw_arm(dx, dy)
+      angle = 180 * rotation_timer.percent.clamp(0, 1)
 
       if item.nil?
         angle = 180 - angle
       end
 
-      # puts ">>> draw_arm angle: #{angle}deg"
+      dx += x + width / 2
+      dy += y + height / 2 - size / 3
+
+      x2 = dx + Math.cos(angle * Math::PI / 180) * ArmLength
+      y2 = dy - Math.sin(angle * Math::PI / 180) * ArmLength
+
+      LibAllegro.draw_line(dx, dy, x2, y2, color, ArmWidth)
     end
 
     # HUD

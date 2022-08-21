@@ -5,6 +5,7 @@ module Works::Struct::Inserter
     Key = :inserter
     Name = "Inserter"
     Color = LibAllegro.map_rgb_f(0.75, 0.75, 0.1)
+    RotationSpeed = 302 # degrees per second
 
     def self.key
       Key
@@ -16,6 +17,10 @@ module Works::Struct::Inserter
 
     def self.color
       Color
+    end
+
+    def self.rotation_speed
+      RotationSpeed
     end
   end
 end

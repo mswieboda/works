@@ -75,6 +75,20 @@ module Works::Struct::Furnace
       end
     end
 
+    def add_input?(item)
+      return false unless accept_input?(item)
+
+      if input_item = @input_item
+        !input_item.full? && input_item.class == item.class
+      else
+        true
+      end
+    end
+
+    def add_input(klass, amount, input_item)
+      input_item.add(amount)
+    end
+
     def accept_input?(item : Item::Base)
       case item
       when Item::Ore::Copper, Item::Ore::Iron, Item::IronPlate, Item::Ore::Stone

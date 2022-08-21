@@ -5,6 +5,7 @@ module Works::Struct::Inserter
     Key = :burner_inserter
     Name = "Burner inserter"
     Color = LibAllegro.map_rgb_f(0.333, 0.25, 0.21)
+    RotationSpeed = 216 # degrees per second
 
     property fuel_item : Item::Base | Nil
     getter? fuel_slot_hover
@@ -26,6 +27,10 @@ module Works::Struct::Inserter
 
     def self.color
       Color
+    end
+
+    def self.rotation_speed
+      RotationSpeed
     end
 
     def accept_fuel?(item : Item::Base)
