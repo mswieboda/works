@@ -174,7 +174,7 @@ module Works
       end
 
       if item
-        item.draw(dx + Margin, dy + Margin, item_size)
+        item.draw_icon(dx + Margin, dy + Margin, item_size)
       end
 
       LibAllegro.draw_rectangle(dx, dy, dx + SlotSize, dy + SlotSize, SlotBorderColor, 1)

@@ -50,12 +50,12 @@ module Works::Item
           draw_color_tint(x + strct.x, y + strct.y, strct.width, strct.height, tint)
         end
       else
-        draw_item
+        draw_icon
       end
     end
 
-    def draw_item
-      item.draw(x, y, size)
+    def draw_icon
+      item.draw_icon(x, y, size)
     end
 
     def draw_color_tint(x, y, width, height, tint)

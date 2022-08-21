@@ -8,6 +8,7 @@ module Works::Item
     MaxAmount = 100
     IconTextColor = LibAllegro.premul_rgba_f(1, 1, 1, 0.5)
     Color = LibAllegro.map_rgb_f(1, 0, 1)
+    ItemSize = Cell.size / 2
 
     getter amount
     protected setter amount
@@ -105,18 +106,25 @@ module Works::Item
       item
     end
 
-    def draw(x, y, size)
-      draw_icon(x, y, size)
+    def draw_icon(x, y, size)
+      draw_icon_background(x, y, size)
       draw_icon_text(x, y, size)
     end
 
-    def draw_icon(x, y, size)
+    def draw_icon_background(x, y, size)
       LibAllegro.draw_filled_circle(x + size / 2, y + size / 2, size / 2, icon_color)
     end
 
     def draw_icon_text(x, y, size)
       LibAllegro.draw_text(Font.default, IconTextColor, x + size / 6, y + size / 5, 0, short_code)
       LibAllegro.draw_text(Font.default, IconTextColor, x + size, y + size - size / 3, LibAllegro::AlignRight, @amount.to_s)
+    end
+
+    def draw_item(cx, cy)
+      x = cx - ItemSize / 2
+      y = cy - ItemSize / 2
+
+      LibAllegro.draw_filled_rectangle(x, y, x + ItemSize, y + ItemSize, icon_color)
     end
 
     def print_str

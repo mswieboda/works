@@ -173,6 +173,7 @@ module Works::Struct::Inserter
     def draw(x, y)
       draw_body(x, y)
       draw_arm(x, y)
+      draw_item(x, y)
     end
 
     def draw_body(dx, dy)
@@ -198,6 +199,24 @@ module Works::Struct::Inserter
       y2 = dy - Math.sin(angle * Math::PI / 180) * ArmLength
 
       LibAllegro.draw_line(dx, dy, x2, y2, color, ArmWidth)
+    end
+
+    def draw_item(dx, dy)
+      if item = @item
+        angle = 180 * rotation_timer.percent.clamp(0, 1)
+
+        if item.nil?
+          angle = 180 - angle
+        end
+
+        dx += x + width / 2
+        dy += y + height / 2 - size / 3
+
+        x2 = dx + Math.cos(angle * Math::PI / 180) * ArmLength
+        y2 = dy - Math.sin(angle * Math::PI / 180) * ArmLength
+
+        item.draw_item(x2, y2)
+      end
     end
 
     # HUD

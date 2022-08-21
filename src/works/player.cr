@@ -325,7 +325,7 @@ module Works
     def draw_inventory(x, y)
       if held_item = inventory.held_item
         if inventory.hud.hover?
-          held_item.draw_item
+          held_item.draw_icon
         else
           color_tint = nil
 
