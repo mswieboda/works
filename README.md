@@ -41,17 +41,17 @@ for the more efficient production ready build.
   - [x] Steel plate
   - [x] Stone brick
 - [ ] Inserters
-  - [x] Burner (doesn't consume fuel yet)
+  - [x] Burner inserter (doesn't consume fuel yet)
   - [x] Inserter (doesn't take electricity yet)
-  - [ ] Long-handed
-  - [ ] Fast
-  - [ ] Filter
-  - [ ] Stack
-  - [ ] Stack filter
+  - [ ] Long-handed inserter
+  - [ ] Fast inserter
+  - [ ] Filter inserter
+  - [ ] Stack inserter
+  - [ ] Stack filter inserter
 - [ ] Transport belts
-  - [ ] Transport belt
-  - [ ] Fast transport belt
-  - [ ] Express transport belt
+  - [x] Transport belt (doesn't interact with inserters yet)
+  - [x] Fast transport belt (doesn't interact with inserters yet)
+  - [x] Express transport belt (doesn't interact with inserters yet)
 - [ ] Underground belts
   - [ ] Underground belt
   - [ ] Fast underground belt
@@ -60,6 +60,10 @@ for the more efficient production ready build.
   - [ ] Splitter
   - [ ] Fast splitter
   - [ ] Express splitter
+- [ ] Chests
+  - [x] Wooden chest (doesn't have storage yet, placeholder)
+  - [x] Iron chest (doesn't have storage yet, placeholder)
+  - [x] Steel chest (doesn't have storage yet, placeholder)
 - [ ] Drills
   - [ ] Burner mining drill
   - [ ] Electric mining drill
