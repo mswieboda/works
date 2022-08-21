@@ -88,12 +88,17 @@ module Works::Struct::TransportBelt
 
     def draw_accents(dx, dy, color)
       dx += x
-      dy += y + position + height / 8
+      dy += y
+      px = dx
+      py = dy + position - height
+      h = height / 8
 
-      3.times do |i|
-        LibAllegro.draw_triangle(dx + width / 4, dy, dx + width - width / 4, dy, dx + width / 2, dy + height / 8, color, 3)
+      6.times do |i|
+        if py + h >= dy && py <= dy + height
+          LibAllegro.draw_triangle(px + width / 4, py, px + width - width / 4, py, px + width / 2, py + h, color, 3)
+        end
 
-        dy += height / 3
+        py += height / 3
       end
     end
   end
