@@ -55,8 +55,16 @@ module Works::Struct
       false
     end
 
-    def add_input(klass, amount, input_item)
+    def add_input(klass, amount)
       amount
+    end
+
+    def overlaps_input?(col, row)
+      overlaps?(col, row)
+    end
+
+    def overlaps_output?(col, row)
+      overlaps?(col, row)
     end
 
     def update_struct_info_slot_hovers(mouse : Mouse, inventory_width,  inventory_height)

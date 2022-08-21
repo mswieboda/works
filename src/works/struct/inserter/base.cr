@@ -74,25 +74,18 @@ module Works::Struct::Inserter
       return unless rotation_timer.done?
 
       if item = @item
-        if strct = output_struct(map)
+        if strct = inputting_struct(map)
           if strct.add_input?(item)
-            if input_item = strct.input_item
-              leftovers = strct.add_input(item.class, item.amount, input_item)
+            leftovers = strct.add_input(item.class, item.amount)
 
-              item.remove(item.amount - leftovers)
+            item.remove(item.amount - leftovers)
 
-              @item = nil if item.none?
+            @item = nil if item.none?
 
-              rotation_timer.restart
-            else
-              strct.input_item = item
-              @item = nil
-
-              rotation_timer.restart
-            end
+            rotation_timer.restart
           end
         end
-      elsif strct = input_struct(map)
+      elsif strct = outputting_struct(map)
         if grab_item = strct.grab_item
           if leftovers = strct.grab_item(item_grab_size)
             item = grab_item.class.new
@@ -108,6 +101,8 @@ module Works::Struct::Inserter
     end
 
     def grab_item
+      return nil unless rotation_timer.done?
+
       item
     end
 
@@ -116,34 +111,12 @@ module Works::Struct::Inserter
         leftovers = item.remove(item_grab_size)
 
         if item.amount <= 0
+          rotation_timer.restart
           @item = nil
         end
 
         leftovers
       end
-    end
-
-    def input_item
-      item
-    end
-
-    def input_item=(item)
-      @item = item
-    end
-
-    def add_input?(item)
-      if input = input_item
-        input.amount < item_grab_size && input.class == item.class
-      else
-        true
-      end
-    end
-
-    def add_input(klass, amount, input_item)
-      amount_to_add = [item_grab_size - input_item.amount, amount].min
-      leftovers = input_item.add(amount_to_add)
-
-      amount - amount_to_add - leftovers
     end
 
     def input_coords
@@ -176,14 +149,24 @@ module Works::Struct::Inserter
       end
     end
 
-    def input_struct(map : Map)
-      col, row = input_coords
-      map.structs.find(&.overlaps?(col, row))
+    def inputting_struct(map : Map)
+      col, row = output_coords
+      map.structs.find(&.overlaps_input?(col, row))
     end
 
-    def output_struct(map : Map)
-      col, row = output_coords
-      map.structs.find(&.overlaps?(col, row))
+    def outputting_struct(map : Map)
+      col, row = input_coords
+      map.structs.find(&.overlaps_output?(col, row))
+    end
+
+    def overlaps_input?(col, row)
+      false
+    end
+
+    def overlaps_output?(col, row)
+      output_col, output_row = output_coords
+
+      col == output_col && row == output_row
     end
 
     def draw(x, y)
