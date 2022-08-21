@@ -89,7 +89,7 @@ module Works
         return unless mouse.left_just_pressed?
 
         if held_index = @held_index
-          if !hud.hover? && held_item.buildable? && held_item.item.amount > 0
+          if !(hud.shown? && hud.hover?) && held_item.buildable? && held_item.item.amount > 0
             if strct = held_item.strct
               map.structs << strct.clone
               held_item.item.remove(1)
