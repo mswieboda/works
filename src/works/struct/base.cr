@@ -126,6 +126,14 @@ module Works::Struct
       self.class.hud_background_color
     end
 
+    def show_hud
+      @hud_shown = true
+    end
+
+    def hide_hud
+      @hud_shown = false
+    end
+
     def update_struct_info_slot_hovers(mouse : Mouse, inventory_width,  inventory_height)
     end
 
@@ -134,12 +142,18 @@ module Works::Struct
         mouse.y > slot_y && mouse.y < slot_y + SlotSize
     end
 
-    def show_hud
-      @hud_shown = true
+    def slot_click(inventory : Inventory, mouse : Mouse)
+      if held_item = inventory.held_item
+        slot_click_held_item(inventory, held_item)
+      else
+        slot_click_grab_item(inventory, mouse)
+      end
     end
 
-    def hide_hud
-      @hud_shown = false
+    def slot_click_held_item(inventory : Inventory, held_item : Item::Held)
+    end
+
+    def slot_click_grab_item(inventory : Inventory, mouse : Mouse)
     end
 
     def hud_x

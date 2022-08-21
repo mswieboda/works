@@ -58,6 +58,27 @@ module Works::Struct::Furnace
       end
     end
 
+    def slot_click_held_item(inventory : Inventory, held_item : Item::Held)
+      super(inventory, held_item)
+
+      if fuel_slot_hover? && accept_fuel?(held_item.item)
+        if item = fuel_item
+          @fuel_item = inventory.swap_held_item(held_item, item)
+        elsif item = inventory.remove_held_item
+          @fuel_item = item
+        end
+      end
+    end
+
+    def slot_click_grab_item(inventory : Inventory, mouse : Mouse)
+      super(inventory, mouse)
+
+      if fuel_slot_hover? && (item = fuel_item)
+        inventory.grab_slot_item(item, mouse)
+        @fuel_item = nil
+      end
+    end
+
     def fuel_slot_x
       input_slot_x
     end

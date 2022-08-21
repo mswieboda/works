@@ -180,61 +180,7 @@ module Works
         strct.update_struct_info_slot_hovers(mouse, inventory.hud.inventory_width, inventory.hud.height)
 
         if mouse.left_just_pressed? && inventory.hud.hover_index.nil?
-          if (held_item = inventory.held_item)
-            if strct.responds_to?(:input_slot_hover?) && strct.input_slot_hover? && strct.accept_input?(held_item.item)
-              if item = strct.input_item
-                strct.input_item = inventory.swap_held_item(held_item, item)
-              elsif item = inventory.remove_held_item
-                strct.input_item = item
-              end
-            elsif strct.responds_to?(:output_slot_hover?) && strct.output_slot_hover? && strct.accept_output?(held_item.item)
-              if item = strct.output_item
-                strct.output_item = inventory.swap_held_item(held_item, item)
-              elsif item = inventory.remove_held_item
-                strct.output_item = item
-              end
-            elsif strct.responds_to?(:fuel_slot_hover?) && strct.fuel_slot_hover? && strct.accept_fuel?(held_item.item)
-              if item = strct.fuel_item
-                strct.fuel_item = inventory.swap_held_item(held_item, item)
-              elsif item = inventory.remove_held_item
-                strct.fuel_item = item
-              end
-            elsif strct.responds_to?(:item_slot_hover?) && strct.item_slot_hover? && strct.accept_item?(held_item.item)
-              if strct.item.nil?
-                held_item.item.remove(strct.item_grab_size)
-
-                item = held_item.item.class.new
-
-                item.add(strct.item_grab_size)
-
-                strct.item = item
-
-                inventory.remove_held_item if held_item.item.amount <= 0
-              end
-            end
-          else
-            if strct.responds_to?(:input_slot_hover?) && strct.input_slot_hover?
-              if item = strct.input_item
-                inventory.grab_slot_item(item, mouse)
-                strct.input_item = nil
-              end
-            elsif strct.responds_to?(:output_slot_hover?) && strct.output_slot_hover?
-              if item = strct.output_item
-                inventory.grab_slot_item(item, mouse)
-                strct.output_item = nil
-              end
-            elsif strct.responds_to?(:fuel_slot_hover?) && strct.fuel_slot_hover?
-              if item = strct.fuel_item
-                inventory.grab_slot_item(item, mouse)
-                strct.fuel_item = nil
-              end
-            elsif strct.responds_to?(:item_slot_hover?) && strct.item_slot_hover?
-              if item = strct.item
-                inventory.grab_slot_item(item, mouse)
-                strct.item = nil
-              end
-            end
-          end
+          strct.slot_click(inventory, mouse)
         end
       end
     end

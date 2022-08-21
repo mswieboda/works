@@ -220,6 +220,32 @@ module Works::Struct::Furnace
       end
     end
 
+    def slot_click_held_item(inventory : Inventory, held_item : Item::Held)
+      if input_slot_hover? && accept_input?(held_item.item)
+        if item = input_item
+          @input_item = inventory.swap_held_item(held_item, item)
+        elsif item = inventory.remove_held_item
+          @input_item = item
+        end
+      elsif output_slot_hover? && accept_output?(held_item.item)
+        if item = output_item
+          @output_item = inventory.swap_held_item(held_item, item)
+        elsif item = inventory.remove_held_item
+          @output_item = item
+        end
+      end
+    end
+
+    def slot_click_grab_item(inventory : Inventory, mouse : Mouse)
+      if input_slot_hover? && (item = input_item)
+        inventory.grab_slot_item(item, mouse)
+        @input_item = nil
+      elsif output_slot_hover? && (item = output_item)
+        inventory.grab_slot_item(item, mouse)
+        @output_item = nil
+      end
+    end
+
     def input_slot_x
       hud_x
     end

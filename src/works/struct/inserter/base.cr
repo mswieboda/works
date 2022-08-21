@@ -217,6 +217,32 @@ module Works::Struct::Inserter
       end
     end
 
+    def slot_click_held_item(inventory : Inventory, held_item : Item::Held)
+      return unless item.nil? && item_slot_hover? && accept_item?(held_item.item)
+
+      held_item.item.remove(item_grab_size)
+
+      new_item = held_item.item.class.new
+
+      new_item.add(item_grab_size)
+
+      @item = new_item
+
+      rotation_timer.restart if rotation_timer.done?
+
+      inventory.remove_held_item if held_item.item.amount <= 0
+    end
+
+    def slot_click_grab_item(inventory : Inventory, mouse : Mouse)
+      if item_slot_hover? && (item = @item)
+        inventory.grab_slot_item(item, mouse)
+
+        rotation_timer.restart if rotation_timer.done?
+
+        @item = nil
+      end
+    end
+
     def item_slot_x
       hud_x + hud_margin
     end
