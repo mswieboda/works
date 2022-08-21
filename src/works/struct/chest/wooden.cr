@@ -4,7 +4,7 @@ module Works::Struct::Chest
   class Wooden < Base
     Key = :wooden_chest
     Name = "Wooden chest"
-    Color = LibAllegro.map_rgb_f(0.35, 0.33, 0.31)
+    Color = LibAllegro.map_rgb_f(0.37, 0.29, 0.21)
     Storage = 16
 
     def self.key

@@ -11,12 +11,6 @@ module Works::Struct::Inserter
     ArmWidth = (Cell.size / 8).to_i
     ArmLength = Cell.size
 
-    # HUD
-    Margin = 4 * Screen::ScaleFactor
-    SlotSize = 32 * Screen::ScaleFactor
-    BackgroundColor = LibAllegro.premul_rgba_f(0, 0, 0, 0.13)
-    HoverColor = LibAllegro.premul_rgba_f(1, 0.5, 0, 0.33)
-
     property item : Item::Base | Nil
     getter? item_slot_hover
     getter facing
@@ -223,34 +217,17 @@ module Works::Struct::Inserter
       end
     end
 
-    def hud_x
-      Screen::Width / 2
-    end
-
-    def hud_y(inventory_height)
-      Screen::Height / 2 - inventory_height / 2
-    end
-
     def item_slot_x
-      hud_x + Margin
+      hud_x + hud_margin
     end
 
     def item_slot_y(inventory_height)
-      hud_y(inventory_height) + Margin + Margin
+      hud_y(inventory_height) + hud_margin + hud_margin
     end
 
-    def draw_struct_info(inventory_width, inventory_height)
-      dx = hud_x
-      dy = hud_y(inventory_height) + Margin
-
-      # background
-      LibAllegro.draw_filled_rectangle(dx, dy, dx + inventory_width - Margin, dy + inventory_height - Margin * 2, BackgroundColor)
-
+    def draw_struct_info_slots(inventory_width, inventory_height)
       # item slot
       InventoryHUD.draw_slot(item_slot_x, item_slot_y(inventory_height), item, item_slot_hover?)
-
-      # info text at bottom
-      HUDText.new("#{name}").draw_from_bottom(dx + Margin, dy + inventory_height - Margin)
     end
   end
 end

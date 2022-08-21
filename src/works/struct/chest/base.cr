@@ -7,6 +7,19 @@ module Works::Struct::Chest
     Color = LibAllegro.map_rgb_f(1, 0, 1)
     Storage = 1
 
+    # HUD
+    SlotCols = 10
+
+    getter items : Array(Item::Base | Nil)
+    getter hover_index : Int32 | Nil
+
+    def initialize(col = 0_u16, row = 0_u16)
+      super(col, row)
+
+      @items = Array(Item::Base | Nil).new(storage, nil)
+      @hover_index = nil
+    end
+
     def self.key
       Key
     end
@@ -46,6 +59,59 @@ module Works::Struct::Chest
 
     def grab_item(item_grab_size)
       # TODO: implement
+    end
+
+    # HUD
+    def item_cols
+      cols = SlotCols
+
+      [cols, storage].min
+    end
+
+    def item_rows
+      (storage / item_cols).ceil.to_i
+    end
+
+    def item_col(index)
+      index % item_cols
+    end
+
+    def item_row(index)
+      (index / item_cols).to_i % item_rows
+    end
+
+    def item_x(col)
+      hud_x + col * hud_slot_size
+    end
+
+    def item_y(row, inventory_height)
+      hud_y(inventory_height) + hud_margin + row * hud_slot_size
+    end
+
+    def update_struct_info_slot_hovers(mouse : Mouse, inventory_width,  inventory_height)
+      storage.times do |index|
+        if mouse.hover?(item_x(item_col(index)), item_y(item_row(index), inventory_height), hud_slot_size, hud_slot_size)
+          @hover_index = index
+        end
+      end
+    end
+
+    def draw_struct_info_slots(inventory_width, inventory_height)
+      index = 0
+
+      item_rows.times do |row|
+        item_cols.times do |col|
+          dx = item_x(col)
+          dy = item_y(row, inventory_height)
+          item = index < items.size ? items[index] : nil
+
+          if index < storage
+            InventoryHUD.draw_slot(dx, dy, item, index == hover_index)
+          end
+
+          index += 1
+        end
+      end
     end
   end
 end

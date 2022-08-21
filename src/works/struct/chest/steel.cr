@@ -5,7 +5,7 @@ module Works::Struct::Chest
     Key = :steel_chest
     Name = "Steel chest"
     Color = LibAllegro.map_rgb(139, 130, 133)
-    Storage = 16
+    Storage = 48
 
     def self.key
       Key

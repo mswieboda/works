@@ -49,6 +49,11 @@ module Works
       [col, row]
     end
 
+    def hover?(ox, oy, width, height)
+      x >= ox && x <= ox + width &&
+        y >= oy && y <= oy + height
+    end
+
     def reset
       @buttons.each_with_index do |key, index|
         @buttons[index] &= Seen

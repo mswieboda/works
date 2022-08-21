@@ -43,11 +43,7 @@ module Works
       return unless hover?
 
       max_slots.times do |index|
-        item_x = x(col(index))
-        item_y = y(row(index))
-
-        if mouse.x >= item_x && mouse.x < item_x + SlotSize &&
-           mouse.y >= item_y && mouse.y < item_y + SlotSize
+        if mouse.hover?(item_x(item_col(index)), item_y(item_row(index)), SlotSize, SlotSize)
           @hover_index = index
         end
       end
@@ -65,51 +61,49 @@ module Works
       shown? ? hide : show
     end
 
-    def cols
+    def item_cols
       cols = SlotCols
 
       [cols, max_slots].min
     end
 
-    def rows
-      (max_slots / cols).ceil.to_i
+    def item_rows
+      (max_slots / item_cols).ceil.to_i
     end
 
-    def col(index)
-      index % cols
+    def item_col(index)
+      index % item_cols
     end
 
-    def row(index)
-      (index / cols).to_i % rows
+    def item_row(index)
+      (index / item_cols).to_i % item_rows
     end
 
     def inventory_width
-      Margin + cols * SlotSize + Margin
+      Margin + item_cols * SlotSize
     end
 
     def width
-      width = inventory_width
-      width += inventory_width - Margin
-      width
+      inventory_width + inventory_width + Margin
     end
 
     def height
-      Margin + rows * SlotSize + Margin
+      Margin + item_rows * SlotSize + Margin
     end
 
     def x
-      Screen::Width / 2 - width / 2
+      Screen::Width / 2 - inventory_width
     end
 
     def y
       Screen::Height / 2 - height / 2
     end
 
-    def x(col)
+    def item_x(col)
       x + Margin + col * SlotSize
     end
 
-    def y(row)
+    def item_y(row)
       y + Margin + row * SlotSize
     end
 
@@ -124,8 +118,7 @@ module Works
     def hover?(mouse : Mouse)
       return false unless shown?
 
-      mouse.x >= x && mouse.x < x + width &&
-        mouse.y > y && mouse.y < y + height
+      mouse.hover?(x, y, width, height)
     end
 
     def draw
@@ -142,11 +135,10 @@ module Works
     def draw_slots
       index = 0
 
-      rows.times do |row|
-        cols.times do |col|
-          dx = x(col)
-          dy = y(row)
-
+      item_rows.times do |row|
+        item_cols.times do |col|
+          dx = item_x(col)
+          dy = item_y(row)
           item = index < items.size ? items[index] : nil
 
           draw_slot(dx, dy, item, index == hover_index)

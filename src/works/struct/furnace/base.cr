@@ -8,10 +8,6 @@ module Works::Struct::Furnace
     Color = LibAllegro.map_rgb_f(0.5, 0.5, 0.1)
 
     # HUD
-    Margin = 4 * Screen::ScaleFactor
-    SlotSize = 32 * Screen::ScaleFactor
-    BackgroundColor = LibAllegro.premul_rgba_f(0, 0, 0, 0.13)
-    HoverColor = LibAllegro.premul_rgba_f(1, 0.5, 0, 0.33)
     OutputProgressColor = LibAllegro.premul_rgba_f(0, 1, 0, 0.33)
 
     property input_item : Item::Base | Nil
@@ -224,24 +220,16 @@ module Works::Struct::Furnace
       end
     end
 
-    def hud_x
-      Screen::Width / 2
-    end
-
-    def hud_y(inventory_height)
-      Screen::Height / 2 - inventory_height / 2
-    end
-
     def input_slot_x
-      hud_x + Margin
+      hud_x
     end
 
     def input_slot_y(inventory_height)
-      hud_y(inventory_height) + Margin + Margin
+      hud_y(inventory_height) + hud_margin
     end
 
     def output_slot_x(inventory_width)
-      hud_x + inventory_width - Margin - SlotSize - Margin
+      hud_x + inventory_width - hud_margin - hud_slot_size
     end
 
     def output_slot_y(inventory_height)
@@ -253,16 +241,10 @@ module Works::Struct::Furnace
     end
 
     def fuel_slot_y(inventory_height)
-      input_slot_y(inventory_height) + Margin + SlotSize
+      input_slot_y(inventory_height) + hud_margin + hud_slot_size
     end
 
-    def draw_struct_info(inventory_width, inventory_height)
-      dx = hud_x
-      dy = hud_y(inventory_height) + Margin
-
-      # background
-      LibAllegro.draw_filled_rectangle(dx, dy, dx + inventory_width - Margin, dy + inventory_height - Margin * 2, BackgroundColor)
-
+    def draw_struct_info_slots(inventory_width, inventory_height)
       # input slot
       is_x = input_slot_x
       is_y = input_slot_y(inventory_height)
@@ -270,18 +252,15 @@ module Works::Struct::Furnace
 
       # output progress
       os_x = output_slot_x(inventory_width)
-      px = is_x + SlotSize + Margin
-      py = is_y + Margin * 3
-      progress_total_x = os_x - Margin
+      px = is_x + hud_slot_size + hud_margin
+      py = is_y + hud_margin * 3
+      progress_total_x = os_x - hud_margin
       progress_width = progress_total_x - px
       progress_end_x = px + progress_width * output_timer.percent
-      LibAllegro.draw_filled_rectangle(px, py, progress_end_x, py - Margin * 3 + SlotSize - Margin * 3, OutputProgressColor)
+      LibAllegro.draw_filled_rectangle(px, py, progress_end_x, py - hud_margin * 3 + hud_slot_size - hud_margin * 3, OutputProgressColor)
 
       # output slot
       InventoryHUD.draw_slot(os_x, output_slot_y(inventory_height), output_item, output_slot_hover?)
-
-      # info text at bottom
-      HUDText.new("#{name}").draw_from_bottom(dx + Margin, dy + inventory_height - Margin)
     end
   end
 end
