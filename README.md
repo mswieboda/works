@@ -35,7 +35,7 @@ for the more efficient production ready build.
   - [x] Stone (doesn't consume fuel yet)
   - [ ] Steel
   - [x] Electric (doesn't take electricity yet)
-- [ ] Furnace Recipes
+- [x] Furnace Recipes
   - [x] Copper plate
   - [x] Iron plate
   - [x] Steel plate
