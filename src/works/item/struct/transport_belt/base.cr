@@ -1,6 +1,7 @@
 require "../base"
 require "../../../struct/transport_belt/base"
 require "../../../struct/transport_belt/fast"
+require "../../../struct/transport_belt/express"
 
 module Works::Item::Struct::TransportBelt
   class Base < Struct::Base
@@ -36,6 +37,8 @@ module Works::Item::Struct::TransportBelt
         Works::Struct::TransportBelt::Base.new
       when :fast_transport_belt
         Works::Struct::TransportBelt::Fast.new
+      when :express_transport_belt
+        Works::Struct::TransportBelt::Express.new
       else
         raise "#{self.class.name}#to_struct struct not found for #{key}"
       end

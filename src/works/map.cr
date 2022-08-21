@@ -52,6 +52,7 @@ module Works
 
       Struct::TransportBelt::Base.update
       Struct::TransportBelt::Fast.update
+      Struct::TransportBelt::Express.update
     end
 
     def draw

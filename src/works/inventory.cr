@@ -15,7 +15,7 @@ module Works
       # other
       Item::StoneBrick,
       # transport belts
-      Item::Struct::TransportBelt::Base, Item::Struct::TransportBelt::Fast,
+      Item::Struct::TransportBelt::Base, Item::Struct::TransportBelt::Fast, Item::Struct::TransportBelt::Express,
       # inserters
       Item::Struct::Inserter::Burner, Item::Struct::Inserter::Inserter,
       # furnaces
@@ -50,6 +50,7 @@ module Works
       add(Item::Struct::Inserter::Inserter, 5)
       add(Item::Struct::TransportBelt::Base, 15)
       add(Item::Struct::TransportBelt::Fast, 15)
+      add(Item::Struct::TransportBelt::Express, 15)
     end
 
     def update(keys : Keys, mouse : Mouse, map : Map, player : Player)

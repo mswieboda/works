@@ -68,6 +68,8 @@ module Works::Struct::TransportBelt
         Item::Struct::TransportBelt::Base
       when :fast_transport_belt
         Item::Struct::TransportBelt::Fast
+      when :express_transport_belt
+        Item::Struct::TransportBelt::Express
       else
         raise "#{self.class.name}#item_class item not found for #{key}"
       end
