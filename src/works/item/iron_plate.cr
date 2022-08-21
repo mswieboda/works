@@ -6,7 +6,7 @@ module Works::Item
     Name = "Iron plate"
     ShortCode = "I#"
     MaxAmount = 100
-    Color = LibAllegro.map_rgb(139, 130, 133)
+    Color = LibAllegro.map_rgb(109, 100, 103)
 
     def self.key
       Key

@@ -1,12 +1,12 @@
 require "./base"
 
-module Works::Item::Ore
+module Works::Item::Struct::Chest
   class Iron < Base
-    Key = :iron
-    Name = "Iron"
-    ShortCode = "IR"
-    MaxAmount = 50
+    Key = :iron_chest
+    Name = "Iron chest"
+    ShortCode = "IC"
     Color = LibAllegro.map_rgb(109, 100, 103)
+    Storage = 32
 
     def self.key
       Key
@@ -20,12 +20,12 @@ module Works::Item::Ore
       ShortCode
     end
 
-    def self.max_amount
-      MaxAmount
-    end
-
     def self.icon_color
       Color
+    end
+
+    def self.storage
+      Storage
     end
   end
 end

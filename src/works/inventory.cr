@@ -18,6 +18,8 @@ module Works
       Item::Struct::TransportBelt::Base, Item::Struct::TransportBelt::Fast, Item::Struct::TransportBelt::Express,
       # inserters
       Item::Struct::Inserter::Burner, Item::Struct::Inserter::Inserter,
+      # chests
+      Item::Struct::Chest::Wooden, Item::Struct::Chest::Iron, Item::Struct::Chest::Steel,
       # furnaces
       Item::Struct::Furnace::Stone, Item::Struct::Furnace::Electric
     ].map(&.key)
@@ -51,6 +53,9 @@ module Works
       add(Item::Struct::TransportBelt::Base, 15)
       add(Item::Struct::TransportBelt::Fast, 15)
       add(Item::Struct::TransportBelt::Express, 15)
+      add(Item::Struct::Chest::Wooden, 3)
+      add(Item::Struct::Chest::Iron, 3)
+      add(Item::Struct::Chest::Steel, 3)
     end
 
     def update(keys : Keys, mouse : Mouse, map : Map, player : Player)
