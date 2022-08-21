@@ -49,6 +49,9 @@ module Works
       @viewables += viewables(structs.select(&.is_a?(Struct::Inserter::Base)))
 
       structs.each(&.update(self))
+
+      Struct::TransportBelt::Base.update
+      Struct::TransportBelt::Fast.update
     end
 
     def draw

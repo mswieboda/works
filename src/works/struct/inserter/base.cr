@@ -62,10 +62,6 @@ module Works::Struct::Inserter
       end
     end
 
-    def accept_item?(item : Item::Base)
-      true
-    end
-
     def item_grab_size
       1
     end

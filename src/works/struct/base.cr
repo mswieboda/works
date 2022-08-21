@@ -39,6 +39,10 @@ module Works::Struct
 
     abstract def item_class
 
+    def accept_item?(item : Item::Base)
+      true
+    end
+
     abstract def update(map : Map)
 
     def grab_item
