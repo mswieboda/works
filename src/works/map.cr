@@ -45,7 +45,8 @@ module Works
       @viewables.clear
       @viewables += viewables_grid(ground)
       @viewables += viewables_grid(ore)
-      @viewables += viewables(structs)
+      @viewables += viewables(structs.reject(&.is_a?(Struct::Inserter::Base)))
+      @viewables += viewables(structs.select(&.is_a?(Struct::Inserter::Base)))
 
       structs.each(&.update(self))
     end
