@@ -96,6 +96,30 @@ module Works::Struct::Chest
       end
     end
 
+    def slot_click_held_item(inventory : Inventory, held_item : Item::Held)
+      return unless (hover_index = @hover_index) && accept_item?(held_item.item)
+
+      if hover_index < items.size
+        if item = items[hover_index]
+          items[hover_index] = inventory.swap_held_item(held_item, item)
+        else
+          items[hover_index] = held_item.item
+          inventory.remove_held_item
+        end
+      end
+    end
+
+    def slot_click_grab_item(inventory : Inventory, mouse : Mouse)
+      return unless hover_index = @hover_index
+
+      if hover_index < items.size
+        if item = items[hover_index]
+          inventory.grab_slot_item(item, mouse)
+          items[hover_index] = nil
+        end
+      end
+    end
+
     def draw_struct_info_slots(inventory_width, inventory_height)
       index = 0
 
