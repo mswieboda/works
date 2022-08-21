@@ -41,8 +41,8 @@ for the more efficient production ready build.
   - [x] Steel plate
   - [x] Stone brick
 - [ ] Inserters
-  - [x] Burner (doesn't consume fuel yet) (doesn't grab/drop yet)
-  - [x] Inserter (doesn't take electricity yet) (doesn't grab/drop yet)
+  - [x] Burner (doesn't consume fuel yet)
+  - [x] Inserter (doesn't take electricity yet)
   - [ ] Long-handed
   - [ ] Fast
   - [ ] Filter
