@@ -6,6 +6,8 @@ module Works::Tile::Ore
     Name = "Ore"
     Color = LibAllegro.premul_rgba_f(1, 0, 1, 0.69)
 
+    @@sprite = LibAllegro.load_bitmap("./assets/ore.png")
+
     getter amount : UInt16
 
     def initialize(col = 0_u16, row = 0_u16, amount = 0_u16)
@@ -32,6 +34,21 @@ module Works::Tile::Ore
 
     def color
       self.class.color
+    end
+
+    def self.sprite
+      @@sprite
+    end
+
+    def sprite
+      self.class.sprite
+    end
+
+    def draw(dx, dy, color)
+      dx += x
+      dy += y
+
+      Sprite.draw_tinted(sprite, dx, dy, color)
     end
 
     def draw_hover(dx, dy)

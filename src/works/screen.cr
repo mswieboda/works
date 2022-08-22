@@ -40,7 +40,7 @@ module Works
       @@width = LibAllegro.get_display_width(display).to_u16
       @@height = LibAllegro.get_display_height(display).to_u16
       @@scale_factor = (@@width / InitialWidth).to_u8
-      @@sprite_factor = @@scale_factor / InitialScaleFactor
+      @@sprite_factor = @@scale_factor * InitialSpriteFactor
     end
   end
 end
