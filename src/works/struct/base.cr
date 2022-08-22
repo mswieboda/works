@@ -138,8 +138,7 @@ module Works::Struct
     end
 
     def slot_hover?(slot_x, slot_y, mouse : Mouse)
-      mouse.x >= slot_x && mouse.x < slot_x + hud_slot_size &&
-        mouse.y > slot_y && mouse.y < slot_y + hud_slot_size
+      mouse.hover?(slot_x, slot_y, hud_slot_size, hud_slot_size)
     end
 
     def slot_click(inventory : Inventory, mouse : Mouse)
