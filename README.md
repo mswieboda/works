@@ -94,6 +94,14 @@ for the more efficient production ready build.
 - [ ] Furnaces
 - [ ] Chests
 - [ ] Item icons
+  - [x] Ore
+  - [x] Plates
+  - [ ] Steel plate (different)
+  - [ ] Chests
+  - [ ] Furnances
+  - [ ] Inserters
+  - [ ] Transport belts
+  - [ ] Etc...
 - [ ] Inserters
 - [ ] Transport belts
 - [ ] Everything else...
