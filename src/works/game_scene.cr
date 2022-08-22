@@ -1,7 +1,7 @@
 require "./scene"
 require "./map"
 require "./player"
-require "./tile/grass"
+require "./tile/dirt"
 require "./tile/ore/coal"
 require "./tile/ore/iron"
 require "./tile/ore/copper"
@@ -36,7 +36,7 @@ module Works
         map.ground << [] of Tile::Base
 
         map_rows.to_u16.times do |row|
-          map.ground[col] << Tile::Grass.new(col, row)
+          map.ground[col] << Tile::Dirt.new(col, row)
         end
       end
 
