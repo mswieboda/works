@@ -18,6 +18,7 @@ module Works
     StructRemovalDistance = Cell.size.to_i * 5
     StructRemovalInterval = 1.seconds
     BuildDistance = Cell.size.to_i * 10
+    AnimationIdleInterval = 10.seconds
 
     # HUD
     ProgressBarHeight = 5 * Screen.scale_factor
@@ -32,6 +33,7 @@ module Works
     getter struct_hover : Struct::Base | Nil
     getter struct_removal_timer
     getter struct_info : Struct::Base | Nil
+    getter idle_timer
 
     def initialize
       @y = 0
@@ -43,6 +45,8 @@ module Works
       @mining_timer = Timer.new(MiningInterval)
       @struct_hover = nil
       @struct_removal_timer = Timer.new(StructRemovalInterval)
+      @struct_info = nil
+      @idle_timer = Timer.new(AnimationIdleInterval)
     end
 
     def init(sheet : LibAllegro::Bitmap)
@@ -51,30 +55,44 @@ module Works
     end
 
     def init_animations(sheet : LibAllegro::Bitmap)
-      idle = Animation.new((Screen.fps / 3).to_i)
       size = 64
-      idle_frames = 5
 
-      idle_frames.times do |i|
-        idle.add(sheet, i * size, 0, size, size)
+      # idle
+      idle = Animation.new((Screen.fps / 3).to_i, loops: false)
+      idle.add(sheet, 0, 0, size, size)
+
+      # idle animation
+      idle_animation_frames = 5
+      idle_animation = Animation.new((Screen.fps / 3).to_i, loops: false)
+
+      idle_animation_frames.times do |i|
+        idle_animation.add(sheet, i * size, 0, size, size)
       end
 
+      # idle walk left
       idle_walk_left = Animation.new((Screen.fps / 3).to_i)
       idle_walk_left_frames = 4
 
       idle_walk_left_frames.times do |i|
-        i += idle_frames
+        i += idle_animation_frames
         idle_walk_left.add(sheet, i * size, 0, size, size)
       end
 
-      animations.add(idle, :idle)
-      animations.add(idle_walk_left, :idle_walk_left)
+      animations.add(:idle, idle)
+      animations.add(:idle_animation, idle_animation)
+      animations.add(:idle_walk_left, idle_walk_left)
+      animations.add(:idle_walk_right, idle_walk_left, flip_horizontal: true)
       animations.play(:idle)
+    end
+
+    def sprite_width
+      # temp until calc'ed from sprite
+      64 * Screen.sprite_factor
     end
 
     def width
       # temp until calc'ed from sprite
-      48 * Screen.scale_factor
+      32 * Screen.scale_factor
     end
 
     def height
@@ -100,19 +118,29 @@ module Works
 
       dy -= speed if keys.pressed?([LibAllegro::KeyUp, LibAllegro::KeyW])
       dy += speed if keys.pressed?([LibAllegro::KeyDown, LibAllegro::KeyS])
-
-      if keys.pressed?([LibAllegro::KeyLeft, LibAllegro::KeyA])
-        dx -= speed
-        animations.play(:idle_walk_left)
-      end
-
+      dx -= speed if keys.pressed?([LibAllegro::KeyLeft, LibAllegro::KeyA])
       dx += speed if keys.pressed?([LibAllegro::KeyRight, LibAllegro::KeyD])
 
       if dx == 0 && dy == 0
-        animations.play(:idle)
+        idle_timer.start unless idle_timer.started?
+
+        if idle_timer.done?
+          animations.play(:idle_animation)
+          idle_timer.stop
+        elsif animations.done?
+          animations.pause
+        end
       else
         @x += dx
         @y += dy
+
+        if animations.done?
+          animations.play(:idle) if dy != 0
+          animations.play(:idle_walk_left) if dx < 0
+          animations.play(:idle_walk_right) if dx > 0
+        end
+
+        idle_timer.stop if idle_timer.started?
       end
     end
 
@@ -219,12 +247,13 @@ module Works
       distance(cell) < BuildDistance
     end
 
-    def overlaps?(cell : Cell)
-      px = x - width / 2
-      py = y - height / 2
+    def draw_player_x
+      x + (sprite_width - width) / 2
+    end
 
-      px < cell.x + cell.width && cell.x < px + width &&
-        py < cell.y + cell.height && cell.y < py + height
+    def overlaps?(cell : Cell)
+      draw_player_x < cell.x + cell.width && cell.x < draw_player_x + width &&
+        y < cell.y + cell.height && cell.y < y + height
     end
 
     def distance(cell : Cell)
@@ -239,13 +268,13 @@ module Works
       Math.sqrt(dx * dx + dy * dy).to_i
     end
 
-    def draw(x, y)
-      px, py = [x + @x, y + @y]
+    def draw(dx, dy)
+      px, py = [dx + x, dy + y]
 
-      draw_selections(x, y) unless inventory.held_item
+      draw_selections(dx, dy) unless inventory.held_item
       animations.draw(px, py)
-      draw_action_progress(px - width / 2, py - height / 2)
-      draw_inventory(x, y)
+      draw_action_progress(px, py)
+      draw_inventory(dx, dy)
     end
 
     def draw_selections(x, y)
@@ -301,7 +330,7 @@ module Works
     end
 
     def draw_selection(dx, dy, color)
-      Cell.draw_selection(dx + x - width / 2, dy + y - height / 2, width, height, color)
+      Cell.draw_selection(dx + draw_player_x, dy + y, width, height, color)
     end
 
     def destroy
