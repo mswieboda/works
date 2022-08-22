@@ -2,22 +2,8 @@ require "./scene_manager"
 require "./font"
 
 module Works
-  module Allegro
-    # Allegro constants not in bindings
-    MagLinear = 0x0080
-    MinLinear = 0x0040
-  end
-
-  module Screen
-    ScaleFactor = 2
-    Width = 1024 * ScaleFactor
-    Height = 768 * ScaleFactor
-    FPS = 60
-    Name = "works"
-  end
-
   class Main
-    def check_init(test, description)
+    def self.check_init(test, description)
       return if test
 
       puts "> Main::run couldn't init #{description}"
@@ -25,35 +11,12 @@ module Works
       exit 1
     end
 
-    def run
-      check_init(CrystalAllegro.init, "crystal allegro")
-      check_init(LibAllegro.install_keyboard, "keyboard")
-      check_init(LibAllegro.install_mouse, "mouse")
-      check_init(LibAllegro.init_font_addon, "font addon")
-      check_init(LibAllegro.init_ttf_addon, "ttf addon")
-      check_init(LibAllegro.init_image_addon, "image addon")
-      check_init(LibAllegro.init_primitives_addon, "primitives addon")
-
-      timer = LibAllegro.create_timer(1.0 / Screen::FPS)
+    def self.run(display)
+      timer = LibAllegro.create_timer(1.0 / Screen.fps)
       check_init(timer, "timer")
 
       queue = LibAllegro.create_event_queue
       check_init(queue, "queue")
-
-      # display options for anti-aliasing
-      LibAllegro.set_new_display_option(LibAllegro::SampleBuffers, 1, LibAllegro::Suggest)
-      LibAllegro.set_new_display_option(LibAllegro::Samples, 8, LibAllegro::Suggest)
-      LibAllegro.set_new_bitmap_flags(Allegro::MinLinear | Allegro::MagLinear)
-
-      display = LibAllegro.create_display(Screen::Width, Screen::Height)
-      check_init(display, "display")
-
-      LibAllegro.set_window_title(display, Screen::Name)
-
-      # set to fullscreen windowed
-      # LibAllegro.set_display_flag(display, LibAllegro::FullscreenWindow, 1)
-
-      # al_hide_mouse_cursor(display);
 
       LibAllegro.register_event_source(queue, LibAllegro.get_keyboard_event_source)
       LibAllegro.register_event_source(queue, LibAllegro.get_mouse_event_source)
@@ -89,7 +52,7 @@ module Works
       destroy
     end
 
-    def destroy
+    def self.destroy
       Font.destroy
     end
   end

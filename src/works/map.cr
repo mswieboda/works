@@ -29,11 +29,11 @@ module Works
     end
 
     def swidth
-      Screen::Width
+      Screen.width
     end
 
     def sheight
-      Screen::Height
+      Screen.height
     end
 
     def update_viewport(player_x, player_y)

@@ -64,11 +64,11 @@ module Works
         dy -= LibAllegro.get_bitmap_height(sprite) / 2
       end
 
-      if Screen::ScaleFactor > 1
+      if Screen.scale_factor > 1
         w = LibAllegro.get_bitmap_width(sprite)
         h = LibAllegro.get_bitmap_height(sprite)
 
-        LibAllegro.draw_scaled_bitmap(sprite, 0, 0, w, h, dx, dy, w * Screen::ScaleFactor, h * Screen::ScaleFactor, 0)
+        LibAllegro.draw_scaled_bitmap(sprite, 0, 0, w, h, dx, dy, w * Screen.scale_factor, h * Screen.scale_factor, 0)
       else
         LibAllegro.draw_bitmap(sprite, dx, dy, 0)
       end

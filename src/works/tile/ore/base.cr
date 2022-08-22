@@ -39,7 +39,7 @@ module Works::Tile::Ore
     end
 
     def draw_hover_info
-      HUDText.new("#{name}: #{amount}").draw_from_bottom(0, Screen::Height)
+      HUDText.new("#{name}: #{amount}").draw_from_bottom(0, Screen.height)
     end
 
     def print_str

@@ -19,6 +19,9 @@ module Works
     StructRemovalInterval = 1.seconds
     BuildDistance = Cell.size.to_i * 10
 
+    # HUD
+    ProgressBarHeight = 5 * Screen.scale_factor
+
     property x
     property y
     property speed
@@ -48,7 +51,7 @@ module Works
     end
 
     def init_animations(sheet : LibAllegro::Bitmap)
-      idle = Animation.new((Screen::FPS / 3).to_i)
+      idle = Animation.new((Screen.fps / 3).to_i)
       size = 64
       idle_frames = 5
 
@@ -56,7 +59,7 @@ module Works
         idle.add(sheet, i * size, 0, size, size)
       end
 
-      idle_walk_left = Animation.new((Screen::FPS / 3).to_i)
+      idle_walk_left = Animation.new((Screen.fps / 3).to_i)
       idle_walk_left_frames = 4
 
       idle_walk_left_frames.times do |i|
@@ -71,12 +74,12 @@ module Works
 
     def width
       # temp until calc'ed from sprite
-      48 * Screen::ScaleFactor
+      48 * Screen.scale_factor
     end
 
     def height
       # temp until calc'ed from sprite
-      64 * Screen::ScaleFactor
+      64 * Screen.scale_factor
     end
 
     def update(keys : Keys, mouse : Mouse, map : Map)
@@ -260,11 +263,11 @@ module Works
     def draw_action_progress(x, y)
       if struct_hover = @struct_hover
         if struct_removal_timer.started?
-          UI::ProgressBar.new(width, 5, struct_removal_timer.percent, LibAllegro.map_rgb_f(1, 0, 0)).draw_from_bottom(x, y)
+          UI::ProgressBar.new(width, ProgressBarHeight, struct_removal_timer.percent, LibAllegro.map_rgb_f(1, 0, 0)).draw_from_bottom(x, y)
         end
       elsif ore_hover = @ore_hover
         if mining_timer.started?
-          UI::ProgressBar.new(width, 5, mining_timer.percent).draw_from_bottom(x, y)
+          UI::ProgressBar.new(width, ProgressBarHeight, mining_timer.percent).draw_from_bottom(x, y)
         end
       end
     end

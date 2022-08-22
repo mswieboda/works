@@ -6,11 +6,11 @@ module Works
   class InventoryHUD
     BackgroundColor = LibAllegro.premul_rgba_f(0, 0, 0, 0.13)
     HoverColor = LibAllegro.premul_rgba_f(1, 0.5, 0, 0.33)
-    Margin = 4 * Screen::ScaleFactor
+    Margin = 4 * Screen.scale_factor
     SlotBackgroundColor = LibAllegro.premul_rgba_f(1, 1, 1, 0.13)
     SlotBorderColor = LibAllegro.premul_rgba_f(0, 0, 0, 0.03)
     SlotCols = 10
-    SlotSize = 32 * Screen::ScaleFactor
+    SlotSize = 32 * Screen.scale_factor
 
     getter? shown
     getter? hover
@@ -92,11 +92,11 @@ module Works
     end
 
     def x
-      Screen::Width / 2 - inventory_width
+      Screen.width / 2 - inventory_width
     end
 
     def y
-      Screen::Height / 2 - height / 2
+      Screen.height / 2 - height / 2
     end
 
     def item_x(col)

@@ -4,7 +4,7 @@ module Works::Struct::Furnace
   abstract class Base < Struct::Base
     Key = :furnace
     Name = "furnace"
-    Dimensions = {x: 2, y: 2}
+    Dimensions = {x: 2_u8, y: 2_u8}
     Color = LibAllegro.map_rgb_f(0.5, 0.5, 0.1)
 
     # HUD

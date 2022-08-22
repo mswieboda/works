@@ -7,8 +7,8 @@ module Works::Struct
     Color = LibAllegro.map_rgb_f(0.5, 0.5, 0.1)
 
     # HUD
-    Margin = 4 * Screen::ScaleFactor
-    SlotSize = 32 * Screen::ScaleFactor
+    Margin = 4 * Screen.scale_factor
+    SlotSize = 32 * Screen.scale_factor
     BackgroundColor = LibAllegro.premul_rgba_f(0, 0, 0, 0.13)
     HoverColor = LibAllegro.premul_rgba_f(1, 0.5, 0, 0.33)
 
@@ -89,7 +89,7 @@ module Works::Struct
     end
 
     def draw_hover_info
-      HUDText.new("#{name}").draw_from_bottom(0, Screen::Height)
+      HUDText.new("#{name}").draw_from_bottom(0, Screen.height)
     end
 
     # HUD
@@ -138,8 +138,8 @@ module Works::Struct
     end
 
     def slot_hover?(slot_x, slot_y, mouse : Mouse)
-      mouse.x >= slot_x && mouse.x < slot_x + SlotSize &&
-        mouse.y > slot_y && mouse.y < slot_y + SlotSize
+      mouse.x >= slot_x && mouse.x < slot_x + hud_slot_size &&
+        mouse.y > slot_y && mouse.y < slot_y + hud_slot_size
     end
 
     def slot_click(inventory : Inventory, mouse : Mouse)
@@ -157,11 +157,11 @@ module Works::Struct
     end
 
     def hud_x
-      Screen::Width / 2 + hud_margin
+      Screen.width / 2 + hud_margin
     end
 
     def hud_y(inventory_height)
-      Screen::Height / 2 - inventory_height / 2
+      Screen.height / 2 - inventory_height / 2
     end
 
     def draw_struct_info(inventory_width, inventory_height)
@@ -174,7 +174,7 @@ module Works::Struct
       draw_struct_info_slots(inventory_width, inventory_height)
 
       # info text at bottom
-      HUDText.new("#{name}").draw_from_bottom(dx + Margin, dy + inventory_height - Margin - Margin)
+      HUDText.new("#{name}").draw_from_bottom(dx + hud_margin, dy + inventory_height - hud_margin - hud_margin)
     end
 
     def draw_struct_info_slots(inventory_width, inventory_height)

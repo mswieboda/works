@@ -4,8 +4,8 @@ module Works::UI
   class ProgressBar < Base
     BackgroundColor = LibAllegro.premul_rgba_f(0, 0, 0, 0.3)
     Color = LibAllegro.map_rgb_f(1, 1, 1)
-    Margin = 3 * Screen::ScaleFactor
-    Padding = 3 * Screen::ScaleFactor
+    Margin = 3 * Screen.scale_factor
+    Padding = 3 * Screen.scale_factor
 
     property progress : Float64
     property color

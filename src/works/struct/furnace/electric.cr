@@ -4,7 +4,7 @@ module Works::Struct::Furnace
   class Electric < Base
     Key = :electric_furnace
     Name = "Electric furnace"
-    Dimensions = {x: 3, y: 3}
+    Dimensions = {x: 3_u8, y: 3_u8}
     Color = LibAllegro.map_rgb_f(0.3, 0.3, 0.3)
 
     def self.key

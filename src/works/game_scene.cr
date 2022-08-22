@@ -98,7 +98,7 @@ module Works
     def init_player
       player.x = 333
       player.y = 333
-      player.speed = 5 * Screen::ScaleFactor
+      player.speed = 5 * Screen.scale_factor
 
       player.init(sheet)
     end

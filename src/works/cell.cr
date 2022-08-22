@@ -1,10 +1,10 @@
 module Works
   abstract class Cell
-    SelectionLength = 10 * Screen::ScaleFactor
-    SelectionThickness = 3 * Screen::ScaleFactor
+    SelectionLength = 10 * Screen.scale_factor
+    SelectionThickness = 3 * Screen.scale_factor
 
-    Size = 32_u8 * Screen::ScaleFactor
-    Dimensions = {x: 1, y: 1}
+    Size = 32_u16 * Screen.scale_factor
+    Dimensions = {x: 1_u8, y: 1_u8}
 
     property col : UInt16
     property row : UInt16
@@ -18,19 +18,19 @@ module Works
       self.class.name
     end
 
-    def self.dimensions
+    def self.dimensions : NamedTuple(x: UInt8, y: UInt8)
       Dimensions
     end
 
-    def dimensions
+    def dimensions : NamedTuple(x: UInt8, y: UInt8)
       self.class.dimensions
     end
 
-    def self.size
+    def self.size : UInt16
       Size
     end
 
-    def size
+    def size : UInt16
       self.class.size
     end
 
@@ -38,11 +38,11 @@ module Works
       self.class.new(col, row)
     end
 
-    def cols
+    def cols : UInt8
       dimensions[:x]
     end
 
-    def rows
+    def rows : UInt8
       dimensions[:y]
     end
 

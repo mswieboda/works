@@ -4,10 +4,10 @@ module Works
   class FPSDisplay
     TimeSpan = 1
 
-    Margin = 3 * Screen::ScaleFactor
-    Width = 100 * Screen::ScaleFactor
-    TextHeight = 10 * Screen::ScaleFactor
-    BarHeight = 3 * Screen::ScaleFactor
+    Margin = 3 * Screen.scale_factor
+    Width = 100 * Screen.scale_factor
+    TextHeight = 10 * Screen.scale_factor
+    BarHeight = 3 * Screen.scale_factor
     DarkShadow = LibAllegro.premul_rgba_f(0, 0, 0, 0.3)
     Green = LibAllegro.premul_rgba_f(0, 1, 0, 0.3)
 
@@ -39,7 +39,7 @@ module Works
       LibAllegro.draw_filled_rectangle(Margin, Margin, Width + Margin * 3, Margin * 3 + TextHeight + BarHeight + Margin, DarkShadow)
       LibAllegro.draw_text(Font.default, Green, Margin * 3, Margin * 2, LibAllegro::AlignInteger, @str_fps)
       LibAllegro.draw_text(Font.default, Green, Width + Margin, Margin * 2, LibAllegro::AlignRight, @str_time)
-      LibAllegro.draw_filled_rectangle(Margin * 2, Margin * 3 + TextHeight, Margin * 2 + @fps_percent * Screen::ScaleFactor, Margin * 3 + TextHeight + BarHeight, Green)
+      LibAllegro.draw_filled_rectangle(Margin * 2, Margin * 3 + TextHeight, Margin * 2 + @fps_percent * Screen.scale_factor, Margin * 3 + TextHeight + BarHeight, Green)
     end
   end
 end
