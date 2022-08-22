@@ -4,8 +4,6 @@ module Works::Item::Ore
   class Iron < Base
     Key = :iron
     Name = "Iron"
-    ShortCode = "IR"
-    MaxAmount = 50
     Color = LibAllegro.map_rgb(109, 100, 103)
 
     def self.key
@@ -14,14 +12,6 @@ module Works::Item::Ore
 
     def self.name
       Name
-    end
-
-    def self.short_code
-      ShortCode
-    end
-
-    def self.max_amount
-      MaxAmount
     end
 
     def self.icon_color

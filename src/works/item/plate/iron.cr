@@ -4,7 +4,6 @@ module Works::Item::Plate
   class Iron < Base
     Key = :iron_plate
     Name = "Iron plate"
-    ShortCode = "I#"
     Color = LibAllegro.map_rgb(109, 100, 103)
 
     def self.key
@@ -13,10 +12,6 @@ module Works::Item::Plate
 
     def self.name
       Name
-    end
-
-    def self.short_code
-      ShortCode
     end
 
     def self.icon_color
