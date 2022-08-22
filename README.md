@@ -88,7 +88,15 @@ for the more efficient production ready build.
 
 ## Graphics
 
-- [ ] Everything...
+- [x] Dirt tile
+- [x] Ore tile
+- [x] Player (placeholder)
+- [ ] Furnaces
+- [ ] Chests
+- [ ] Item icons
+- [ ] Inserters
+- [ ] Transport belts
+- [ ] Everything else...
 
 ## Sound
 
