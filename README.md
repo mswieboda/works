@@ -100,7 +100,7 @@ for the more efficient production ready build.
   - [ ] Chests
   - [ ] Furnances
   - [ ] Inserters
-  - [ ] Transport belts
+  - [x] Transport belts
   - [ ] Etc...
 - [ ] Inserters
 - [ ] Transport belts

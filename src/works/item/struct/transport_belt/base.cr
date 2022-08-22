@@ -7,9 +7,11 @@ module Works::Item::Struct::TransportBelt
   class Base < Struct::Base
     Key = :transport_belt
     Name = "Transport belt"
-    ShortCode = "TB"
     MaxAmount = 100
     Color = LibAllegro.map_rgb_f(0.75, 0.75, 0)
+
+    @@sprite = LibAllegro.load_bitmap("./assets/item/struct/transport_belt.png")
+    @@sprite_accent = LibAllegro.load_bitmap("./assets/item/struct/transport_belt_accent.png")
 
     def self.key
       Key
@@ -19,16 +21,24 @@ module Works::Item::Struct::TransportBelt
       Name
     end
 
-    def self.short_code
-      ShortCode
-    end
-
     def self.max_amount
       MaxAmount
     end
 
     def self.icon_color
       Color
+    end
+
+    def self.sprite
+      @@sprite
+    end
+
+    def self.sprite_accent
+      @@sprite_accent
+    end
+
+    def sprite_accent
+      self.class.sprite_accent
     end
 
     def to_struct
@@ -42,6 +52,20 @@ module Works::Item::Struct::TransportBelt
       else
         raise "#{self.class.name}#to_struct struct not found for #{key}"
       end
+    end
+
+    def draw_icon_background(x, y, size)
+      Sprite.draw(sprite, x, y)
+      Sprite.draw_tinted(sprite_accent, x, y, icon_color)
+    end
+
+    def draw_icon_text(x, y, size)
+      draw_icon_amount_text(x, y, size)
+    end
+
+    def draw_item(cx, cy)
+      Sprite.draw(sprite, cx, cy, center: true)
+      Sprite.draw_tinted(sprite_accent, cx, cy, icon_color, center: true)
     end
   end
 end

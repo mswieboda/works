@@ -8,6 +8,8 @@ module Works::Item::Struct
     MaxAmount = 50
     Color = LibAllegro.map_rgb(255, 0, 255)
 
+    @@sprite = LibAllegro.load_bitmap("./assets/item_base.png")
+
     def self.key
       Key
     end
@@ -26,6 +28,10 @@ module Works::Item::Struct
 
     def self.icon_color
       Color
+    end
+
+    def self.sprite
+      @@sprite
     end
 
     abstract def to_struct
