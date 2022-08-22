@@ -11,6 +11,8 @@ module Works::Item
     ItemSize = Cell.size / 2
     IconMargin = 4 * Screen.scale_factor
 
+    @@sprite = LibAllegro.load_bitmap("./assets/item_base.png")
+
     getter amount
     protected setter amount
 
@@ -56,6 +58,14 @@ module Works::Item
 
     def icon_color
       self.class.icon_color
+    end
+
+    def self.sprite
+      @@sprite
+    end
+
+    def sprite
+      self.class.sprite
     end
 
     def clone
@@ -113,23 +123,26 @@ module Works::Item
     end
 
     def draw_icon_background(x, y, size)
-      size -= IconMargin * 2
-
-      LibAllegro.draw_filled_circle(x + IconMargin + size / 2, y + IconMargin + size / 2, size / 2, icon_color)
+      Sprite.draw_tinted(sprite, x, y, icon_color)
     end
 
     def draw_icon_text(x, y, size)
+      draw_shortcode_text(x, y, size - IconMargin * 2)
+      draw_icon_amount_text(x, y, size)
+    end
+
+    def draw_shortcode_text(x, y, size)
+      LibAllegro.draw_text(Font.default, IconTextColor, x + size / 6, y + size / 5, 0, short_code)
+    end
+
+    def draw_icon_amount_text(x, y, size)
       size -= IconMargin * 2
 
-      LibAllegro.draw_text(Font.default, IconTextColor, x + size / 6, y + size / 5, 0, short_code)
       LibAllegro.draw_text(Font.default, IconTextColor, x + size, y + size - size / 3, LibAllegro::AlignRight, @amount.to_s)
     end
 
     def draw_item(cx, cy)
-      x = cx - ItemSize / 2
-      y = cy - ItemSize / 2
-
-      LibAllegro.draw_filled_rectangle(x, y, x + ItemSize, y + ItemSize, icon_color)
+      Sprite.draw_tinted(sprite, cx, cy, icon_color, center: true)
     end
 
     def print_str

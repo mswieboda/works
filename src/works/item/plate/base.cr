@@ -4,7 +4,6 @@ module Works::Item::Plate
   class Base < Item::Base
     Key = :plate_base
     Name = "Plate base"
-    ShortCode = "P#"
     MaxAmount = 100
     Color = LibAllegro.map_rgb(1, 0, 1)
 
@@ -16,10 +15,6 @@ module Works::Item::Plate
 
     def self.name
       Name
-    end
-
-    def self.short_code
-      ShortCode
     end
 
     def self.max_amount
@@ -34,16 +29,8 @@ module Works::Item::Plate
       @@sprite
     end
 
-    def sprite
-      self.class.sprite
-    end
-
-    def draw_icon_background(x, y, size)
-      Sprite.draw_tinted(sprite, x, y, icon_color)
-    end
-
-    def draw_item(cx, cy)
-      Sprite.draw_tinted(sprite, cx, cy, icon_color, center: true)
+    def draw_icon_text(x, y, size)
+      draw_icon_amount_text(x, y, size)
     end
   end
 end
