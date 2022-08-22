@@ -13,6 +13,8 @@ module Works::Struct::Chest
     getter items : Array(Item::Base | Nil)
     getter hover_index : Int32 | Nil
 
+    @@sprite = LibAllegro.load_bitmap("./assets/struct/chest.png")
+
     def initialize(col = 0_u16, row = 0_u16)
       super(col, row)
 
@@ -40,6 +42,14 @@ module Works::Struct::Chest
       self.class.storage
     end
 
+    def self.sprite
+      @@sprite
+    end
+
+    def sprite
+      self.class.sprite
+    end
+
     def item_class
       case key
       when :wooden_chest
@@ -55,6 +65,13 @@ module Works::Struct::Chest
 
     def update(map : Map)
 
+    end
+
+    def draw(dx, dy, color)
+      dx += x
+      dy += y
+
+      Sprite.draw_tinted(sprite, dx, dy, color)
     end
 
     def grab_item

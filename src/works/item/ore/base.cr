@@ -7,7 +7,7 @@ module Works::Item::Ore
     MaxAmount = 50
     Color = LibAllegro.map_rgb(255, 0, 255)
 
-    @@sprite = LibAllegro.load_bitmap("./assets/item_ore.png")
+    @@sprite = LibAllegro.load_bitmap("./assets/item/ore.png")
 
     def self.key
       Key

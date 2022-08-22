@@ -11,6 +11,8 @@ module Works::Item::Struct::Chest
     MaxAmount = 50
     Color = LibAllegro.map_rgb_f(1, 0, 1)
 
+    @@sprite = LibAllegro.load_bitmap("./assets/item/struct/chest.png")
+
     def self.key
       Key
     end
@@ -29,6 +31,14 @@ module Works::Item::Struct::Chest
 
     def self.icon_color
       Color
+    end
+
+    def self.sprite
+      @@sprite
+    end
+
+    def draw_icon_text(x, y, size)
+      draw_icon_amount_text(x, y, size)
     end
 
     def to_struct

@@ -6,7 +6,7 @@ module Works::Tile::Ore
     Name = "Ore"
     Color = LibAllegro.premul_rgba_f(1, 0, 1, 0.69)
 
-    @@sprite = LibAllegro.load_bitmap("./assets/ore.png")
+    @@sprite = LibAllegro.load_bitmap("./assets/tile/ore.png")
 
     getter amount : UInt16
 

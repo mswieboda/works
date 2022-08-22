@@ -11,7 +11,7 @@ module Works::Item
     ItemSize = Cell.size / 2
     IconMargin = 4 * Screen.scale_factor
 
-    @@sprite = LibAllegro.load_bitmap("./assets/item_base.png")
+    @@sprite = LibAllegro.load_bitmap("./assets/item/base.png")
 
     getter amount
     protected setter amount
@@ -123,6 +123,9 @@ module Works::Item
     end
 
     def draw_icon_background(x, y, size)
+      if !sprite
+        puts ">>> #{name} draw_icon_background !sprite"
+      end
       Sprite.draw_tinted(sprite, x, y, icon_color)
     end
 

@@ -4,7 +4,7 @@ module Works::Tile
   class Dirt < Base
     Name = "Dirt"
 
-    @@sprite = LibAllegro.load_bitmap("./assets/dirt.png")
+    @@sprite = LibAllegro.load_bitmap("./assets/tile/dirt.png")
 
     def self.name
       Name

@@ -9,6 +9,8 @@ module Works::Struct::Furnace
     property fuel_item : Item::Base | Nil
     getter? fuel_slot_hover
 
+    @@sprite = LibAllegro.load_bitmap("./assets/struct/stone_furnace.png")
+
     def initialize(col = 0_u16, row = 0_u16)
       super(col, row)
 
@@ -26,6 +28,21 @@ module Works::Struct::Furnace
 
     def self.color
       Color
+    end
+
+    def self.sprite
+      @@sprite
+    end
+
+    def sprite
+      self.class.sprite
+    end
+
+    def draw(dx, dy, color)
+      dx += x
+      dy += y
+
+      Sprite.draw_tinted(sprite, dx, dy, color)
     end
 
     def output_duration(item : Item::Base) : Time::Span

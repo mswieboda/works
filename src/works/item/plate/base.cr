@@ -7,7 +7,7 @@ module Works::Item::Plate
     MaxAmount = 100
     Color = LibAllegro.map_rgb(1, 0, 1)
 
-    @@sprite = LibAllegro.load_bitmap("./assets/plate.png")
+    @@sprite = LibAllegro.load_bitmap("./assets/item/plate.png")
 
     def self.key
       Key

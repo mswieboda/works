@@ -7,6 +7,8 @@ module Works::Item::Struct::Furnace
     ShortCode = "EF"
     Color = LibAllegro.map_rgb_f(0.3, 0.3, 0.3)
 
+    @@sprite = LibAllegro.load_bitmap("./assets/item/struct/base.png")
+
     def self.key
       Key
     end
@@ -21,6 +23,10 @@ module Works::Item::Struct::Furnace
 
     def self.icon_color
       Color
+    end
+
+    def self.sprite
+      @@sprite
     end
   end
 end
