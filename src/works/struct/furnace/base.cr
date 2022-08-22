@@ -96,7 +96,7 @@ module Works::Struct::Furnace
 
     def accept_input?(item : Item::Base)
       case item
-      when Item::Ore::Copper, Item::Ore::Iron, Item::IronPlate, Item::Ore::Stone
+      when Item::Ore::Copper, Item::Ore::Iron, Item::Plate::Iron, Item::Ore::Stone
         true
       else
         false
@@ -105,7 +105,7 @@ module Works::Struct::Furnace
 
     def accept_output?(item : Item::Base)
       case item
-      when Item::CopperPlate, Item::IronPlate, Item::SteelPlate, Item::StoneBrick
+      when Item::Plate::Copper, Item::Plate::Iron, Item::Plate::Steel, Item::StoneBrick
         true
       else
         false
@@ -151,11 +151,11 @@ module Works::Struct::Furnace
     def burn_item(item : Item::Base)
       klass = case item
       when Item::Ore::Copper
-        Item::CopperPlate
+        Item::Plate::Copper
       when Item::Ore::Iron
-        Item::IronPlate
-      when Item::IronPlate
-        Item::SteelPlate
+        Item::Plate::Iron
+      when Item::Plate::Iron
+        Item::Plate::Steel
       when Item::Ore::Stone
         Item::StoneBrick
       else
@@ -165,7 +165,7 @@ module Works::Struct::Furnace
       amount = case item
       when Item::Ore::Copper, Item::Ore::Iron
         1
-      when Item::IronPlate
+      when Item::Plate::Iron
         5
       when Item::Ore::Stone
         2

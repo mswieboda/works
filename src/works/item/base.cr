@@ -9,6 +9,7 @@ module Works::Item
     IconTextColor = LibAllegro.premul_rgba_f(1, 1, 1, 0.5)
     Color = LibAllegro.map_rgb_f(1, 0, 1)
     ItemSize = Cell.size / 2
+    IconMargin = 4 * Screen.scale_factor
 
     getter amount
     protected setter amount
@@ -112,10 +113,14 @@ module Works::Item
     end
 
     def draw_icon_background(x, y, size)
-      LibAllegro.draw_filled_circle(x + size / 2, y + size / 2, size / 2, icon_color)
+      size -= IconMargin * 2
+
+      LibAllegro.draw_filled_circle(x + IconMargin + size / 2, y + IconMargin + size / 2, size / 2, icon_color)
     end
 
     def draw_icon_text(x, y, size)
+      size -= IconMargin * 2
+
       LibAllegro.draw_text(Font.default, IconTextColor, x + size / 6, y + size / 5, 0, short_code)
       LibAllegro.draw_text(Font.default, IconTextColor, x + size, y + size - size / 3, LibAllegro::AlignRight, @amount.to_s)
     end

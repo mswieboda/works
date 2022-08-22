@@ -1,11 +1,10 @@
 require "./base"
 
-module Works::Item
-  class CopperPlate < Base
+module Works::Item::Plate
+  class Copper < Base
     Key = :copper_plate
     Name = "Copper plate"
     ShortCode = "C#"
-    MaxAmount = 100
     Color = LibAllegro.map_rgb(235, 103, 75)
 
     def self.key
@@ -18,10 +17,6 @@ module Works::Item
 
     def self.short_code
       ShortCode
-    end
-
-    def self.max_amount
-      MaxAmount
     end
 
     def self.icon_color

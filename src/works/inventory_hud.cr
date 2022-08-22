@@ -108,7 +108,7 @@ module Works
     end
 
     def self.item_size
-      SlotSize - Margin * 2
+      SlotSize
     end
 
     def item_size
@@ -166,7 +166,7 @@ module Works
       end
 
       if item
-        item.draw_icon(dx + Margin, dy + Margin, item_size)
+        item.draw_icon(dx, dy, item_size)
       end
 
       LibAllegro.draw_rectangle(dx, dy, dx + SlotSize, dy + SlotSize, SlotBorderColor, 1)

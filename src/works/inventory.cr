@@ -11,7 +11,7 @@ module Works
       # ore
       Item::Ore::Coal, Item::Ore::Copper, Item::Ore::Iron, Item::Ore::Stone,
       # plates
-      Item::CopperPlate, Item::IronPlate, Item::SteelPlate,
+      Item::Plate::Copper, Item::Plate::Iron, Item::Plate::Steel,
       # other
       Item::StoneBrick,
       # transport belts
