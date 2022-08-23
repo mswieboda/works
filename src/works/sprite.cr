@@ -2,9 +2,10 @@ module Works
   class Sprite
     NoTintColor = LibAllegro.map_rgb_f(1, 1, 1)
 
-    def self.draw(sprite : LibAllegro::Bitmap, x, y, center = false, flip_horizontal = false, flip_vertical = false)
+    def self.draw(sprite : LibAllegro::Bitmap, x, y, scale = 1.0, center = false, flip_horizontal = false, flip_vertical = false)
       dx = x
       dy = y
+      scale *= Screen.sprite_factor
 
       if center
         dx -= LibAllegro.get_bitmap_width(sprite) / 2
@@ -15,19 +16,20 @@ module Works
       flags |= LibAllegro::FlipHorizontal if flip_horizontal
       flags |= LibAllegro::FlipVertical if flip_vertical
 
-      if Screen.sprite_factor == 1.0
+      if scale == 1.0
         LibAllegro.draw_bitmap(sprite, dx, dy, flags)
       else
         w = LibAllegro.get_bitmap_width(sprite)
         h = LibAllegro.get_bitmap_height(sprite)
 
-        LibAllegro.draw_scaled_bitmap(sprite, 0, 0, w, h, dx, dy, w * Screen.sprite_factor, h * Screen.sprite_factor, flags)
+        LibAllegro.draw_scaled_bitmap(sprite, 0, 0, w, h, dx, dy, w * scale, h * scale, flags)
       end
     end
 
-    def self.draw_tinted(sprite : LibAllegro::Bitmap, x, y, tint = NoTintColor, center = false, flip_horizontal = false, flip_vertical = false)
+    def self.draw_tinted(sprite : LibAllegro::Bitmap, x, y, tint = NoTintColor, scale = 1.0, center = false, flip_horizontal = false, flip_vertical = false)
       dx = x
       dy = y
+      scale *= Screen.sprite_factor
 
       if center
         dx -= LibAllegro.get_bitmap_width(sprite) / 2
@@ -38,13 +40,13 @@ module Works
       flags |= LibAllegro::FlipHorizontal if flip_horizontal
       flags |= LibAllegro::FlipVertical if flip_vertical
 
-      if Screen.sprite_factor == 1.0
+      if scale == 1.0
         LibAllegro.draw_tinted_bitmap(sprite, tint, dx, dy, flags)
       else
         w = LibAllegro.get_bitmap_width(sprite)
         h = LibAllegro.get_bitmap_height(sprite)
 
-        LibAllegro.draw_tinted_scaled_bitmap(sprite, tint, 0, 0, w, h, dx, dy, w * Screen.sprite_factor, h * Screen.sprite_factor, flags)
+        LibAllegro.draw_tinted_scaled_bitmap(sprite, tint, 0, 0, w, h, dx, dy, w * scale, h * scale, flags)
       end
     end
   end

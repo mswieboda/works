@@ -57,6 +57,7 @@ module Works
 
     def draw
       viewables.each(&.draw(x, y))
+      structs.select(&.is_a?(Struct::TransportBelt::Base)).map(&.as(Struct::TransportBelt::Base)).each(&.draw_lanes(x, y))
     end
 
     def destroy

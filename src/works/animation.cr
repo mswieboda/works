@@ -65,7 +65,7 @@ module Works
 
     def draw(x, y, flip_horizontal = false, flip_vertical = false)
       if sprite = sprites[display_frame]
-        Sprite.draw(sprite, x, y, center?, flip_horizontal, flip_vertical)
+        Sprite.draw(sprite, x, y, center: center?, flip_horizontal: flip_horizontal, flip_vertical: flip_vertical)
       else
         raise "> Animation#draw !sprite"
       end

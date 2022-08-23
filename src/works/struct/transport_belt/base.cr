@@ -7,15 +7,19 @@ module Works::Struct::TransportBelt
     BackgroundColor = LibAllegro.map_rgb_f(0.33, 0.33, 0.33)
     Color = LibAllegro.map_rgb_f(0.75, 0.75, 0)
     BeltSpeed = 1
+    LaneDensity = 4
+    ItemSlotHeight = 8 * Screen.scale_factor
 
     @@position = 0
 
     getter facing
+    getter item_lane : Array(Item::Base | Nil)
 
     def initialize(col = 0_u16, row = 0_u16)
       super(col, row)
 
       @facing = :down
+      @item_lane = Array(Item::Base | Nil).new(LaneDensity, nil)
     end
 
     def self.update
@@ -79,13 +83,35 @@ module Works::Struct::TransportBelt
 
     end
 
+    def grab_item
+      # TODO: implement
+      nil
+    end
+
     def grab_item(item_grab_size)
       # TODO: implement
+    end
+
+    def add_input?(item : Item::Base)
+      item_lane.any?(&.nil?)
+    end
+
+    def add_input(klass, amount)
+      if index = item_lane.index(&.nil?)
+        item = klass.new
+        item.add(1)
+        item_lane[index] = item
+
+        amount - item.amount
+      else
+        amount
+      end
     end
 
     def draw(dx, dy)
       draw(dx, dy, background_color)
       draw_accents(dx, dy, color)
+      draw_lanes(dx, dy)
     end
 
     def draw_accents(dx, dy, color)
@@ -101,6 +127,19 @@ module Works::Struct::TransportBelt
         end
 
         py += height / 3
+      end
+    end
+
+    def draw_lanes(dx, dy)
+      cx = dx + x + width / 2
+      cy = dy + y + height / 2 - ItemSlotHeight / 2
+
+      item_lane.reverse.each_with_index do |item, index|
+        if item
+          item.draw_item(cx, cy)
+        end
+
+        cy += ItemSlotHeight
       end
     end
   end

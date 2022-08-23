@@ -123,9 +123,6 @@ module Works::Item
     end
 
     def draw_icon_background(x, y, size)
-      if !sprite
-        puts ">>> #{name} draw_icon_background !sprite"
-      end
       Sprite.draw_tinted(sprite, x, y, icon_color)
     end
 
@@ -145,7 +142,8 @@ module Works::Item
     end
 
     def draw_item(cx, cy)
-      Sprite.draw_tinted(sprite, cx, cy, icon_color, center: true)
+      # scale down half size
+      Sprite.draw_tinted(sprite, cx, cy, icon_color, scale: 0.5, center: true)
     end
 
     def print_str

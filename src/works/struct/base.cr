@@ -54,10 +54,6 @@ module Works::Struct
 
     abstract def grab_item(item_grab_size)
 
-    def input_item
-      nil
-    end
-
     def add_input?(item : Item::Base)
       false
     end
