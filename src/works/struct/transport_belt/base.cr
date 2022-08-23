@@ -80,7 +80,12 @@ module Works::Struct::TransportBelt
     end
 
     def update(map : Map)
-
+      if position % ItemSlotHeight / 2 == 0
+        if item_lane.first.nil?
+          # shift all items to the left
+          item_lane.rotate!
+        end
+      end
     end
 
     def grab_item
@@ -97,10 +102,13 @@ module Works::Struct::TransportBelt
     end
 
     def add_input(klass, amount)
-      if index = item_lane.index(&.nil?)
+      # Note: inserters always put on the 2nd spot
+      # (when transport belt facing down) skipping the first
+      # in :down, the 2nd spot is reverse, index #2
+      if item_lane[2].nil?
         item = klass.new
         item.add(1)
-        item_lane[index] = item
+        item_lane[2] = item
 
         amount - item.amount
       else
@@ -135,6 +143,8 @@ module Works::Struct::TransportBelt
       cy = dy + y + height / 2 - ItemSlotHeight / 2
 
       item_lane.reverse.each_with_index do |item, index|
+        # cy += position % ItemSlotHeight
+
         if item
           item.draw_item(cx, cy)
         end
