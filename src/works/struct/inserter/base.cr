@@ -77,8 +77,8 @@ module Works::Struct::Inserter
 
       if item = @item
         if strct = struct_to_input_into(map)
-          if strct.add_input?(item)
-            leftovers = strct.add_input(item.class, item.amount)
+          if strct.add_from_inserter?(item, facing)
+            leftovers = strct.add_from_inserter(item.class, item.amount, facing)
 
             item.remove(item.amount - leftovers)
 

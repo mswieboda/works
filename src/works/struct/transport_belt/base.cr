@@ -15,7 +15,7 @@ module Works::Struct::TransportBelt
     @@position = 0
 
     getter facing
-    getter item_lane : Array(ItemData | Nil)
+    getter lanes : Tuple(Array(ItemData | Nil), Array(ItemData | Nil))
 
     protected setter facing
 
@@ -23,7 +23,10 @@ module Works::Struct::TransportBelt
       super(col, row)
 
       @facing = :down
-      @item_lane = Array(ItemData | Nil).new(LaneDensity, nil)
+      @lanes = {
+        Array(ItemData | Nil).new(LaneDensity, nil),
+        Array(ItemData | Nil).new(LaneDensity, nil)
+      }
     end
 
     def self.update
@@ -94,14 +97,16 @@ module Works::Struct::TransportBelt
     end
 
     def update(map : Map)
-      item_lane.each_with_index do |item_data, index|
-        if data = item_data
-          if data[:position] < ItemSlotHeight - belt_speed.to_u8
-            increase_item_data_position(index, data)
-          end
+      lanes.each_with_index do |lane, lane_index|
+        lane.each_with_index do |item_data, index|
+          if data = item_data
+            if data[:position] < ItemSlotHeight - belt_speed.to_u8
+              increase_item_data_position(lane_index, index, data)
+            end
 
-          if data[:position] >= ItemSlotHeight - belt_speed.to_u8
-            move_item_on_belt(index, map, data)
+            if data[:position] >= ItemSlotHeight - belt_speed.to_u8
+              move_item_on_belt(lane_index, index, map, data)
+            end
           end
         end
       end
@@ -116,18 +121,36 @@ module Works::Struct::TransportBelt
       # TODO: implement
     end
 
-    def add_input?(item : Item::Base)
-      item_lane.any?(&.nil?)
+    def lane_from_inserter(inserter_facing : Symbol)
+      if facing == :down
+        if inserter_facing == :right
+          lanes[0]
+        else
+          lanes[1]
+        end
+      else
+        if inserter_facing == :right
+          lanes[1]
+        else
+          lanes[0]
+        end
+      end
     end
 
-    def add_input(klass, amount)
-      # Note: inserters always put on the 2nd spot
-      # (when transport belt facing down) skipping the first
-      # in :down, the 2nd spot is reverse, index #2
-      if item_lane[2].nil?
+    def add_from_inserter?(item : Item::Base, inserter_facing : Symbol)
+      lane_from_inserter(inserter_facing).any?(&.nil?)
+    end
+
+    def add_from_inserter(klass, amount, inserter_facing : Symbol)
+      # Note: inserters always put on the 2nd spot, skipping the first
+      #       since index is in revserse, it's LaneDensity - 1
+      #       and - 1 again because it's indexed from 0, so LaneDensity - 2
+      lane = lane_from_inserter(inserter_facing)
+
+      if lane[LaneDensity - 2].nil?
         item = klass.new
         item.add(1)
-        item_lane[2] = {item: item, position: 0_u8}
+        lane[LaneDensity - 2] = {item: item, position: 0_u8}
 
         amount - item.amount
       else
@@ -155,39 +178,38 @@ module Works::Struct::TransportBelt
       map.structs.select(&.is_a?(Struct::TransportBelt::Base)).find(&.overlaps_input?(col, row)).as(Struct::TransportBelt::Base | Nil)
     end
 
-    def increase_item_data_position(index, data : ItemData)
-      item_lane[index] = {item: data[:item], position: data[:position] + belt_speed.to_u8}
+    def increase_item_data_position(lane_index, index, data : ItemData)
+      lanes[lane_index][index] = {item: data[:item], position: data[:position] + belt_speed.to_u8}
     end
 
-    def move_item_on_belt(index, map : Map, data : ItemData)
+    def move_item_on_belt(lane_index, index, map : Map, data : ItemData)
       if index == 0
         if belt = next_belt(map)
-          move_to_belt(belt, data[:item], index)
+          move_to_belt(belt, lane_index, index, data[:item])
         end
-      elsif item_lane[index - 1].nil?
-        # shuffle item towards top of item_lane
-        item_lane[index - 1] = {item: data[:item], position: 0_u8}
-        item_lane[index] = nil
+      elsif lanes[lane_index][index - 1].nil?
+        lanes[lane_index][index - 1] = {item: data[:item], position: 0_u8}
+        lanes[lane_index][index] = nil
       end
     end
 
-    def move_to_belt(belt : Struct::TransportBelt::Base, item : Item::Base, index)
-      if belt.can_receive_from_belt?(facing)
-        belt.receive_from_belt(item)
-        item_lane[index] = nil
+    def move_to_belt(belt : Struct::TransportBelt::Base, lane_index, index, item : Item::Base)
+      if belt.can_receive_from_belt?(lane_index, facing)
+        belt.receive_from_belt(lane_index, item)
+        lanes[lane_index][index] = nil
       end
     end
 
-    def can_receive_from_belt?(facing)
+    def can_receive_from_belt?(lane_index, facing)
       # TODO: For now always assume last index (3), and up/down
       # but later, depending on belt directions, use a different output index
-      @facing == facing && item_lane[LaneDensity - 1].nil?
+      @facing == facing && lanes[lane_index][LaneDensity - 1].nil?
     end
 
-    def receive_from_belt(item)
+    def receive_from_belt(lane_index, item)
       # TODO: For now always assume last index (3), and facing up/down
       # but later, depending on belt directions, use a different output index
-      item_lane[LaneDensity - 1] = {item: item, position: 0_u8}
+      lanes[lane_index][LaneDensity - 1] = {item: item, position: 0_u8}
     end
 
     def draw(dx, dy)
@@ -230,27 +252,35 @@ module Works::Struct::TransportBelt
       dx = dx + x
       dy = dy + y
 
-      lane = item_lane
+      lanes.each_with_index do |item_lane, lane_index|
+        lane = item_lane
 
-      if facing == :down
-        dy -= ItemSlotHeight
-        lane = lane.reverse
-      end
+        ix = dx
+        iy = dy
 
-      lane.each_with_index do |item_data, index|
-        if item_data
-          iy = dy
-
-          if facing == :down
-            iy += item_data[:position]
-          else
-            iy -= item_data[:position]
-          end
-
-          item_data[:item].draw_item(dx, iy, center: false)
+        if facing == :down
+          lane = lane.reverse
+          ix += lane_index * width / 2
+          iy -= ItemSlotHeight
+        elsif facing == :up
+          ix += (1 - lane_index) * width / 2
         end
 
-        dy += ItemSlotHeight
+        lane.each_with_index do |item_data, index|
+          if item_data
+            py = iy
+
+            if facing == :down
+              py = iy + item_data[:position]
+            else
+              py = iy - item_data[:position]
+            end
+
+            item_data[:item].draw_item(ix, py, center: false)
+          end
+
+          iy += ItemSlotHeight
+        end
       end
     end
   end

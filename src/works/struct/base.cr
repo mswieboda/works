@@ -54,11 +54,11 @@ module Works::Struct
 
     abstract def grab_item(item_grab_size)
 
-    def add_input?(item : Item::Base)
+    def add_from_inserter?(item : Item::Base, inserter_facing : Symbol)
       false
     end
 
-    def add_input(klass, amount)
+    def add_from_inserter(klass, amount, inserter_facing : Symbol)
       amount
     end
 

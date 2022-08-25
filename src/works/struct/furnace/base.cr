@@ -71,7 +71,7 @@ module Works::Struct::Furnace
       end
     end
 
-    def add_input?(item)
+    def add_from_inserter?(item, inserter_facing : Symbol)
       return false unless accept_input?(item)
 
       if input_item = @input_item
@@ -81,7 +81,7 @@ module Works::Struct::Furnace
       end
     end
 
-    def add_input(klass, amount)
+    def add_from_inserter(klass, amount, inserter_facing : Symbol)
       if input_item = @input_item
         input_item.add(amount)
       else

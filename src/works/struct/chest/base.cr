@@ -94,14 +94,14 @@ module Works::Struct::Chest
       end
     end
 
-    def add_input?(item : Item::Base)
+    def add_from_inserter?(item : Item::Base, inserter_facing : Symbol)
       # TODO: add conditions for chests marked limited
       return true if items.compact.any? { |i| i.class == item.class && !i.full? }
 
       items.any?(&.nil?)
     end
 
-    def add_input(klass, amount)
+    def add_from_inserter(klass, amount, inserter_facing : Symbol)
       leftovers = amount
 
       if item = items.compact.find { |i| i.class == klass && !i.full? }
