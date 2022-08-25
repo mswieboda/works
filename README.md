@@ -49,8 +49,8 @@ for the more efficient production ready build.
   - [ ] Stack inserter
   - [ ] Stack filter inserter
   - [ ] Facing directions
-    - [ ] Up
-    - [ ] Down
+    - [x] Up
+    - [x] Down
     - [x] Left
     - [x] Right
 - [ ] Transport belts
@@ -63,6 +63,7 @@ for the more efficient production ready build.
     - [x] Down
     - [x] Left
     - [x] Right
+  - [ ] Inserters can grab from
   - [ ] Turns
   - [ ] Merging perpendicular directions
 - [ ] Underground belts

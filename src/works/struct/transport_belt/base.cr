@@ -158,7 +158,7 @@ module Works::Struct::TransportBelt
           lanes[0]
         end
       else # facing :right
-        if inserter_facing == :up
+        if inserter_facing == :down
           # top of belt
           lanes[1]
         else
@@ -315,13 +315,11 @@ module Works::Struct::TransportBelt
           iy -= ItemSlotTicks
         elsif facing == :up
           ix += (1 - lane_index) * width / 2
-          # iy += ItemSlotTicks
         elsif facing == :right
           lane = lane.reverse
           ix -= ItemSlotTicks
           iy += (1 - lane_index) * height / 2
         elsif facing == :left
-          # ix += ItemSlotTicks
           iy += lane_index * height / 2
         end
 

@@ -54,7 +54,18 @@ module Works::Struct::Inserter
     end
 
     def rotate
-      @facing = facing == :right ? :left : :right
+      case facing
+      when :up
+        @facing = :right
+      when :right
+        @facing = :down
+      when :down
+        @facing = :left
+      when :left
+        @facing = :up
+      else
+        raise "> #{name}#rotate can't find next direction for #{facing}"
+      end
     end
 
     def item_class
@@ -129,9 +140,9 @@ module Works::Struct::Inserter
       when :left
         [col - 1, row]
       when :up
-        [col, row + 1]
-      when :down
         [col, row - 1]
+      when :down
+        [col, row + 1]
       else
         raise "#{self.class.name}#input_coords facing direction #{facing} not found"
       end
@@ -144,9 +155,9 @@ module Works::Struct::Inserter
       when :left
         [col + 1, row]
       when :up
-        [col, row - 1]
-      when :down
         [col, row + 1]
+      when :down
+        [col, row - 1]
       else
         raise "#{self.class.name}#input_coords facing direction #{facing} not found"
       end
@@ -190,10 +201,16 @@ module Works::Struct::Inserter
     def arm_end_position(dx, dy)
       angle = 180 * rotation_timer.percent.clamp(0, 1)
 
-      if facing == :right
+      if facing == :right || facing == :up
         angle = 180 - angle if item.nil?
-      elsif facing == :left
+      elsif facing == :left || facing == :down
         angle = 180 - angle if item
+      end
+
+      if facing == :up
+        angle += 90
+      elsif facing == :down
+        angle += 90
       end
 
       dx += x + width / 2
