@@ -8,7 +8,7 @@ module Works::Struct::TransportBelt
     Color = LibAllegro.map_rgb_f(0.75, 0.75, 0)
     BeltSpeed = 1
     LaneDensity = 4
-    ItemSlotHeight = 8 * Screen.scale_factor
+    ItemSlotTicks = 8 * Screen.scale_factor
 
     alias ItemData = {item: Item::Base, position: UInt8}
 
@@ -22,7 +22,7 @@ module Works::Struct::TransportBelt
     def initialize(col = 0_u16, row = 0_u16)
       super(col, row)
 
-      @facing = :down
+      @facing = :up
       @lanes = {
         Array(ItemData | Nil).new(LaneDensity, nil),
         Array(ItemData | Nil).new(LaneDensity, nil)
@@ -111,11 +111,11 @@ module Works::Struct::TransportBelt
       lanes.each_with_index do |lane, lane_index|
         lane.each_with_index do |item_data, index|
           if data = item_data
-            if data[:position] < ItemSlotHeight - belt_speed.to_u8
+            if data[:position] < ItemSlotTicks - belt_speed.to_u8
               increase_item_data_position(lane_index, index, data)
             end
 
-            if data[:position] >= ItemSlotHeight - belt_speed.to_u8
+            if data[:position] >= ItemSlotTicks - belt_speed.to_u8
               move_item_on_belt(lane_index, index, map, data)
             end
           end
@@ -134,15 +134,35 @@ module Works::Struct::TransportBelt
 
     def lane_from_inserter(inserter_facing : Symbol)
       if facing == :down
-        if inserter_facing == :right
+        if inserter_facing == :left
+          # right of belt
+          lanes[1]
+        else
+          # left of belt
           lanes[0]
-        else
-          lanes[1]
         end
-      else
+      elsif facing == :up
         if inserter_facing == :right
+          # left of belt
           lanes[1]
         else
+          # right of belt
+          lanes[0]
+        end
+      elsif facing == :left
+        if inserter_facing == :up
+          # bottom of belt
+          lanes[1]
+        else
+          # top of belt
+          lanes[0]
+        end
+      else # facing :right
+        if inserter_facing == :up
+          # top of belt
+          lanes[1]
+        else
+          # bottom of belt
           lanes[0]
         end
       end
@@ -172,9 +192,9 @@ module Works::Struct::TransportBelt
     def output_coords
       case facing
       when :right
-        [col - 1, row]
-      when :left
         [col + 1, row]
+      when :left
+        [col - 1, row]
       when :up
         [col, row - 1]
       when :down
@@ -292,25 +312,39 @@ module Works::Struct::TransportBelt
         if facing == :down
           lane = lane.reverse
           ix += lane_index * width / 2
-          iy -= ItemSlotHeight
+          iy -= ItemSlotTicks
         elsif facing == :up
           ix += (1 - lane_index) * width / 2
+          # iy += ItemSlotTicks
+        elsif facing == :right
+          lane = lane.reverse
+          ix -= ItemSlotTicks
+          iy += (1 - lane_index) * height / 2
+        elsif facing == :left
+          # ix += ItemSlotTicks
+          iy += lane_index * height / 2
         end
 
         lane.each_with_index do |item_data, index|
           if item_data
+            px = ix
             py = iy
 
             if facing == :down
               py = iy + item_data[:position]
-            else
+            elsif facing == :up
               py = iy - item_data[:position]
+            elsif facing == :right
+              px = ix + item_data[:position]
+            elsif facing == :left
+              px = ix - item_data[:position]
             end
 
-            item_data[:item].draw_item(ix, py, center: false)
+            item_data[:item].draw_item(px, py, center: false)
           end
 
-          iy += ItemSlotHeight
+          iy += ItemSlotTicks if facing == :down || facing == :up
+          ix += ItemSlotTicks if facing == :right || facing == :left
         end
       end
     end

@@ -58,11 +58,13 @@ for the more efficient production ready build.
   - [x] Fast transport belt
   - [x] Express transport belt
   - [x] Two lanes
-  - [ ] Facing directions
+  - [x] Facing directions
     - [x] Up
     - [x] Down
-    - [ ] Left
-    - [ ] Right
+    - [x] Left
+    - [x] Right
+  - [ ] Turns
+  - [ ] Merging perpendicular directions
 - [ ] Underground belts
   - [ ] Underground belt
   - [ ] Fast underground belt
