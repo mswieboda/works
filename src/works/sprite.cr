@@ -32,8 +32,8 @@ module Works
       scale *= Screen.sprite_factor
 
       if center
-        dx -= LibAllegro.get_bitmap_width(sprite) / 2
-        dy -= LibAllegro.get_bitmap_height(sprite) / 2
+        dx -= LibAllegro.get_bitmap_width(sprite) * scale / 2
+        dy -= LibAllegro.get_bitmap_height(sprite) * scale / 2
       end
 
       flags = 0

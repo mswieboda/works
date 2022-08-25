@@ -117,9 +117,9 @@ module Works::Struct::Inserter
       when :left
         [col - 1, row]
       when :up
-        [col, row - 1]
-      when :down
         [col, row + 1]
+      when :down
+        [col, row - 1]
       else
         raise "#{self.class.name}#input_coords facing direction #{facing} not found"
       end
@@ -132,9 +132,9 @@ module Works::Struct::Inserter
       when :left
         [col + 1, row]
       when :up
-        [col, row + 1]
-      when :down
         [col, row - 1]
+      when :down
+        [col, row + 1]
       else
         raise "#{self.class.name}#input_coords facing direction #{facing} not found"
       end
@@ -191,13 +191,9 @@ module Works::Struct::Inserter
       LibAllegro.draw_line(dx, dy, x2, y2, color, ArmWidth)
     end
 
-    def draw_item(dx, dy)
+    def draw_item(dx, dy, center = true)
       if item = @item
         angle = 180 * rotation_timer.percent.clamp(0, 1)
-
-        if item.nil?
-          angle = 180 - angle
-        end
 
         dx += x + width / 2
         dy += y + height / 2 - size / 3
@@ -205,7 +201,7 @@ module Works::Struct::Inserter
         x2 = dx + Math.cos(angle * Math::PI / 180) * ArmLength
         y2 = dy - Math.sin(angle * Math::PI / 180) * ArmLength
 
-        item.draw_item(x2, y2)
+        item.draw_item(x2, y2, center: center)
       end
     end
 

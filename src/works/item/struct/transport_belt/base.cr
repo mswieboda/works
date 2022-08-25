@@ -63,9 +63,9 @@ module Works::Item::Struct::TransportBelt
       draw_icon_amount_text(x, y, size)
     end
 
-    def draw_item(cx, cy)
-      Sprite.draw(sprite, cx, cy, center: true)
-      Sprite.draw_tinted(sprite_accent, cx, cy, icon_color, center: true)
+    def draw_item(cx, cy, center = true)
+      Sprite.draw(sprite, cx, cy, center: center)
+      Sprite.draw_tinted(sprite_accent, cx, cy, icon_color, center: center)
     end
   end
 end

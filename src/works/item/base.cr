@@ -141,9 +141,9 @@ module Works::Item
       LibAllegro.draw_text(Font.default, IconTextColor, x + size, y + size - size / 3, LibAllegro::AlignRight, @amount.to_s)
     end
 
-    def draw_item(cx, cy)
+    def draw_item(cx, cy, center = true)
       # scale down half size
-      Sprite.draw_tinted(sprite, cx, cy, icon_color, scale: 0.5, center: true)
+      Sprite.draw_tinted(sprite, cx, cy, icon_color, scale: 0.5, center: center)
     end
 
     def print_str

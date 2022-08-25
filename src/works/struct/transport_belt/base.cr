@@ -80,10 +80,21 @@ module Works::Struct::TransportBelt
     end
 
     def update(map : Map)
-      if position % ItemSlotHeight / 2 == 0
-        if item_lane.first.nil?
-          # shift all items to the left
-          item_lane.rotate!
+      if position % ItemSlotHeight == 0
+        item_lane.each_with_index do |lane_item, index|
+          if index == 0
+            # check to see to move item to next transport belt
+            if (item = lane_item) && (belt = next_belt(map))
+              if belt.can_receive_from_belt?
+                belt.receive_from_belt(item)
+                item_lane[index] = nil
+              end
+            end
+          elsif item_lane[index - 1].nil?
+            # shuffle item towards top of item_lane
+            item_lane[index - 1] = lane_item
+            item_lane[index] = nil
+          end
         end
       end
     end
@@ -116,6 +127,38 @@ module Works::Struct::TransportBelt
       end
     end
 
+    def output_coords
+      case facing
+      when :right
+        [col - 1, row]
+      when :left
+        [col + 1, row]
+      when :up
+        [col, row - 1]
+      when :down
+        [col, row + 1]
+      else
+        raise "#{self.class.name}#output_coords facing direction #{facing} not found"
+      end
+    end
+
+    def next_belt(map : Map)
+      col, row = output_coords
+      map.structs.select(&.is_a?(Struct::TransportBelt::Base)).find(&.overlaps_input?(col, row)).as(Struct::TransportBelt::Base | Nil)
+    end
+
+    def can_receive_from_belt?
+      # TODO: For now always assume last index (3), and facing down
+      # but later, depending on belt directions, use a different output index
+      item_lane[3].nil?
+    end
+
+    def receive_from_belt(item)
+      # TODO: For now always assume last index (3), and facing down
+      # but later, depending on belt directions, use a different output index
+      item_lane[3] = item
+    end
+
     def draw(dx, dy)
       draw(dx, dy, background_color)
       draw_accents(dx, dy, color)
@@ -139,14 +182,14 @@ module Works::Struct::TransportBelt
     end
 
     def draw_lanes(dx, dy)
-      cx = dx + x + width / 2
-      cy = dy + y + height / 2 - ItemSlotHeight / 2
+      cx = dx + x
+      cy = dy + y - ItemSlotHeight / 2
 
       item_lane.reverse.each_with_index do |item, index|
         # cy += position % ItemSlotHeight
 
         if item
-          item.draw_item(cx, cy)
+          item.draw_item(cx, cy, center: false)
         end
 
         cy += ItemSlotHeight
