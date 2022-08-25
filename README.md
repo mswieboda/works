@@ -48,13 +48,21 @@ for the more efficient production ready build.
   - [ ] Filter inserter
   - [ ] Stack inserter
   - [ ] Stack filter inserter
-  - [ ] all directions
-  - [ ] two lanes
+  - [ ] Facing directions
+    - [ ] Up
+    - [ ] Down
+    - [x] Left
+    - [x] Right
 - [ ] Transport belts
   - [x] Transport belt
   - [x] Fast transport belt
   - [x] Express transport belt
-  - [ ] all directions
+  - [x] Two lanes
+  - [ ] Facing directions
+    - [x] Up
+    - [x] Down
+    - [ ] Left
+    - [ ] Right
 - [ ] Underground belts
   - [ ] Underground belt
   - [ ] Fast underground belt
