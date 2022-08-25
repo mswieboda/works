@@ -228,11 +228,25 @@ module Works::Struct::TransportBelt
 
     def draw_lanes(dx, dy)
       dx = dx + x
-      dy = dy + y - ItemSlotHeight
+      dy = dy + y
 
-      item_lane.reverse.each_with_index do |item_data, index|
+      lane = item_lane
+
+      if facing == :down
+        dy -= ItemSlotHeight
+        lane = lane.reverse
+      end
+
+      lane.each_with_index do |item_data, index|
         if item_data
-          iy = dy + item_data[:position]
+          iy = dy
+
+          if facing == :down
+            iy += item_data[:position]
+          else
+            iy -= item_data[:position]
+          end
+
           item_data[:item].draw_item(dx, iy, center: false)
         end
 
