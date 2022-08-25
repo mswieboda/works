@@ -51,6 +51,7 @@ module Works
       add(Item::Struct::Inserter::Inserter, 5)
       add(Item::Struct::TransportBelt::Base, 15)
       add(Item::Struct::TransportBelt::Fast, 15)
+      add(Item::Struct::TransportBelt::Express, 15)
       add(Item::Struct::Chest::Iron, 3)
       add(Item::Plate::Copper, 4)
     end

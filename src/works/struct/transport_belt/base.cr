@@ -10,16 +10,18 @@ module Works::Struct::TransportBelt
     LaneDensity = 4
     ItemSlotHeight = 8 * Screen.scale_factor
 
+    alias ItemData = {item: Item::Base, position: UInt8}
+
     @@position = 0
 
     getter facing
-    getter item_lane : Array(Item::Base | Nil)
+    getter item_lane : Array(ItemData | Nil)
 
     def initialize(col = 0_u16, row = 0_u16)
       super(col, row)
 
       @facing = :down
-      @item_lane = Array(Item::Base | Nil).new(LaneDensity, nil)
+      @item_lane = Array(ItemData | Nil).new(LaneDensity, nil)
     end
 
     def self.update
@@ -80,20 +82,14 @@ module Works::Struct::TransportBelt
     end
 
     def update(map : Map)
-      if position % ItemSlotHeight == 0
-        item_lane.each_with_index do |lane_item, index|
-          if index == 0
-            # check to see to move item to next transport belt
-            if (item = lane_item) && (belt = next_belt(map))
-              if belt.can_receive_from_belt?
-                belt.receive_from_belt(item)
-                item_lane[index] = nil
-              end
-            end
-          elsif item_lane[index - 1].nil?
-            # shuffle item towards top of item_lane
-            item_lane[index - 1] = lane_item
-            item_lane[index] = nil
+      item_lane.each_with_index do |item_data, index|
+        if data = item_data
+          if data[:position] < ItemSlotHeight - belt_speed.to_u8
+            increase_item_data_position(index, data)
+          end
+
+          if data[:position] >= ItemSlotHeight - belt_speed.to_u8
+            move_item_on_belt(index, map, data)
           end
         end
       end
@@ -119,7 +115,7 @@ module Works::Struct::TransportBelt
       if item_lane[2].nil?
         item = klass.new
         item.add(1)
-        item_lane[2] = item
+        item_lane[2] = {item: item, position: 0_u8}
 
         amount - item.amount
       else
@@ -147,16 +143,39 @@ module Works::Struct::TransportBelt
       map.structs.select(&.is_a?(Struct::TransportBelt::Base)).find(&.overlaps_input?(col, row)).as(Struct::TransportBelt::Base | Nil)
     end
 
+    def increase_item_data_position(index, data : ItemData)
+      item_lane[index] = {item: data[:item], position: data[:position] + belt_speed.to_u8}
+    end
+
+    def move_item_on_belt(index, map : Map, data : ItemData)
+      if index == 0
+        if belt = next_belt(map)
+          move_to_belt(belt, data[:item], index)
+        end
+      elsif item_lane[index - 1].nil?
+        # shuffle item towards top of item_lane
+        item_lane[index - 1] = {item: data[:item], position: 0_u8}
+        item_lane[index] = nil
+      end
+    end
+
+    def move_to_belt(belt : Struct::TransportBelt::Base, item : Item::Base, index)
+      if belt.can_receive_from_belt?
+        belt.receive_from_belt(item)
+        item_lane[index] = nil
+      end
+    end
+
     def can_receive_from_belt?
       # TODO: For now always assume last index (3), and facing down
       # but later, depending on belt directions, use a different output index
-      item_lane[3].nil?
+      item_lane[LaneDensity - 1].nil?
     end
 
     def receive_from_belt(item)
       # TODO: For now always assume last index (3), and facing down
       # but later, depending on belt directions, use a different output index
-      item_lane[3] = item
+      item_lane[LaneDensity - 1] = {item: item, position: 0_u8}
     end
 
     def draw(dx, dy)
@@ -182,17 +201,16 @@ module Works::Struct::TransportBelt
     end
 
     def draw_lanes(dx, dy)
-      cx = dx + x
-      cy = dy + y - ItemSlotHeight / 2
+      dx = dx + x
+      dy = dy + y - ItemSlotHeight
 
-      item_lane.reverse.each_with_index do |item, index|
-        # cy += position % ItemSlotHeight
-
-        if item
-          item.draw_item(cx, cy, center: false)
+      item_lane.reverse.each_with_index do |item_data, index|
+        if item_data
+          iy = dy + item_data[:position]
+          item_data[:item].draw_item(dx, iy, center: false)
         end
 
-        cy += ItemSlotHeight
+        dy += ItemSlotHeight
       end
     end
   end
