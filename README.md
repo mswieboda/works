@@ -106,18 +106,21 @@ for the more efficient production ready build.
 - [x] Ore tile
 - [x] Player (placeholder)
 - [ ] Furnaces
-- [ ] Chests
+  - [x] Stone (needs to be redone)
+  - [ ] Steel
+  - [ ] Electric
+- [x] Chests
 - [ ] Item icons
   - [x] Ore
   - [x] Plates
   - [ ] Steel plate (different)
-  - [ ] Chests
+  - [x] Chests
   - [ ] Furnances
   - [ ] Inserters
   - [x] Transport belts
   - [ ] Etc...
 - [ ] Inserters
-- [ ] Transport belts
+- [ ] Transport belts (currently animated triangle primitives)
 - [ ] Everything else...
 
 ## Sound
