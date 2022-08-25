@@ -80,7 +80,18 @@ module Works::Struct::TransportBelt
     end
 
     def rotate
-      @facing = facing == :down ? :up : :down
+      case facing
+      when :up
+        @facing = :right
+      when :right
+        @facing = :down
+      when :down
+        @facing = :left
+      when :left
+        @facing = :up
+      else
+        raise "> #{name}#rotate can't find next direction for #{facing}"
+      end
     end
 
     def item_class
@@ -223,7 +234,7 @@ module Works::Struct::TransportBelt
       dy += y
       px = dx
       py = dy
-      h = height / 8
+      h = size / 8
 
       if facing == :down
         py = py - height + position
@@ -235,7 +246,7 @@ module Works::Struct::TransportBelt
 
           py += height / 3
         end
-      else
+      elsif facing == :up
         py = py + height * 2 - position
 
         6.times do |i|
@@ -244,6 +255,26 @@ module Works::Struct::TransportBelt
           end
 
           py -= height / 3
+        end
+      elsif facing == :right
+        px = px - width + position
+
+        6.times do |i|
+          if px + h >= dx && px < dx + width
+            LibAllegro.draw_triangle(px, py + height / 4, px, py + height - height / 4, px + h, py + height / 2, color, 3)
+          end
+
+          px += width / 3
+        end
+      elsif facing == :left
+        px = px + width * 2 - position
+
+        6.times do |i|
+          if px - h <= dx + width && px >= dx
+            LibAllegro.draw_triangle(px, py + height / 4, px, py + height - height / 4, px - h, py + height / 2, color, 3)
+          end
+
+          px -= width / 3
         end
       end
     end
