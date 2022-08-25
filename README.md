@@ -49,6 +49,7 @@ for the more efficient production ready build.
   - [ ] Stack inserter
   - [ ] Stack filter inserter
   - [ ] all directions
+  - [ ] two lanes
 - [ ] Transport belts
   - [x] Transport belt
   - [x] Fast transport belt

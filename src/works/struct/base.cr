@@ -62,6 +62,9 @@ module Works::Struct
       amount
     end
 
+    def rotate
+    end
+
     def overlaps_input?(col, row)
       overlaps?(col, row)
     end

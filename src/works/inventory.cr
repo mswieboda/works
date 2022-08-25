@@ -82,6 +82,8 @@ module Works
           end
 
           return
+        elsif keys.just_pressed?(LibAllegro::KeyR)
+          held_item.rotate
         end
 
         return unless mouse.left_just_pressed?

@@ -17,6 +17,8 @@ module Works::Struct::TransportBelt
     getter facing
     getter item_lane : Array(ItemData | Nil)
 
+    protected setter facing
+
     def initialize(col = 0_u16, row = 0_u16)
       super(col, row)
 
@@ -64,8 +66,18 @@ module Works::Struct::TransportBelt
       @@position
     end
 
+    def clone
+      belt = self.class.new(col, row)
+      belt.facing = @facing
+      belt
+    end
+
     def position
       self.class.position
+    end
+
+    def rotate
+      @facing = facing == :down ? :up : :down
     end
 
     def item_class
@@ -188,15 +200,29 @@ module Works::Struct::TransportBelt
       dx += x
       dy += y
       px = dx
-      py = dy + position - height
+      py = dy
       h = height / 8
 
-      6.times do |i|
-        if py + h >= dy && py <= dy + height
-          LibAllegro.draw_triangle(px + width / 4, py, px + width - width / 4, py, px + width / 2, py + h, color, 3)
-        end
+      if facing == :down
+        py = py - height + position
 
-        py += height / 3
+        6.times do |i|
+          if py + h >= dy && py <= dy + height
+            LibAllegro.draw_triangle(px + width / 4, py, px + width - width / 4, py, px + width / 2, py + h, color, 3)
+          end
+
+          py += height / 3
+        end
+      else
+        py = py + height * 2 - position
+
+        6.times do |i|
+          if py - h <= dy + height && py >= dy
+            LibAllegro.draw_triangle(px + width / 4, py, px + width - width / 4, py, px + width / 2, py - h, color, 3)
+          end
+
+          py -= height / 3
+        end
       end
     end
 

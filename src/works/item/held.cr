@@ -42,6 +42,12 @@ module Works::Item
       end
     end
 
+    def rotate
+      if strct = @strct
+        strct.rotate
+      end
+    end
+
     def draw_on_map(x, y, color_tint)
       if strct = @strct
         strct.draw(x, y)
