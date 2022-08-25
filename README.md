@@ -48,10 +48,12 @@ for the more efficient production ready build.
   - [ ] Filter inserter
   - [ ] Stack inserter
   - [ ] Stack filter inserter
+  - [ ] all directions
 - [ ] Transport belts
-  - [x] Transport belt (doesn't interact with inserters yet)
-  - [x] Fast transport belt (doesn't interact with inserters yet)
-  - [x] Express transport belt (doesn't interact with inserters yet)
+  - [x] Transport belt
+  - [x] Fast transport belt
+  - [x] Express transport belt
+  - [ ] all directions
 - [ ] Underground belts
   - [ ] Underground belt
   - [ ] Fast underground belt
