@@ -172,20 +172,20 @@ module Works::Struct::TransportBelt
     end
 
     def move_to_belt(belt : Struct::TransportBelt::Base, item : Item::Base, index)
-      if belt.can_receive_from_belt?
+      if belt.can_receive_from_belt?(facing)
         belt.receive_from_belt(item)
         item_lane[index] = nil
       end
     end
 
-    def can_receive_from_belt?
-      # TODO: For now always assume last index (3), and facing down
+    def can_receive_from_belt?(facing)
+      # TODO: For now always assume last index (3), and up/down
       # but later, depending on belt directions, use a different output index
-      item_lane[LaneDensity - 1].nil?
+      @facing == facing && item_lane[LaneDensity - 1].nil?
     end
 
     def receive_from_belt(item)
-      # TODO: For now always assume last index (3), and facing down
+      # TODO: For now always assume last index (3), and facing up/down
       # but later, depending on belt directions, use a different output index
       item_lane[LaneDensity - 1] = {item: item, position: 0_u8}
     end
