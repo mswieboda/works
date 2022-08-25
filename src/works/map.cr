@@ -66,6 +66,16 @@ module Works
       structs.each(&.destroy)
     end
 
+    def inbounds?(col, row)
+      # TODO: add max bounds
+      col > 0 && row > 0
+    end
+
+    def inbounds?(strct : Struct::Base)
+      # TODO: change to also use dimensions when using max bounds
+      inbounds?(strct.col, strct.row)
+    end
+
     def get_ore(col, row)
       if col <= ore.size - 1
         ore_col = ore[col]

@@ -7,6 +7,7 @@ module Works::Item
     property item : Item::Base
     property strct : Works::Struct::Base | Nil
     getter size : Int32
+    getter? struct_inbounds
     getter? player_buildable
     getter? player_overlaps
     getter struct_overlaps : Array(Works::Struct::Base)
@@ -17,13 +18,14 @@ module Works::Item
       @item = item
       @strct = nil
       @size = size
+      @struct_inbounds = false
       @player_buildable = false
       @player_overlaps = false
       @struct_overlaps = [] of Works::Struct::Base
     end
 
     def buildable?
-      strct && player_buildable? && !player_overlaps? && struct_overlaps.empty?
+      strct && struct_inbounds? && player_buildable? && !player_overlaps? && struct_overlaps.empty?
     end
 
     def update(mouse : Mouse, map : Map, player : Player)
@@ -36,6 +38,7 @@ module Works::Item
         strct.col = col
         strct.row = row
 
+        @struct_inbounds = map.inbounds?(strct)
         @player_buildable = player.buildable?(strct)
         @player_overlaps = player.overlaps?(strct)
         @struct_overlaps = map.structs.select(&.overlaps?(strct))
