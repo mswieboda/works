@@ -71,6 +71,14 @@ module Works
       end
     end
 
+    def draw_rotated(x, y, angle = 0.0, flip_horizontal = false, flip_vertical = false)
+      if sprite = sprites[display_frame]
+        Sprite.draw_rotated(sprite, x, y, angle: angle, center: center?, flip_horizontal: flip_horizontal, flip_vertical: flip_vertical)
+      else
+        raise "> Animation#draw !sprite"
+      end
+    end
+
     def destroy
       sprites.each do |sprite|
         LibAllegro.destroy_bitmap(sprite)

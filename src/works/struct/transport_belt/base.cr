@@ -399,7 +399,11 @@ module Works::Struct::TransportBelt
     end
 
     def draw_background(dx, dy)
-      @@animation.draw(dx + x, dy + y, flip_horizontal: false, flip_vertical: facing == :down)
+      if facing_vertical?
+        @@animation.draw(dx + x, dy + y, flip_horizontal: false, flip_vertical: facing == :down)
+      else
+        @@animation.draw_rotated(dx + x, dy + y, angle: 90, flip_horizontal: false, flip_vertical: facing == :left)
+      end
     end
 
     def draw_accents(dx, dy, color)
@@ -408,6 +412,12 @@ module Works::Struct::TransportBelt
       px = dx
       py = dy
       h = size / 8
+
+      if facing_vertical?
+        px -= 2 * Screen.scale_factor
+      else
+        py -= 2 * Screen.scale_factor
+      end
 
       if facing == :down
         py = py - height + position

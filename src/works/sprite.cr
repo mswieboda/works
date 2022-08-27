@@ -26,6 +26,26 @@ module Works
       end
     end
 
+    def self.draw_rotated(sprite : LibAllegro::Bitmap, x, y, scale = 1.0, angle = 0.0, center = false, flip_horizontal = false, flip_vertical = false)
+      cx = LibAllegro.get_bitmap_width(sprite) / 2
+      cy = LibAllegro.get_bitmap_height(sprite) / 2
+
+      dx = x
+      dy = y
+      scale *= Screen.sprite_factor
+
+      unless center
+        dx += LibAllegro.get_bitmap_width(sprite) * scale / 2
+        dy += LibAllegro.get_bitmap_height(sprite) * scale / 2
+      end
+
+      flags = 0
+      flags |= LibAllegro::FlipHorizontal if flip_horizontal
+      flags |= LibAllegro::FlipVertical if flip_vertical
+
+      LibAllegro.draw_scaled_rotated_bitmap(sprite, cx, cy, dx, dy, scale, scale, angle * Math::PI / 180, flags)
+    end
+
     def self.draw_tinted(sprite : LibAllegro::Bitmap, x, y, tint = NoTintColor, scale = 1.0, center = false, flip_horizontal = false, flip_vertical = false)
       dx = x
       dy = y
