@@ -356,10 +356,23 @@ module Works::Struct::TransportBelt
     def update_turning_belts(map : Map)
       check_perpendicular_input_belts(map)
 
-      # check output belt
       if belt = output_belt(map)
         if perpendicular?(belt.facing)
           belt.update_turning_from(facing, map)
+        end
+      end
+    end
+
+    def remove_belt_update_turning_belts(map : Map)
+      if belt = output_belt(map)
+        if perpendicular?(belt.facing)
+          belt.update_turning_belts(map)
+        end
+      end
+
+      if belt = input_belt(map)
+        if perpendicular?(belt.facing)
+          belt.update_turning_belts(map)
         end
       end
     end

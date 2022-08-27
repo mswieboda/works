@@ -158,6 +158,12 @@ module Works
         if amount > 0
           if removed = map.structs.delete(struct_hover)
             inventory.add(strct.item_class, 1)
+
+            if removed.is_a?(Struct::TransportBelt::Base)
+              belt = removed.as(Struct::TransportBelt::Base)
+
+              belt.remove_belt_update_turning_belts(map)
+            end
           end
         end
 
