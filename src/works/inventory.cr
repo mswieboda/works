@@ -91,12 +91,14 @@ module Works
         if held_index = @held_index
           if !(hud.shown? && hud.hover?) && held_item.buildable? && held_item.item.amount > 0
             if strct = held_item.strct
-              if strct.is_a?(Struct::TransportBelt::Base)
-                belt = strct.as(Struct::TransportBelt::Base)
+              clone = strct.clone
+
+              if clone.is_a?(Struct::TransportBelt::Base)
+                belt = clone.as(Struct::TransportBelt::Base)
                 belt.update_turning_belts(map)
               end
 
-              map.structs << strct.clone
+              map.structs << clone
               held_item.item.remove(1)
             end
 

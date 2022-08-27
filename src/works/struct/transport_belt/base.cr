@@ -327,7 +327,36 @@ module Works::Struct::TransportBelt
       end
     end
 
+    def check_perpendicular_input_belts(map : Map)
+      @turning_from = nil
+
+      if facing_vertical?
+        if belt = find_belt(map, col - 1, row)
+          @turning_from = belt.facing if belt.facing == :right
+        end
+
+        if belt = find_belt(map, col + 1, row)
+          if belt.facing == :left
+            @turning_from = @turning_from ? nil : belt.facing
+          end
+        end
+      else # facing horizontal
+        if belt = find_belt(map, col, row - 1)
+          @turning_from = belt.facing if belt.facing == :down
+        end
+
+        if belt = find_belt(map, col, row + 1)
+          if belt.facing == :up
+            @turning_from = @turning_from ? nil : belt.facing
+          end
+        end
+      end
+    end
+
     def update_turning_belts(map : Map)
+      check_perpendicular_input_belts(map)
+
+      # check output belt
       if belt = output_belt(map)
         if perpendicular?(belt.facing)
           belt.update_turning_from(facing, map)
