@@ -13,6 +13,8 @@ module Works::Struct::TransportBelt
     alias ItemData = {item: Item::Base, position: UInt8}
 
     @@position = 0
+    @@sheet = LibAllegro.load_bitmap("./assets/struct/transport_belt.png")
+    @@animation = Animation.new(2)
 
     getter lanes : Tuple(Array(ItemData | Nil), Array(ItemData | Nil))
     getter facing
@@ -36,6 +38,17 @@ module Works::Struct::TransportBelt
 
       if position > Cell.size
         @@position = 0_f64
+      end
+
+      @@animation.update
+    end
+
+    def self.init_animation
+      size = 64
+      frames = 8
+
+      frames.times do |i|
+        @@animation.add(@@sheet, i * size, 0, size, size)
       end
     end
 
@@ -378,11 +391,15 @@ module Works::Struct::TransportBelt
     end
 
     def draw(dx, dy)
-      draw(dx, dy, background_color)
+      draw_background(dx, dy)
       draw_accents(dx, dy, color)
       draw_lanes(dx, dy)
 
       draw_turning_text(dx, dy) if turning_from
+    end
+
+    def draw_background(dx, dy)
+      @@animation.draw(dx + x, dy + y, flip_horizontal: false, flip_vertical: facing == :down)
     end
 
     def draw_accents(dx, dy, color)
@@ -491,6 +508,11 @@ module Works::Struct::TransportBelt
       end
 
       LibAllegro.draw_text(Font.default, LibAllegro.map_rgb_f(1, 0, 1), dx + x, dy + y, 0, str)
+    end
+
+    def self.destroy
+      @@animation.destroy
+      LibAllegro.destroy_bitmap(@@sheet)
     end
   end
 end

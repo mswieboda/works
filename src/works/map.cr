@@ -18,6 +18,8 @@ module Works
       @ore = [] of Array(Tile::Ore::Base | Nil)
       @structs = [] of Struct::Base
       @viewables = [] of Cell
+
+      Struct::TransportBelt::Base.init_animation
     end
 
     def sx
@@ -64,6 +66,8 @@ module Works
       ground.flatten.each(&.destroy)
       ore.flatten.compact.each(&.destroy)
       structs.each(&.destroy)
+
+      Struct::TransportBelt::Base.destroy
     end
 
     def inbounds?(col, row)
