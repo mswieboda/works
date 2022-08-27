@@ -21,6 +21,7 @@ module Works::Struct::TransportBelt
     getter turning_from : Symbol | Nil
 
     protected setter facing
+    protected setter turning_from
 
     def initialize(col = 0_u16, row = 0_u16)
       super(col, row)
@@ -289,6 +290,10 @@ module Works::Struct::TransportBelt
     def update_turning_from(input_facing : Symbol, map : Map)
       @turning_from = nil
 
+      if belt = input_belt(map)
+        return if facing == belt.facing
+      end
+
       if facing_horizontal? && (input_facing == :up || input_facing == :down)
         if input_facing == :up
           check_row = row - 1
@@ -343,6 +348,10 @@ module Works::Struct::TransportBelt
     def check_perpendicular_input_belts(map : Map)
       @turning_from = nil
 
+      if belt = input_belt(map)
+        return if facing == belt.facing
+      end
+
       if facing_vertical?
         if belt = find_belt(map, col - 1, row)
           @turning_from = belt.facing if belt.facing == :right
@@ -367,20 +376,28 @@ module Works::Struct::TransportBelt
     end
 
     def update_turning_belts(map : Map)
+      if belt = input_belt(map)
+        if belt.facing == facing
+          @turning_from = nil
+
+          return
+        end
+      end
+
       check_perpendicular_input_belts(map)
 
       if belt = output_belt(map)
         if perpendicular?(belt.facing)
           belt.update_turning_from(facing, map)
+        elsif facing = belt.facing
+          belt.turning_from = nil
         end
       end
     end
 
     def remove_belt_update_turning_belts(map : Map)
       if belt = output_belt(map)
-        if perpendicular?(belt.facing)
-          belt.update_turning_belts(map)
-        end
+        belt.update_turning_belts(map)
       end
 
       if belt = input_belt(map)
