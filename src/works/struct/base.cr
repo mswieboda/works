@@ -68,6 +68,10 @@ module Works::Struct
     def after_rotate(map : Map)
     end
 
+    def can_overwrite?(strct : Struct::Base)
+      false
+    end
+
     def overlaps_input?(col, row)
       overlaps?(col, row)
     end

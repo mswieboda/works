@@ -68,6 +68,16 @@ module Works::Struct::Inserter
       end
     end
 
+    def can_overwrite?(strct : Struct::Base)
+      if strct.class == self.class
+        inserter = strct.as(Struct::Inserter::Base)
+
+        facing != inserter.facing
+      else
+        false
+      end
+    end
+
     def item_class
       case key
       when :burner_inserter

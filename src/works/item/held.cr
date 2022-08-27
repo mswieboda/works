@@ -11,6 +11,7 @@ module Works::Item
     getter? player_buildable
     getter? player_overlaps
     getter struct_overlaps : Array(Works::Struct::Base)
+    getter struct_overwrite : Works::Struct::Base | Nil
 
     def initialize(x, y, item, size)
       @x = x
@@ -22,6 +23,7 @@ module Works::Item
       @player_buildable = false
       @player_overlaps = false
       @struct_overlaps = [] of Works::Struct::Base
+      @struct_overwrite = nil
     end
 
     def buildable?
@@ -42,6 +44,8 @@ module Works::Item
         @player_buildable = player.buildable?(strct)
         @player_overlaps = player.overlaps?(strct)
         @struct_overlaps = map.structs.select(&.overlaps?(strct))
+        @struct_overwrite = map.structs.find { |s| s.overlaps?(strct) && s.can_overwrite?(strct) }
+        @struct_overlaps.reject! { |s| s == @struct_overwrite }
       end
     end
 

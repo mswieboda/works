@@ -149,7 +149,7 @@ module Works
       @struct_hover = ish ? nil : map.structs.find(&.hover?(mouse_col, mouse_row))
 
       if (strct = @struct_hover)
-        if keys.just_pressed?(LibAllegro::KeyR)
+        if !inventory.held_item && keys.just_pressed?(LibAllegro::KeyR)
           strct.rotate
           strct.after_rotate(map)
         end

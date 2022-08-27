@@ -130,6 +130,16 @@ module Works::Struct::TransportBelt
       end
     end
 
+    def can_overwrite?(strct : Struct::Base)
+      if strct.class == self.class
+        belt = strct.as(Struct::TransportBelt::Base)
+
+        facing != belt.facing
+      else
+        false
+      end
+    end
+
     def item_class
       case key
       when :transport_belt

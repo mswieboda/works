@@ -89,8 +89,14 @@ module Works
         return unless mouse.left_just_pressed?
 
         if held_index = @held_index
-          if !(hud.shown? && hud.hover?) && held_item.buildable? && held_item.item.amount > 0
+          if !(hud.shown? && hud.hover?) &&  held_item.item.amount > 0 && held_item.buildable?
             if strct = held_item.strct
+              if struct_overwrite = held_item.struct_overwrite
+                map.structs.delete(struct_overwrite)
+              else
+                held_item.item.remove(1)
+              end
+
               clone = strct.clone
 
               if clone.is_a?(Struct::TransportBelt::Base)
@@ -99,7 +105,6 @@ module Works
               end
 
               map.structs << clone
-              held_item.item.remove(1)
             end
 
             if held_item.item.amount <= 0
