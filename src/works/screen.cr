@@ -6,6 +6,7 @@ module Works
     InitialSpriteFactor = 0.5
     FPS = 60_u8
     Name = "works"
+    Fullscreen = true
 
     @@width : UInt16 = InitialWidth
     @@height : UInt16 = InitialHeight
@@ -24,10 +25,6 @@ module Works
       FPS
     end
 
-    def self.name
-      Name
-    end
-
     def self.scale_factor
       @@scale_factor
     end
@@ -37,6 +34,10 @@ module Works
     end
 
     def self.init(display)
+      # set to fullscreen windowed
+      LibAllegro.set_display_flag(display, LibAllegro::FullscreenWindow, 1) if Fullscreen
+      LibAllegro.set_window_title(display, Name)
+
       @@width = LibAllegro.get_display_width(display).to_u16
       @@height = LibAllegro.get_display_height(display).to_u16
       @@scale_factor = (@@width / InitialWidth).to_u8

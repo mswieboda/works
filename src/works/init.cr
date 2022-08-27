@@ -33,12 +33,7 @@ module Works
       display = LibAllegro.create_display(Screen.width, Screen.height)
       check_init(display, "display")
 
-      # set to fullscreen windowed
-      LibAllegro.set_display_flag(display, LibAllegro::FullscreenWindow, 1)
-
       Screen.init(display)
-
-      LibAllegro.set_window_title(display, Screen.name)
 
       display
     end
