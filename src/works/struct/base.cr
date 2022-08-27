@@ -65,6 +65,9 @@ module Works::Struct
     def rotate
     end
 
+    def after_rotate(map : Map)
+    end
+
     def overlaps_input?(col, row)
       overlaps?(col, row)
     end

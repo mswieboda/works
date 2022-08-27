@@ -110,6 +110,26 @@ module Works::Struct::TransportBelt
       end
     end
 
+    def after_rotate(map : Map)
+      update_turning_belts(map)
+
+      if belt = find_belt(map, col - 1, row)
+        belt.update_turning_belts(map)
+      end
+
+      if belt = find_belt(map, col + 1, row)
+        belt.update_turning_belts(map)
+      end
+
+      if belt = find_belt(map, col, row - 1)
+        belt.update_turning_belts(map)
+      end
+
+      if belt = find_belt(map, col, row + 1)
+        belt.update_turning_belts(map)
+      end
+    end
+
     def item_class
       case key
       when :transport_belt
@@ -389,7 +409,7 @@ module Works::Struct::TransportBelt
       if belt = output_belt(map)
         if perpendicular?(belt.facing)
           belt.update_turning_from(facing, map)
-        elsif facing = belt.facing
+        elsif facing == belt.facing
           belt.turning_from = nil
         end
       end

@@ -104,7 +104,7 @@ module Works
       mouse_col, mouse_row = mouse.to_map_coords(map.x, map.y)
 
       update_movement(keys)
-      update_structs(map, mouse, mouse_col, mouse_row)
+      update_structs(map, keys, mouse, mouse_col, mouse_row)
       update_struct_info(mouse)
       update_mining(map, mouse, mouse_col, mouse_row)
       update_inventory(keys, mouse, map)
@@ -144,30 +144,39 @@ module Works
       end
     end
 
-    def update_structs(map : Map, mouse : Mouse, mouse_col, mouse_row)
+    def update_structs(map : Map, keys : Keys, mouse : Mouse, mouse_col, mouse_row)
       ish = inventory.shown? && inventory.hover?(mouse)
       @struct_hover = ish ? nil : map.structs.find(&.hover?(mouse_col, mouse_row))
 
-      if (strct = @struct_hover) && removable?(strct) && mouse.right_pressed?
-        struct_removal_timer.start unless struct_removal_timer.started?
-
-        return unless struct_removal_timer.done?
-
-        amount = inventory.amount_can_add(strct.item_class, 1)
-
-        if amount > 0
-          if removed = map.structs.delete(struct_hover)
-            inventory.add(strct.item_class, 1)
-
-            if removed.is_a?(Struct::TransportBelt::Base)
-              belt = removed.as(Struct::TransportBelt::Base)
-
-              belt.remove_belt_update_turning_belts(map)
-            end
-          end
+      if (strct = @struct_hover)
+        if keys.just_pressed?(LibAllegro::KeyR)
+          strct.rotate
+          strct.after_rotate(map)
         end
 
-        struct_removal_timer.restart
+        if removable?(strct) && mouse.right_pressed?
+          struct_removal_timer.start unless struct_removal_timer.started?
+
+          return unless struct_removal_timer.done?
+
+          amount = inventory.amount_can_add(strct.item_class, 1)
+
+          if amount > 0
+            if removed = map.structs.delete(struct_hover)
+              inventory.add(strct.item_class, 1)
+
+              if removed.is_a?(Struct::TransportBelt::Base)
+                belt = removed.as(Struct::TransportBelt::Base)
+
+                belt.remove_belt_update_turning_belts(map)
+              end
+            end
+          end
+
+          struct_removal_timer.restart
+        else
+          struct_removal_timer.stop
+        end
       else
         struct_removal_timer.stop
       end
