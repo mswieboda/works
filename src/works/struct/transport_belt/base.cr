@@ -14,19 +14,21 @@ module Works::Struct::TransportBelt
 
     @@position = 0
 
-    getter facing
     getter lanes : Tuple(Array(ItemData | Nil), Array(ItemData | Nil))
+    getter facing
+    getter turning_from : Symbol | Nil
 
     protected setter facing
 
     def initialize(col = 0_u16, row = 0_u16)
       super(col, row)
 
-      @facing = :up
       @lanes = {
         Array(ItemData | Nil).new(LaneDensity, nil),
         Array(ItemData | Nil).new(LaneDensity, nil)
       }
+      @facing = :up
+      @turning_from = nil
     end
 
     def self.update
@@ -204,9 +206,37 @@ module Works::Struct::TransportBelt
       end
     end
 
-    def next_belt(map : Map)
+    def input_coords
+      case facing
+      when :right
+        [col - 1, row]
+      when :left
+        [col + 1, row]
+      when :up
+        [col, row + 1]
+      when :down
+        [col, row - 1]
+      else
+        raise "#{self.class.name}#output_coords facing direction #{facing} not found"
+      end
+    end
+
+    def find_belt(map : Map, col, row)
+      map
+        .structs
+        .select(&.is_a?(Struct::TransportBelt::Base))
+        .find(&.overlaps_input?(col, row))
+        .as(Struct::TransportBelt::Base | Nil)
+    end
+
+    def output_belt(map : Map)
       col, row = output_coords
-      map.structs.select(&.is_a?(Struct::TransportBelt::Base)).find(&.overlaps_input?(col, row)).as(Struct::TransportBelt::Base | Nil)
+      find_belt(map, col, row)
+    end
+
+    def input_belt(map : Map)
+      col, row = input_coords
+      find_belt(map, col, row)
     end
 
     def increase_item_data_position(lane_index, index, data : ItemData)
@@ -215,7 +245,7 @@ module Works::Struct::TransportBelt
 
     def move_item_on_belt(lane_index, index, map : Map, data : ItemData)
       if index == 0
-        if belt = next_belt(map)
+        if belt = output_belt(map)
           move_to_belt(belt, lane_index, index, data[:item])
         end
       elsif lanes[lane_index][index - 1].nil?
@@ -243,10 +273,74 @@ module Works::Struct::TransportBelt
       lanes[lane_index][LaneDensity - 1] = {item: item, position: 0_u8}
     end
 
+    def update_turning_from(input_facing : Symbol, map : Map)
+      @turning_from = nil
+
+      if facing_horizontal? && (input_facing == :up || input_facing == :down)
+        if input_facing == :up
+          check_row = row - 1
+
+          if other_belt = find_belt(map, col, check_row)
+            return if other_belt.facing == :down
+          end
+        elsif input_facing == :down
+          check_row = row + 1
+
+          if other_belt = find_belt(map, col, check_row)
+            return if other_belt.facing == :up
+          end
+        end
+
+        @turning_from = input_facing
+      elsif facing_vertical? && (input_facing == :right || input_facing == :left)
+        if input_facing == :right
+          check_col = col + 1
+
+          if other_belt = find_belt(map, check_col, row)
+            return if other_belt.facing == :left
+          end
+        elsif input_facing == :left
+          check_col = col - 1
+
+          if other_belt = find_belt(map, check_col, row)
+            return if other_belt.facing == :right
+          end
+        end
+
+        @turning_from = input_facing
+      end
+    end
+
+    def facing_horizontal?
+      facing == :right || facing == :left
+    end
+
+    def facing_vertical?
+      facing == :up || facing == :down
+    end
+
+    def perpendicular?(other_facing : Symbol)
+      if facing_vertical?
+        other_facing == :left || other_facing == :right
+      else # facing horizontal
+        other_facing == :down || other_facing == :up
+      end
+    end
+
+    def update_turning_belts(map : Map)
+      if belt = output_belt(map)
+        if perpendicular?(belt.facing)
+          belt.update_turning_from(facing, map)
+        end
+      end
+    end
+
     def draw(dx, dy)
       draw(dx, dy, background_color)
       draw_accents(dx, dy, color)
       draw_lanes(dx, dy)
+
+      draw_turning_text(dx, dy) if turning_from
     end
 
     def draw_accents(dx, dy, color)
@@ -345,6 +439,16 @@ module Works::Struct::TransportBelt
           ix += ItemSlotTicks if facing == :right || facing == :left
         end
       end
+    end
+
+    def draw_turning_text(dx, dy)
+      str = "#{facing.to_s.chars.first.upcase}"
+
+      if turning_from = @turning_from
+        str += turning_from.to_s.chars.first.upcase
+      end
+
+      LibAllegro.draw_text(Font.default, LibAllegro.map_rgb_f(1, 0, 1), dx + x, dy + y, 0, str)
     end
   end
 end
