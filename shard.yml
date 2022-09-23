@@ -13,6 +13,6 @@ dependencies:
     github: mswieboda/crystal_allegro
     version: 0.2.0
 
-crystal: 1.5.0
+crystal: 1.5.1
 
 license: MIT

@@ -5,6 +5,16 @@
 ## Installation
 
 ```
+shards install
+```
+
+to install crystal dependencies
+
+and then install allegro ([instructions](https://github.com/liballeg/allegro_wiki/wiki/Quickstart#installation))
+
+then to compile:
+
+```
 make
 ```
 
